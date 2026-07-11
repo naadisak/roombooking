@@ -991,7 +991,7 @@ async function markAllRead() {
   api("markAllNotifsRead").catch(()=>{});
 }
 
-setInterval(loadNotifs, 60000);
+setInterval(loadNotifs, 30000);
 window.addEventListener("focus", loadNotifs);
 // ──────────────────────────────────────────────────────
 </script>
