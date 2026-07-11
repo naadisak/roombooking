@@ -48,7 +48,7 @@ html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background:
 .toast-label { font-size:10px; font-weight:700; color:rgba(255,255,255,.5); letter-spacing:.08em; text-transform:uppercase; margin-bottom:3px; }
 .toast-msg { font-size:13px; font-weight:600; line-height:1.4; color:#fff; word-break:break-word; }
 .toast-time { font-size:10px; color:rgba(255,255,255,.4); margin-top:3px; }
-.toast-close { background:none; border:none; color:rgba(255,255,255,.4); cursor:pointer; font-size:18px; line-height:1; padding:0; flex-shrink:0; transition:color .15s; }
+.toast-close { background:none; border:none; color:rgba(255,255,255,.4); cursor:pointer; font-size:18px; line-height:1; padding:0 2px; flex-shrink:0; transition:color .15s; pointer-events:all; }
 .toast-close:hover { color:#fff; }
 .notif-btn { position:relative; background:none; border:none; cursor:pointer; width:38px; height:38px; display:flex; align-items:center; justify-content:center; border-radius:9px; transition:background .15s; flex-shrink:0; }
 .notif-btn:hover { background:rgba(255,255,255,.08); }
@@ -888,25 +888,32 @@ async function loadNotifs() {
     renderNotifs();
   } catch(e) {}
 }
+function _dismissToast(t) {
+  if (!t.parentNode) return;
+  t.classList.add("hide");
+  setTimeout(() => t.parentNode && t.remove(), 280);
+}
 function showToast(message, bookingId) {
   let c = document.getElementById("toast-container");
   if (!c) { c = document.createElement("div"); c.id = "toast-container"; c.className = "toast-container"; document.body.appendChild(c); }
-  if (c.children.length >= 5) { while (c.firstChild) c.removeChild(c.firstChild); }
+  if (c.children.length >= 5) { Array.from(c.children).forEach(ch => ch.remove()); }
   const t    = document.createElement("div"); t.className = "toast";
   const icon = document.createElement("div"); icon.className = "toast-icon"; icon.textContent = "🔔";
   const body = document.createElement("div"); body.className = "toast-body";
   const lbl  = document.createElement("div"); lbl.className = "toast-label"; lbl.textContent = "การแจ้งเตือน";
-  const msg  = document.createElement("div"); msg.className = "toast-msg";   msg.textContent = message;
-  const ts   = document.createElement("div"); ts.className  = "toast-time";  ts.textContent  = "เมื่อกี้";
-  body.append(lbl, msg, ts);
-  const btn  = document.createElement("button"); btn.className = "toast-close"; btn.textContent = "×";
-  btn.addEventListener("click", e => { e.stopPropagation(); t.remove(); });
+  const msgEl= document.createElement("div"); msgEl.className = "toast-msg"; msgEl.textContent = message;
+  const ts   = document.createElement("div"); ts.className  = "toast-time";  ts.textContent   = "เมื่อกี้";
+  body.append(lbl, msgEl, ts);
+  const btn  = document.createElement("button");
+  btn.type = "button"; btn.className = "toast-close"; btn.textContent = "×";
+  btn.style.pointerEvents = "all";
+  btn.onclick = e => { e.stopPropagation(); _dismissToast(t); };
   t.append(icon, body, btn);
   if (bookingId && bookingId !== "undefined" && bookingId !== "") {
-    t.style.cursor = "pointer";
     t.addEventListener("click", e => { if (e.target === btn) return; location.href = "detail.html?id=" + bookingId; });
   }
   c.appendChild(t);
+  setTimeout(() => _dismissToast(t), 5000);
 }
 function renderNotifs() {
   const badge=document.getElementById("notif-badge");const list=document.getElementById("notif-list");
