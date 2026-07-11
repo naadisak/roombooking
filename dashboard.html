@@ -126,7 +126,7 @@ html, body {
   min-width:280px; max-width:340px;
   pointer-events:all; cursor:pointer;
   border-left:3px solid #A8834F;
-  animation:toastIn .3s cubic-bezier(.16,1,.3,1);
+  animation:toastIn .3s cubic-bezier(.16,1,.3,1) forwards;
 }
 .toast.hide { animation:toastOut .25s ease forwards; }
 @keyframes toastIn  { from{opacity:0;transform:translateX(50px)} to{opacity:1;transform:translateX(0)} }
