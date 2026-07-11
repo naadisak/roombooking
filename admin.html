@@ -2854,7 +2854,12 @@ async function markAllRead() {
 
 // Admin: poll ทุก 3 วินาที + focus refetch
 setInterval(loadNotifs, 3000);
-window.addEventListener("focus", () => { loadNotifs(); refreshData(); });
+window.addEventListener("focus", () => {
+  // กลับมาที่หน้าจอ → โชว์ toast ทุก notification ที่ยังไม่อ่าน
+  _notifData.filter(n => !n.isRead).forEach(n => showToast(n.message, n.bookingId));
+  loadNotifs();
+  refreshData();
+});
 
 // Data refresh ทุก 15 วินาที (background silent)
 setInterval(refreshData, 15000);

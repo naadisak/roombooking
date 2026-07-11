@@ -920,7 +920,10 @@ async function markAllRead() {
   api("markAllNotifsRead").catch(()=>{});
 }
 setInterval(loadNotifs, 30000);
-window.addEventListener("focus", loadNotifs);
+window.addEventListener("focus", () => {
+  _notifData.filter(n => !n.isRead).forEach(n => showToast(n.message, n.bookingId));
+  loadNotifs();
+});
 // ──────────────────────────────────────────────────────
 </script>
 </body>

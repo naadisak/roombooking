@@ -1054,7 +1054,11 @@ async function markAllRead() {
 }
 
 setInterval(loadNotifs, 30000);
-window.addEventListener("focus", loadNotifs);
+window.addEventListener("focus", () => {
+  // กลับมาที่หน้าจอ → โชว์ toast ทุก notification ที่ยังไม่อ่าน
+  _notifData.filter(n => !n.isRead).forEach(n => showToast(n.message, n.bookingId));
+  loadNotifs();
+});
 // ──────────────────────────────────────────────────────
 </script>
 </body>
