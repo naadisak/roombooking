@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAISON Residence — โปรไฟล์</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kodchasan:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #EDE7DA;
+  --bg-alt:      #F5F1E8;
+  --surface:     #FFFDF8;
+  --surface-soft:#FBF8F1;
+  --ink:         #23201B;
+  --muted:       #857D6E;
+  --muted-2:     #9A9182;
+  --line-color:  #E7DFCE;
+  --line-2:      #E2DAC9;
+  --pine:        #1E3A34;
+  --pine-deep:   #16302A;
+  --brass:       #A8834F;
+  --brass-soft:  #C9A876;
+  --brass-bg:    #F2EAD9;
+}
+html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background: var(--bg); color: var(--ink); }
+
+/* ── TOPBAR ── */
+.topbar { position: sticky; top: 0; z-index: 200; background: var(--pine); display: flex; align-items: center; padding: 0 28px; height: 60px; }
+.topbar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+.logo-mark { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201,168,118,.5); display: flex; align-items: center; justify-content: center; background: rgba(169,131,79,.1); }
+.logo-mark span { font-size: 16px; font-weight: 700; color: var(--brass-soft); }
+.logo-text { font-size: 12px; font-weight: 600; letter-spacing: .22em; color: rgba(255,255,255,.85); text-transform: uppercase; }
+.topbar-nav { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; }
+.nav-link { padding: 6px 16px; border-radius: 7px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,.65); text-decoration: none; transition: background .15s, color .15s; }
+.nav-link:hover  { background: rgba(255,255,255,.08); color: #fff; }
+.nav-link.active { background: rgba(255,255,255,.12); color: #fff; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; position: relative; }
+.user-dropdown { position: absolute; top: calc(100% + 6px); right: 0; background: #fff; border: 1px solid #E7DFCE; border-radius: 12px; min-width: 160px; box-shadow: 0 8px 24px rgba(0,0,0,.14); overflow: hidden; display: none; z-index: 500; }
+.user-dropdown.open { display: block; }
+.user-dd-item { display: block; width: 100%; padding: 11px 16px; font-size: 13px; font-weight: 600; color: #23201B; text-decoration: none; background: none; border: none; cursor: pointer; text-align: left; font-family: 'Kodchasan', sans-serif; transition: background .15s; white-space: nowrap; }
+.user-dd-item:hover { background: #F5F1E8; }
+.user-dd-logout { color: #C84040; border-top: 1px solid #E7DFCE; }
+.topbar-user { display: flex; align-items: center; gap: 10px; text-decoration: none; padding: 6px 10px; border-radius: 9px; transition: background .15s; }
+.topbar-user:hover { background: rgba(255,255,255,.08); }
+.topbar-user-info { text-align: right; }
+.topbar-user-name { display: block; font-size: 13px; font-weight: 600; color: #fff; line-height: 1.2; }
+.topbar-user-dept { display: block; font-size: 11px; color: rgba(255,255,255,.5); }
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--brass); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0; overflow: hidden; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.burger-btn { display: none; background: none; border: 0; cursor: pointer; padding: 10px 0 10px 10px; flex-direction: column; align-items: center; margin-left: auto; }
+.burger-line { position: relative; display: block; width: 26px; height: 3px; background: rgba(255,255,255,.85); transform: skew(5deg); transition: all .275s; border-radius: 2px; }
+.burger-line::before, .burger-line::after { content: ''; display: block; height: 100%; background: rgba(255,255,255,.85); transition: all .275s; border-radius: 2px; }
+.burger-line::after  { transform: translateY(-10px) translateX(-2px) skew(-20deg); }
+.burger-line::before { transform: translateY(-13px) skew(-10deg); }
+.burger-btn.is-open .burger-line { transform: skew(5deg) translateY(-7px) rotate(-45deg); }
+.burger-btn.is-open .burger-line::before { transform: translateY(0px) skew(-10deg) rotate(75deg); }
+.burger-btn.is-open .burger-line::after  { transform: translateY(-10px) translateX(8px) skew(-20deg); opacity: 0; }
+.burger-label { display: block; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; color: rgba(255,255,255,.6); margin-top: 5px; }
+.mobile-nav { position: fixed; top: 0; right: 0; left: 0; bottom: 0; background: var(--pine-deep); opacity: 0; z-index: 150; visibility: hidden; transition: all .375s; display: flex; align-items: center; justify-content: center; }
+.mobile-nav.is-open { opacity: 1; visibility: visible; }
+.mobile-nav::before { content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: -15px; background: var(--pine); transform-origin: 0 0; transform: skew(-14deg) translateX(-120%); transition: all .275s .1s; }
+.mobile-nav.is-open::before { transform: skew(-14deg) translateX(0); }
+.mobile-nav-inner { position: relative; z-index: 1; display: inline-flex; flex-direction: column; align-items: flex-end; transform: translateX(-10%) skew(-16deg); }
+.mobile-nav-inner li { display: block; margin: .4rem 0; text-align: right; list-style: none; padding: 0; transform: skew(16deg); }
+.mobile-nav-inner a { display: block; padding: 14px 4px; color: rgba(255,255,255,.85); font-size: 1.6em; font-weight: 700; text-decoration: none; opacity: 0; transform: translateY(-10px); transition: color .2s; }
+.mobile-nav-inner a:hover { color: var(--brass-soft); }
+.mobile-nav.is-open a { opacity: 1; transform: translateY(0); }
+.mobile-nav-inner li:nth-child(1) a { transition: opacity 275ms 175ms, transform 275ms 175ms, color .2s; }
+.mobile-nav-inner li:nth-child(2) a { transition: opacity 275ms 225ms, transform 275ms 225ms, color .2s; }
+.mobile-nav-inner li:nth-child(3) a { transition: opacity 275ms 275ms, transform 275ms 275ms, color .2s; }
+.mobile-nav-inner a.active { color: var(--brass-soft); }
+.mobile-nav-inner a.active::after { content: ' ·'; color: var(--brass); }
+
+/* ── PAGE ── */
+.page { max-width: 640px; margin: 0 auto; padding: 32px 24px 80px; }
+.page-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: var(--brass); margin-bottom: 6px; }
+.page-title { font-size: 26px; font-weight: 700; color: var(--ink); margin-bottom: 24px; }
+
+/* ── EMPLOYEE CARD ── */
+.emp-card {
+  position: relative; border-radius: 22px; overflow: hidden;
+  background: linear-gradient(135deg, #1E3A34 0%, #0D2018 60%, #1A2E2A 100%);
+  padding: 24px 26px 22px;
+  min-height: 280px;
+  box-shadow: 0 20px 48px -12px rgba(13,32,24,.65);
+  margin-bottom: 20px;
+}
+/* photo overlay */
+.emp-card-photo-bg {
+  position: absolute; right: 0; top: 0; bottom: 0;
+  width: 55%;
+  background-size: cover; background-position: center top;
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,.55) 45%, rgba(0,0,0,.7) 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,.55) 45%, rgba(0,0,0,.7) 100%);
+}
+/* watermark */
+.emp-card::before {
+  content: "M"; position: absolute; right: -14px; top: -20px;
+  font-size: 200px; font-weight: 900; color: rgba(255,255,255,.035);
+  line-height: 1; pointer-events: none; font-family: 'Kodchasan', sans-serif;
+}
+/* shimmer top */
+.emp-card::after {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,118,.45), transparent);
+}
+/* card content sits above photo */
+.emp-card-content { position: relative; z-index: 1; }
+
+.emp-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; }
+.emp-card-title { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: .07em; line-height: 1; }
+.emp-card-sub { font-size: 9.5px; font-weight: 600; letter-spacing: .28em; color: rgba(201,168,118,.7); text-transform: uppercase; margin-top: 3px; }
+
+/* chip */
+.emp-card-chip {
+  width: 38px; height: 30px; border-radius: 6px;
+  background: linear-gradient(135deg, #C9A876, #9A7040);
+  position: relative; overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.35);
+  flex-shrink: 0;
+}
+.emp-card-chip::before { content: ""; position: absolute; inset: 4px 3px; border: 1.5px solid rgba(255,255,255,.35); border-radius: 4px; }
+.emp-card-chip::after  { content: ""; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: rgba(255,255,255,.2); transform: translateY(-50%); }
+
+/* avatar */
+.emp-card-av-wrap {
+  position: relative; cursor: pointer;
+}
+.emp-card-av {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 2px solid rgba(201,168,118,.5);
+  background: rgba(201,168,118,.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 700; color: var(--brass-soft);
+  overflow: hidden; flex-shrink: 0;
+}
+.emp-card-av img { width: 100%; height: 100%; object-fit: cover; }
+.emp-card-av-edit {
+  position: absolute; bottom: -2px; right: -2px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--brass); border: 1.5px solid rgba(13,32,24,.8);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; color: #fff;
+}
+
+.emp-card-row {
+  font-size: 13px; font-weight: 600; color: rgba(255,255,255,.45);
+  letter-spacing: .16em; margin-bottom: 14px;
+  font-family: 'Courier New', monospace;
+}
+.emp-card-name { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 2px; line-height: 1.2; }
+.emp-card-bottom { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 6px; gap: 10px; }
+.emp-card-meta { flex: 1; min-width: 0; }
+.emp-card-dept { font-size: 11.5px; color: rgba(255,255,255,.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.emp-card-phone { font-size: 14px; font-weight: 700; color: rgba(201,168,118,.85); margin-top: 4px; font-family: 'Courier New', monospace; letter-spacing: .18em; }
+.emp-card-email { font-size: 11px; color: rgba(255,255,255,.38); margin-top: 2px; }
+.emp-card-role-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  color: var(--brass-soft); background: rgba(201,168,118,.15);
+  border: 1px solid rgba(201,168,118,.3);
+  padding: 4px 11px; border-radius: 20px; text-transform: uppercase;
+  white-space: nowrap; flex-shrink: 0;
+}
+
+/* hidden file input */
+#file-photo { display: none; }
+
+/* upload overlay */
+.upload-hint {
+  font-size: 11.5px; color: var(--muted-2); text-align: center;
+  margin-bottom: 16px; margin-top: -4px;
+}
+.upload-hint span { color: var(--brass); cursor: pointer; text-decoration: underline; }
+
+/* ── SECTION CARD ── */
+.section-card { background: var(--surface); border: 1px solid var(--line-color); border-radius: 18px; margin-bottom: 16px; overflow: hidden; }
+.section-head { display: flex; align-items: center; gap: 10px; padding: 16px 20px 14px; border-bottom: 1px solid var(--line-color); }
+.section-head-icon { font-size: 18px; }
+.section-head-title { font-size: 14px; font-weight: 700; color: var(--ink); }
+.section-body { padding: 20px 20px; }
+
+/* ── FORM ── */
+.form-group { margin-bottom: 16px; }
+.form-group:last-child { margin-bottom: 0; }
+.form-label { font-size: 11.5px; font-weight: 700; color: var(--muted-2); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 6px; display: block; }
+.form-input {
+  width: 100%; padding: 11px 14px; border-radius: 10px;
+  border: 1.5px solid var(--line-color);
+  background: var(--bg-alt);
+  font-family: 'Kodchasan', sans-serif; font-size: 14px; font-weight: 500; color: var(--ink);
+  transition: border-color .15s;
+  outline: none;
+}
+.form-input:focus { border-color: var(--pine); background: var(--surface); }
+.form-input:disabled { color: var(--muted-2); background: var(--bg-alt); cursor: default; }
+
+/* ── BUTTONS ── */
+.btn-primary {
+  display: block; width: 100%; padding: 13px 22px; border-radius: 12px;
+  background: var(--pine); color: #fff; border: none;
+  font-family: 'Kodchasan', sans-serif; font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: background .2s, transform .1s;
+  box-shadow: 0 10px 22px -10px rgba(30,58,52,.45);
+}
+.btn-primary:hover  { background: var(--pine-deep); }
+.btn-primary:active { transform: scale(.98); }
+.btn-primary.loading { opacity: .65; pointer-events: none; }
+
+.btn-secondary {
+  display: block; width: 100%; padding: 12px 22px; border-radius: 12px;
+  background: none; color: var(--muted); border: 1.5px solid var(--line-color);
+  font-family: 'Kodchasan', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: border-color .15s, color .15s; margin-top: 10px;
+}
+.btn-secondary:hover { border-color: var(--pine); color: var(--pine); }
+
+.btn-danger {
+  display: block; width: 100%; padding: 12px 22px; border-radius: 12px;
+  background: none; color: #C84040; border: 1.5px solid rgba(200,64,64,.22);
+  font-family: 'Kodchasan', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: border-color .15s, background .15s;
+}
+.btn-danger:hover { border-color: #C84040; background: rgba(200,64,64,.05); }
+
+/* ── PIN ── */
+.pin-step { display: none; }
+.pin-step.active { display: block; }
+.pin-dots { display: flex; gap: 10px; justify-content: center; margin-bottom: 18px; }
+.pin-dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--line-2); background: transparent; transition: background .15s, border-color .15s; }
+.pin-dot.filled { background: var(--pine); border-color: var(--pine); }
+.pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 230px; margin: 0 auto 16px; }
+.pin-key { height: 52px; border-radius: 12px; border: 1.5px solid var(--line-color); background: var(--bg-alt); font-family: 'Kodchasan', sans-serif; font-size: 18px; font-weight: 700; color: var(--ink); cursor: pointer; transition: background .1s, transform .1s; }
+.pin-key:hover  { background: var(--line-color); }
+.pin-key:active { transform: scale(.93); }
+.pin-key.del { font-size: 19px; color: var(--muted); }
+.pin-key.empty { border: none; background: transparent; pointer-events: none; }
+.pin-hint { font-size: 13px; font-weight: 600; color: var(--ink); text-align: center; margin-bottom: 14px; }
+.pin-err  { font-size: 12.5px; color: #C84040; text-align: center; min-height: 18px; margin-bottom: 10px; }
+.pin-success { text-align: center; padding: 8px 0; display: none; }
+.pin-success-icon { font-size: 38px; margin-bottom: 8px; }
+.pin-success-text { font-size: 15px; font-weight: 700; color: var(--pine); }
+.btn-back-step { background: none; border: 1.5px solid var(--line-color); border-radius: 10px; padding: 8px 20px; font-family: 'Kodchasan', sans-serif; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; display: block; margin: 0 auto; transition: border-color .15s, color .15s; }
+.btn-back-step:hover { border-color: var(--pine); color: var(--pine); }
+
+/* ── LINE ── */
+.line-row { display: flex; align-items: center; gap: 14px; padding: 4px 0 12px; }
+.line-icon-wrap { width: 44px; height: 44px; border-radius: 12px; background: #06C755; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.line-info-block { flex: 1; }
+.line-status-text { font-size: 13px; font-weight: 700; color: var(--ink); }
+.line-sub { font-size: 12px; color: var(--muted-2); margin-top: 2px; }
+.badge-on  { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: #E6F9EE; color: #1A7A3A; }
+.badge-off { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: var(--brass-bg); color: var(--brass); }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(18px); background: var(--ink); color: #fff; padding: 12px 22px; border-radius: 12px; font-size: 14px; font-weight: 600; opacity: 0; transition: all .3s; pointer-events: none; white-space: nowrap; z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+.toast.show  { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.error { background: #C84040; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .page { padding: 22px 14px 70px; }
+  .topbar { padding: 0 14px; }
+  .topbar-user-info { display: none; }
+  .logo-text { display: none; }
+  .topbar-nav { display: none; }
+  .burger-btn { display: flex; }
+  .emp-card { padding: 20px 18px 18px; }
+  .emp-card-title { font-size: 17px; }
+  .emp-card-name  { font-size: 17px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── MOBILE NAV ── -->
+<nav class="mobile-nav" id="mobile-nav">
+  <ul class="mobile-nav-inner">
+    <li><a href="dashboard.html">จองห้องพัก</a></li>
+    <li><a href="profile.html" class="active">โปรไฟล์</a></li>
+    <li><a href="admin.html" id="mob-admin" style="display:none">Admin</a></li>
+  </ul>
+</nav>
+
+<!-- ── TOP BAR ── -->
+<header class="topbar">
+  <a href="dashboard.html" class="topbar-logo">
+    <div class="logo-mark"><span>M</span></div>
+    <span class="logo-text">MAISON Residence</span>
+  </a>
+  <nav class="topbar-nav">
+    <a href="dashboard.html" class="nav-link">จองห้องพัก</a>
+    <a href="profile.html"   class="nav-link active">โปรไฟล์</a>
+    <a href="admin.html" class="nav-link" id="nav-admin" style="display:none">Admin</a>
+  </nav>
+  <div class="topbar-right">
+    <div class="topbar-user" id="user-menu-btn" onclick="toggleUserMenu()" style="cursor:pointer">
+      <div class="topbar-user-info">
+        <span class="topbar-user-name" id="tb-name">—</span>
+        <span class="topbar-user-dept" id="tb-dept">—</span>
+      </div>
+      <div class="avatar" id="tb-av">—</div>
+    </div>
+    <div class="user-dropdown" id="user-dropdown">
+      <a href="profile.html" class="user-dd-item">👤 โปรไฟล์</a>
+      <button class="user-dd-item user-dd-logout" onclick="doLogout()">↩ ออกจากระบบ</button>
+    </div>
+    <button class="burger-btn" id="burger-btn" aria-label="เปิดเมนู">
+      <span class="burger-line"></span>
+      <span class="burger-label">เมนู</span>
+    </button>
+  </div>
+</header>
+
+<input type="file" id="file-photo" accept="image/*">
+
+<main class="page">
+  <div class="page-eyebrow">MAISON Residence · TQM</div>
+  <h1 class="page-title">โปรไฟล์ของฉัน</h1>
+
+  <!-- ── 1. EMPLOYEE CARD ── -->
+  <div class="emp-card">
+    <div class="emp-card-photo-bg" id="card-photo-bg"></div>
+    <div class="emp-card-content">
+      <div class="emp-card-top">
+        <div>
+          <div class="emp-card-title">MAISON</div>
+          <div class="emp-card-sub">Employee Card · TQM</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="emp-card-chip"></div>
+          <div class="emp-card-av-wrap" onclick="triggerPhotoUpload()" title="เปลี่ยนรูปโปรไฟล์">
+            <div class="emp-card-av" id="card-av"><span id="card-av-text">—</span></div>
+            <div class="emp-card-av-edit">✏</div>
+          </div>
+        </div>
+      </div>
+      <div class="emp-card-row" id="card-empid">— — — — — —</div>
+      <div class="emp-card-name" id="card-name">—</div>
+      <div class="emp-card-bottom">
+        <div class="emp-card-meta">
+          <div class="emp-card-dept"  id="card-dept">—</div>
+          <div class="emp-card-phone" id="card-phone"></div>
+          <div class="emp-card-email" id="card-email">—</div>
+        </div>
+        <div class="emp-card-role-badge" id="card-role">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="upload-hint">คลิกที่รูปโปรไฟล์บนการ์ดเพื่อ<span onclick="triggerPhotoUpload()">เปลี่ยนรูป</span></div>
+
+  <!-- ── 2. EDIT INFO ── -->
+  <div class="section-card">
+    <div class="section-head">
+      <span class="section-head-icon">✏️</span>
+      <span class="section-head-title">แก้ไขข้อมูลส่วนตัว</span>
+    </div>
+    <div class="section-body">
+      <div class="form-group">
+        <label class="form-label">รหัสพนักงาน</label>
+        <input class="form-input" id="f-empid" disabled>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ชื่อ - นามสกุล</label>
+        <input class="form-input" id="f-name" disabled>
+      </div>
+      <div class="form-group">
+        <label class="form-label">แผนก / ตำแหน่ง</label>
+        <input class="form-input" id="f-dept" disabled>
+      </div>
+      <div class="form-group">
+        <label class="form-label">อีเมล</label>
+        <input class="form-input" id="f-email" type="email" placeholder="email@company.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">เบอร์ติดต่อ</label>
+        <input class="form-input" id="f-phone" type="tel" placeholder="0812345678">
+      </div>
+      <button class="btn-primary" id="btn-save-info" onclick="saveProfile()">บันทึกข้อมูล</button>
+    </div>
+  </div>
+
+  <!-- ── 3. CHANGE PIN ── -->
+  <div class="section-card">
+    <div class="section-head">
+      <span class="section-head-icon">🔑</span>
+      <span class="section-head-title">เปลี่ยน PIN</span>
+    </div>
+    <div class="section-body">
+      <!-- Step 1 -->
+      <div class="pin-step active" id="ps1">
+        <div class="pin-hint">กรอก PIN ปัจจุบัน</div>
+        <div class="pin-dots" id="pd1">
+          <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+          <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+        </div>
+        <div class="pin-err" id="pe1"></div>
+        <div class="pin-pad">
+          <button class="pin-key" onclick="pk(1,'1')">1</button><button class="pin-key" onclick="pk(1,'2')">2</button><button class="pin-key" onclick="pk(1,'3')">3</button>
+          <button class="pin-key" onclick="pk(1,'4')">4</button><button class="pin-key" onclick="pk(1,'5')">5</button><button class="pin-key" onclick="pk(1,'6')">6</button>
+          <button class="pin-key" onclick="pk(1,'7')">7</button><button class="pin-key" onclick="pk(1,'8')">8</button><button class="pin-key" onclick="pk(1,'9')">9</button>
+          <button class="pin-key empty"></button><button class="pin-key" onclick="pk(1,'0')">0</button><button class="pin-key del" onclick="pd(1)">⌫</button>
+        </div>
+      </div>
+      <!-- Step 2 -->
+      <div class="pin-step" id="ps2">
+        <div class="pin-hint">กรอก PIN ใหม่ (6 หลัก)</div>
+        <div class="pin-dots" id="pd2">
+          <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+          <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+        </div>
+        <div class="pin-err" id="pe2"></div>
+        <div class="pin-pad">
+          <button class="pin-key" onclick="pk(2,'1')">1</button><button class="pin-key" onclick="pk(2,'2')">2</button><button class="pin-key" onclick="pk(2,'3')">3</button>
+          <button class="pin-key" onclick="pk(2,'4')">4</button><button class="pin-key" onclick="pk(2,'5')">5</button><button class="pin-key" onclick="pk(2,'6')">6</button>
+          <button class="pin-key" onclick="pk(2,'7')">7</button><button class="pin-key" onclick="pk(2,'8')">8</button><button class="pin-key" onclick="pk(2,'9')">9</button>
+          <button class="pin-key empty"></button><button class="pin-key" onclick="pk(2,'0')">0</button><button class="pin-key del" onclick="pd(2)">⌫</button>
+        </div>
+        <button class="btn-back-step" onclick="goStep(1)">← ย้อนกลับ</button>
+      </div>
+      <!-- Step 3 -->
+      <div class="pin-step" id="ps3">
+        <div class="pin-hint">ยืนยัน PIN ใหม่อีกครั้ง</div>
+        <div class="pin-dots" id="pd3">
+          <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+          <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+        </div>
+        <div class="pin-err" id="pe3"></div>
+        <div class="pin-pad">
+          <button class="pin-key" onclick="pk(3,'1')">1</button><button class="pin-key" onclick="pk(3,'2')">2</button><button class="pin-key" onclick="pk(3,'3')">3</button>
+          <button class="pin-key" onclick="pk(3,'4')">4</button><button class="pin-key" onclick="pk(3,'5')">5</button><button class="pin-key" onclick="pk(3,'6')">6</button>
+          <button class="pin-key" onclick="pk(3,'7')">7</button><button class="pin-key" onclick="pk(3,'8')">8</button><button class="pin-key" onclick="pk(3,'9')">9</button>
+          <button class="pin-key empty"></button><button class="pin-key" onclick="pk(3,'0')">0</button><button class="pin-key del" onclick="pd(3)">⌫</button>
+        </div>
+        <button class="btn-back-step" onclick="goStep(2)">← ย้อนกลับ</button>
+      </div>
+      <!-- Success -->
+      <div class="pin-success" id="pin-ok">
+        <div class="pin-success-icon">✅</div>
+        <div class="pin-success-text">เปลี่ยน PIN สำเร็จ</div>
+        <button class="btn-secondary" style="max-width:200px;margin:14px auto 0" onclick="goStep(1);document.getElementById('pin-ok').style.display='none'">เปลี่ยนอีกครั้ง</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 4. LINE ── -->
+  <div class="section-card">
+    <div class="section-head">
+      <span class="section-head-icon">💬</span>
+      <span class="section-head-title">LINE Account</span>
+    </div>
+    <div class="section-body">
+      <div class="line-row">
+        <div class="line-icon-wrap">💬</div>
+        <div class="line-info-block">
+          <div class="line-status-text" id="line-label">กำลังโหลด…</div>
+          <div class="line-sub" id="line-sub"></div>
+        </div>
+        <span id="line-badge"></span>
+      </div>
+      <button class="btn-primary" id="btn-link-line" onclick="doLinkLine()" style="display:none;background:#06C755;box-shadow:0 10px 22px -10px rgba(6,199,85,.4)">
+        เชื่อมต่อ LINE Account
+      </button>
+      <button class="btn-danger" id="btn-unlink" onclick="doUnlinkLine()" style="display:none">ยกเลิกการผูก LINE</button>
+    </div>
+  </div>
+
+  <!-- ── 5. LOGOUT ── -->
+  <div class="section-card">
+    <div class="section-body">
+      <button class="btn-danger" onclick="doLogout()">ออกจากระบบ</button>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const GAS_API_URL        = "https://script.google.com/macros/s/AKfycbz0epUmQWVp0idbM3T4VwN0aL-NObC-ihOybEm0XQccnsfOZD8-WOcHtBu6tbxExmTG/exec";
+const LINE_CHANNEL_ID    = "2010671495";
+const LINE_CALLBACK_URL  = "https://naadisak.github.io/roombooking/profile.html";
+
+// ── SESSION (localStorage + 8h expiry) ───────────────
+function getSession() {
+  try {
+    const ts = +localStorage.getItem("maison_ts") || 0;
+    if ((Date.now() - ts) / 3600000 > 8) { _clearSess(); return null; }
+    const d = localStorage.getItem("maison_session");
+    return d ? JSON.parse(d) : null;
+  } catch(e) { return null; }
+}
+function _clearSess() { localStorage.removeItem("maison_session"); localStorage.removeItem("maison_ts"); }
+function doLogout() { _clearSess(); location.replace("login.html"); }
+function toggleUserMenu() { document.getElementById("user-dropdown").classList.toggle("open"); }
+document.addEventListener("click", e => {
+  const btn = document.getElementById("user-menu-btn");
+  const dd  = document.getElementById("user-dropdown");
+  if (btn && dd && !btn.contains(e.target)) dd.classList.remove("open");
+});
+
+const session = getSession();
+if (!session) location.replace("login.html");
+
+// ── TOPBAR ──────────────────────────────────────────
+function initials(name) {
+  if (!name) return "?";
+  const p = name.trim().split(/\s+/);
+  return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : (name[0] || "?").toUpperCase();
+}
+document.getElementById("tb-name").textContent = session.name || "—";
+document.getElementById("tb-dept").textContent = session.dept || "—";
+document.getElementById("tb-av").textContent   = initials(session.name);
+if (session.role === "admin") {
+  document.getElementById("nav-admin").style.display = "";
+  document.getElementById("mob-admin").style.display = "";
+}
+const burgerBtn = document.getElementById("burger-btn");
+const mobileNav = document.getElementById("mobile-nav");
+burgerBtn.addEventListener("click", () => { burgerBtn.classList.toggle("is-open"); mobileNav.classList.toggle("is-open"); });
+mobileNav.querySelectorAll("a").forEach(a => a.addEventListener("click", () => { burgerBtn.classList.remove("is-open"); mobileNav.classList.remove("is-open"); }));
+
+// ── API ──────────────────────────────────────────────
+async function api(action, params = {}) {
+  const res = await fetch(GAS_API_URL, {
+    method: "POST",
+    body  : JSON.stringify({ action, empId: session.empId, role: session.role, ...params }),
+  });
+  return res.json();
+}
+
+// ── TOAST ────────────────────────────────────────────
+function showToast(msg, isErr = false) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.className = "toast" + (isErr ? " error" : "") + " show";
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+// ── RENDER CARD ──────────────────────────────────────
+let profileData = {};
+
+// เติม 0 นำหน้าถ้าขาด แล้ว format เป็น 0XX-XXX-XXXX
+function formatPhone(raw) {
+  if (!raw) return "";
+  let s = String(raw).replace(/\D/g, "");   // เลขเท่านั้น
+  if (s.length === 9) s = "0" + s;           // 812345678 → 0812345678
+  if (s.length === 10) return s.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
+  return s;
+}
+
+function renderCard(p) {
+  profileData = p;
+  const name    = p.name || (p.firstName + " " + p.lastName).trim() || "—";
+  const isAdmin = p.role === "admin";
+  const deptPos = [p.dept, p.position].filter(Boolean).join("  ·  ") || "—";
+
+  // card
+  document.getElementById("card-empid").textContent = p.empId || "—";
+  document.getElementById("card-name").textContent  = name;
+  document.getElementById("card-dept").textContent  = deptPos;
+  document.getElementById("card-phone").textContent = formatPhone(p.phone);
+  document.getElementById("card-email").textContent = p.email || "";
+  document.getElementById("card-role").textContent  = isAdmin ? "🛡️ Admin" : "Member";
+
+  // avatar — priority: LINE photo → uploaded photo → initials
+  const photoUrl = p.linePhotoUrl || p.photoUrl || "";
+  setCardAvatar(photoUrl, name);
+
+  // card background photo
+  if (photoUrl) {
+    document.getElementById("card-photo-bg").style.backgroundImage = `url('${photoUrl}')`;
+    document.getElementById("card-photo-bg").style.display = "";
+  } else {
+    document.getElementById("card-photo-bg").style.display = "none";
+  }
+
+  // topbar avatar update
+  const tbAv = document.getElementById("tb-av");
+  if (photoUrl) {
+    tbAv.innerHTML = `<img src="${photoUrl}" alt="">`;
+  } else {
+    tbAv.textContent = initials(name);
+  }
+
+  // form fields
+  document.getElementById("f-empid").value = p.empId || "";
+  document.getElementById("f-name").value  = name;
+  document.getElementById("f-dept").value  = deptPos;
+  document.getElementById("f-email").value = p.email || "";
+  document.getElementById("f-phone").value = p.phone || "";
+
+  // LINE
+  const hasLine = !!(p.lineUid && p.lineUid !== "");
+  document.getElementById("line-label").textContent = hasLine ? "ผูก LINE แล้ว" : "ยังไม่ได้ผูก LINE";
+  document.getElementById("line-sub").textContent   = p.lineDisplayName || "";
+  document.getElementById("line-badge").innerHTML   = hasLine
+    ? `<span class="badge-on">✓ เชื่อมต่อ</span>`
+    : `<span class="badge-off">ยังไม่เชื่อมต่อ</span>`;
+  document.getElementById("btn-link-line").style.display = hasLine ? "none" : "";
+  document.getElementById("btn-unlink").style.display    = hasLine ? "" : "none";
+}
+
+function setCardAvatar(photoUrl, name) {
+  const av = document.getElementById("card-av");
+  if (photoUrl) {
+    av.innerHTML = `<img src="${photoUrl}" alt="" onerror="this.parentElement.innerHTML='<span id=card-av-text>${initials(name)}</span>'">`;
+  } else {
+    av.innerHTML = `<span id="card-av-text">${initials(name)}</span>`;
+  }
+}
+
+// ── LOAD ─────────────────────────────────────────────
+async function loadProfile() {
+  // แสดง session data ก่อน
+  renderCard({ empId: session.empId, name: session.name, dept: session.dept, role: session.role });
+  try {
+    const res = await api("getMyProfile");
+    if (res.ok) renderCard(res);
+  } catch(e) {}
+}
+
+// ── SAVE PROFILE ─────────────────────────────────────
+async function saveProfile() {
+  const btn   = document.getElementById("btn-save-info");
+  const email = document.getElementById("f-email").value.trim();
+  const phone = document.getElementById("f-phone").value.trim();
+
+  btn.classList.add("loading"); btn.disabled = true;
+  try {
+    const res = await api("updateProfile", { data: { email, phone } });
+    if (!res.ok) throw new Error(res.error);
+    showToast("✓ บันทึกข้อมูลแล้ว");
+    document.getElementById("card-email").textContent = email;
+    document.getElementById("card-phone").textContent = formatPhone(phone);
+    profileData.email = email; profileData.phone = phone;
+  } catch(e) { showToast(e.message, true); }
+  finally { btn.classList.remove("loading"); btn.disabled = false; }
+}
+
+// ── PHOTO UPLOAD ─────────────────────────────────────
+function triggerPhotoUpload() {
+  document.getElementById("file-photo").click();
+}
+
+const IMGBB_KEY = "634f349492429106ef296d1d0bd1414b";
+
+document.getElementById("file-photo").addEventListener("change", async function() {
+  const file = this.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { showToast("ไฟล์ใหญ่เกิน 5MB", true); return; }
+
+  showToast("กำลังอัพโหลด…");
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const dataUrl = e.target.result;
+    const base64  = dataUrl.split(",")[1];
+
+    // preview ทันทีก่อน upload สำเร็จ
+    document.getElementById("card-photo-bg").style.backgroundImage = `url('${dataUrl}')`;
+    document.getElementById("card-photo-bg").style.display = "";
+    setCardAvatar(dataUrl, profileData.name || session.name);
+    document.getElementById("tb-av").innerHTML = `<img src="${dataUrl}" alt="">`;
+
+    try {
+      // upload ไป imgbb โดยตรงจาก browser
+      const form = new FormData();
+      form.append("key",   IMGBB_KEY);
+      form.append("image", base64);
+      form.append("name",  "profile_" + session.empId);
+
+      const imgRes  = await fetch("https://api.imgbb.com/1/upload", { method: "POST", body: form });
+      const imgJson = await imgRes.json();
+      if (!imgJson.success) throw new Error(imgJson.error?.message || "imgbb error");
+
+      const photoUrl = imgJson.data.display_url;
+
+      // บันทึก URL ลง Sheet ผ่าน GAS
+      const saveRes = await api("updateProfile", { data: { photoUrl } });
+      if (!saveRes.ok) throw new Error(saveRes.error);
+
+      profileData.photoUrl = photoUrl;
+      showToast("✓ อัพโหลดรูปสำเร็จ");
+    } catch(e) {
+      showToast(e.message, true);
+      // revert preview ถ้า upload ไม่สำเร็จ
+      const prev = profileData.photoUrl || profileData.linePhotoUrl || "";
+      setCardAvatar(prev, profileData.name || session.name);
+      document.getElementById("card-photo-bg").style.backgroundImage = prev ? `url('${prev}')` : "";
+    }
+  };
+  reader.readAsDataURL(file);
+  this.value = "";
+});
+
+// ── PIN FLOW ─────────────────────────────────────────
+const pv = { 1:"", 2:"", 3:"" };
+
+function goStep(n) {
+  [1,2,3].forEach(i => document.getElementById("ps"+i).classList.toggle("active", i===n));
+  document.getElementById("pin-ok").style.display = "none";
+  pv[n] = ""; updateDots(n);
+  document.getElementById("pe"+n).textContent = "";
+}
+
+function pk(s, d) {
+  if (pv[s].length >= 6) return;
+  pv[s] += d; updateDots(s);
+  document.getElementById("pe"+s).textContent = "";
+  if (pv[s].length === 6) onPinFull(s);
+}
+function pd(s) { pv[s] = pv[s].slice(0,-1); updateDots(s); }
+function updateDots(s) {
+  document.getElementById("pd"+s).querySelectorAll(".pin-dot")
+    .forEach((d,i) => d.classList.toggle("filled", i < pv[s].length));
+}
+
+async function onPinFull(s) {
+  if (s === 1) {
+    try {
+      const res = await api("verifyPin", { pin: pv[1] });
+      if (!res.ok) { document.getElementById("pe1").textContent = "PIN ไม่ถูกต้อง"; pv[1]=""; updateDots(1); return; }
+      goStep(2);
+    } catch(e) { document.getElementById("pe1").textContent = "เกิดข้อผิดพลาด"; pv[1]=""; updateDots(1); }
+  } else if (s === 2) {
+    if (pv[2] === pv[1]) { document.getElementById("pe2").textContent = "PIN ใหม่ต้องไม่เหมือน PIN เดิม"; pv[2]=""; updateDots(2); return; }
+    goStep(3);
+  } else if (s === 3) {
+    if (pv[3] !== pv[2]) { document.getElementById("pe3").textContent = "PIN ไม่ตรงกัน"; pv[3]=""; updateDots(3); return; }
+    try {
+      const res = await api("setPin", { pin: pv[2] });
+      if (!res.ok) throw new Error(res.error);
+      [1,2,3].forEach(i => { document.getElementById("ps"+i).classList.remove("active"); pv[i]=""; });
+      document.getElementById("pin-ok").style.display = "block";
+      showToast("✓ เปลี่ยน PIN สำเร็จ");
+    } catch(e) { document.getElementById("pe3").textContent = e.message; pv[3]=""; updateDots(3); }
+  }
+}
+
+// ── LINE ─────────────────────────────────────────────
+function doLinkLine() {
+  const st = Math.random().toString(36).slice(2) + Date.now();
+  sessionStorage.setItem("line_state", st);
+  const url = "https://access.line.me/oauth2/v2.1/authorize?" + new URLSearchParams({
+    response_type: "code",
+    client_id    : LINE_CHANNEL_ID,
+    redirect_uri : LINE_CALLBACK_URL,
+    state        : st,
+    scope        : "profile",
+  });
+  location.href = url;
+}
+
+// ── LINE CALLBACK (รับ ?code= หลัง redirect กลับมา) ──
+(async () => {
+  const params        = new URLSearchParams(location.search);
+  const code          = params.get("code");
+  const returnedState = params.get("state");
+  if (!code) return;
+
+  history.replaceState({}, "", location.pathname);
+
+  const savedState = sessionStorage.getItem("line_state");
+  sessionStorage.removeItem("line_state");
+  if (returnedState !== savedState) {
+    showToast("เกิดข้อผิดพลาด: state ไม่ตรงกัน", true);
+    return;
+  }
+
+  showToast("กำลังเชื่อมต่อ LINE…");
+
+  try {
+    // 1. แลก code → lineUid ผ่าน GAS
+    const lineRes = await api("exchangeLineCode", {
+      code       : code,
+      redirectUri: LINE_CALLBACK_URL,
+    });
+    if (!lineRes.ok) throw new Error(lineRes.error || "LINE exchange ล้มเหลว");
+
+    // 2. บันทึก linkLine ลง sheet
+    const linkRes = await api("linkLine", {
+      lineUid        : lineRes.lineUid,
+      lineDisplayName: lineRes.lineDisplayName,
+      linePhotoUrl   : lineRes.linePhotoUrl,
+    });
+    if (!linkRes.ok) throw new Error(linkRes.error);
+
+    showToast("✓ ผูก LINE สำเร็จ!");
+    profileData.lineUid         = lineRes.lineUid;
+    profileData.lineDisplayName = lineRes.lineDisplayName;
+    profileData.linePhotoUrl    = lineRes.linePhotoUrl;
+    renderCard(profileData);
+  } catch(e) {
+    showToast(e.message, true);
+  }
+})();
+
+async function doUnlinkLine() {
+  if (!confirm("ยืนยันการยกเลิกผูก LINE?")) return;
+  try {
+    const res = await api("unlinkLine");
+    if (!res.ok) throw new Error(res.error);
+    showToast("✓ ยกเลิกการผูก LINE แล้ว");
+    profileData.lineUid = ""; profileData.lineDisplayName = ""; profileData.linePhotoUrl = "";
+    renderCard(profileData);
+  } catch(e) { showToast(e.message, true); }
+}
+
+// ── LOGOUT ──────────────────────────────────────────
+// doLogout defined above (uses localStorage)
+
+// ── INIT ─────────────────────────────────────────────
+loadProfile();
+</script>
+</body>
+</html>

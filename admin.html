@@ -1,0 +1,2717 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAISON Residence - สวัสดิการแรกเข้า TQM — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kodchasan:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:          #EDE7DA;
+  --bg-alt:      #F5F1E8;
+  --surface:     #FFFDF8;
+  --surface-soft:#FBF8F1;
+  --ink:         #23201B;
+  --ink-soft:    #4A453C;
+  --muted:       #857D6E;
+  --muted-2:     #9A9182;
+  --line-color:  #E7DFCE;
+  --line-2:      #E2DAC9;
+  --pine:        #1E3A34;
+  --pine-deep:   #16302A;
+  --brass:       #A8834F;
+  --brass-soft:  #C9A876;
+  --brass-bg:    #F2EAD9;
+}
+html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background: var(--bg); color: var(--ink); }
+
+/* ── TOPBAR ── */
+.topbar { position: sticky; top: 0; z-index: 200; background: var(--pine); display: flex; align-items: center; padding: 0 28px; height: 60px; }
+.topbar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+.logo-mark { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201,168,118,.5); display: flex; align-items: center; justify-content: center; background: rgba(169,131,79,.1); }
+.logo-mark span { font-size: 16px; font-weight: 700; color: #C9A876; }
+.logo-text { font-size: 12px; font-weight: 600; letter-spacing: .22em; color: rgba(255,255,255,.85); text-transform: uppercase; }
+.topbar-nav { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; }
+.nav-link { padding: 6px 16px; border-radius: 7px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,.65); text-decoration: none; transition: background .15s, color .15s; }
+.nav-link:hover  { background: rgba(255,255,255,.08); color: #fff; }
+.nav-link.active { background: rgba(255,255,255,.12); color: #fff; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; position: relative; }
+.user-dropdown { position: absolute; top: calc(100% + 6px); right: 0; background: #fff; border: 1px solid #E7DFCE; border-radius: 12px; min-width: 160px; box-shadow: 0 8px 24px rgba(0,0,0,.14); overflow: hidden; display: none; z-index: 500; }
+.user-dropdown.open { display: block; }
+.user-dd-item { display: block; width: 100%; padding: 11px 16px; font-size: 13px; font-weight: 600; color: #23201B; text-decoration: none; background: none; border: none; cursor: pointer; text-align: left; font-family: 'Kodchasan', sans-serif; transition: background .15s; white-space: nowrap; }
+.user-dd-item:hover { background: #F5F1E8; }
+.user-dd-logout { color: #C84040; border-top: 1px solid #E7DFCE; }
+.topbar-user { display: flex; align-items: center; gap: 10px; text-decoration: none; padding: 6px 10px; border-radius: 9px; transition: background .15s; }
+.topbar-user:hover { background: rgba(255,255,255,.08); }
+.topbar-user-name { display: block; font-size: 13px; font-weight: 600; color: #fff; }
+.topbar-user-dept { display: block; font-size: 11px; color: rgba(255,255,255,.5); }
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--brass); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.burger-btn { display: none; background: none; border: 0; cursor: pointer; padding: 10px 0 10px 10px; flex-direction: column; align-items: center; margin-left: auto; position: relative; z-index: 1000; }
+.burger-line { display: block; width: 26px; height: 3px; background: rgba(255,255,255,.85); transform: skew(5deg); transition: all .275s; border-radius: 2px; }
+.burger-line::before, .burger-line::after { content: ''; display: block; height: 100%; background: rgba(255,255,255,.85); transition: all .275s; border-radius: 2px; }
+.burger-line::after  { transform: translateY(-10px) translateX(-2px) skew(-20deg); }
+.burger-line::before { transform: translateY(-13px) skew(-10deg); }
+.burger-btn.is-open .burger-line { transform: skew(5deg) translateY(-7px) rotate(-45deg); }
+.burger-btn.is-open .burger-line::before { transform: translateY(0px) skew(-10deg) rotate(75deg); }
+.burger-btn.is-open .burger-line::after  { transform: translateY(-10px) translateX(8px) skew(-20deg); opacity: 0; }
+.burger-label { display: block; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; color: rgba(255,255,255,.6); margin-top: 5px; font-family: 'Kodchasan', sans-serif; }
+.mobile-nav { position: fixed; top: 0; right: 0; left: 0; bottom: 0; background: var(--pine-deep); opacity: 0; z-index: 150; visibility: hidden; transition: all .375s; display: flex; align-items: center; justify-content: center; }
+.mobile-nav.is-open { opacity: 1; visibility: visible; }
+.mobile-nav::before { content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: -15px; background: var(--pine); transform-origin: 0 0; transform: skew(-14deg) translateX(-120%); transition: all .275s .1s; }
+.mobile-nav.is-open::before { transform: skew(-14deg) translateX(0); }
+.mobile-nav-inner { position: relative; z-index: 1; display: inline-flex; flex-direction: column; align-items: flex-end; transform: translateX(-10%) skew(-16deg); list-style: none; padding: 0; }
+.mobile-nav-inner li { display: block; margin: .4rem 0; text-align: right; transform: skew(16deg); }
+.mobile-nav-inner a { display: block; padding: 14px 4px; color: rgba(255,255,255,.85); font-size: 1.6em; font-weight: 700; text-decoration: none; font-family: 'Kodchasan', sans-serif; opacity: 0; transform: translateY(-10px); transition: color .2s; }
+.mobile-nav-inner a:hover { color: #C9A876; }
+.mobile-nav.is-open a { opacity: 1; transform: translateY(0); }
+.mobile-nav-inner li:nth-child(1) a { transition: opacity 275ms 175ms, transform 275ms 175ms, color .2s; }
+.mobile-nav-inner li:nth-child(2) a { transition: opacity 275ms 225ms, transform 275ms 225ms, color .2s; }
+.mobile-nav-inner li:nth-child(3) a { transition: opacity 275ms 275ms, transform 275ms 275ms, color .2s; }
+.mobile-nav-inner li:nth-child(4) a { transition: opacity 275ms 325ms, transform 275ms 325ms, color .2s; }
+
+/* ── PAGE ── */
+.page { max-width: 1100px; margin: 0 auto; padding: 32px 28px 100px; }
+
+/* ── PAGE HEADER ── */
+.page-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 28px; gap: 16px; }
+.page-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .26em; text-transform: uppercase; color: var(--brass); margin-bottom: 4px; }
+.page-title { font-size: 26px; font-weight: 700; color: var(--ink); }
+
+/* ── STAT STRIP ── */
+.stat-strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 28px; }
+.stat-card { background: var(--surface); border: 1px solid var(--line-color); border-radius: 14px; padding: 18px 20px; }
+.stat-label { font-size: 11.5px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+.stat-num { font-size: 32px; font-weight: 700; color: var(--ink); line-height: 1; }
+.stat-num.pine  { color: var(--pine); }
+.stat-num.brass { color: var(--brass); }
+.stat-num.red   { color: #B5493B; }
+
+/* ── TABS ── */
+.tab-bar { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--line-color); border-radius: 14px; padding: 5px; margin-bottom: 20px; width: fit-content; }
+.tab-btn {
+  padding: 9px 22px; border-radius: 10px; border: none;
+  font-family: 'Kodchasan', sans-serif; font-size: 13.5px; font-weight: 600;
+  color: var(--muted); background: none; cursor: pointer; transition: all .18s;
+  display: flex; align-items: center; gap: 7px;
+}
+.tab-btn:hover { color: var(--ink); background: var(--bg-alt); }
+.tab-btn.active { background: var(--pine); color: #fff; }
+.tab-badge { background: var(--brass); color: #fff; font-size: 10px; font-weight: 700; border-radius: 20px; padding: 1px 7px; min-width: 20px; text-align: center; }
+.tab-btn.active .tab-badge { background: rgba(255,255,255,.25); }
+
+.tab-panel { display: none; animation: fadeUp .25s ease both; }
+.tab-panel.active { display: block; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+
+/* ── FILTER ROW ── */
+.filter-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.filter-chip {
+  padding: 6px 16px; border-radius: 20px; border: 1.5px solid var(--line-color);
+  background: var(--surface); font-family: 'Kodchasan', sans-serif;
+  font-size: 12.5px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all .15s;
+}
+.filter-chip:hover { border-color: var(--pine); color: var(--pine); }
+.filter-chip.active { background: var(--pine); border-color: var(--pine); color: #fff; }
+.filter-spacer { flex: 1; }
+.archive-bar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  background: var(--bg-alt); border: 1px solid var(--line-color);
+  border-radius: 10px; padding: 10px 14px; margin-bottom: 14px;
+}
+.archive-info-bar {
+  font-size: 13px; font-weight: 600; color: var(--muted-2);
+  background: var(--bg-alt); border: 1px dashed var(--line-color);
+  border-radius: 10px; padding: 10px 14px; margin-bottom: 14px;
+}
+.search-box {
+  padding: 8px 14px; border: 1.5px solid var(--line-color); border-radius: 10px;
+  background: var(--surface); font-family: 'Kodchasan', sans-serif;
+  font-size: 13px; color: var(--ink); outline: none; width: 220px; transition: border-color .2s;
+}
+.search-box:focus { border-color: var(--pine); }
+
+/* ── BOOKING LIST ── */
+.booking-table { display: flex; flex-direction: column; gap: 8px; }
+/* ── BOOKING CARD ── */
+.bk-card {
+  background: var(--surface); border: 1px solid var(--line-color);
+  border-radius: 16px; padding: 16px 18px 14px;
+  transition: box-shadow .18s, border-color .18s;
+}
+.bk-card:hover { box-shadow: 0 4px 20px -8px rgba(30,58,52,.14); border-color: var(--line-2); }
+
+/* top row: photo + name/meta + date */
+.bk-card-top { display: flex; align-items: flex-start; gap: 14px; }
+.bk-photo {
+  width: 48px; height: 56px; border-radius: 10px;
+  background: var(--brass-bg); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 700; color: var(--brass); flex-shrink: 0;
+}
+.bk-photo img { width: 100%; height: 100%; object-fit: cover; }
+.bk-main { flex: 1; min-width: 0; }
+.bk-name-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-bottom: 3px; }
+.bk-name { font-size: 14.5px; font-weight: 700; color: var(--ink); }
+.bk-id-badge { font-size: 11px; font-weight: 600; color: var(--brass); background: var(--brass-bg); padding: 2px 8px; border-radius: 20px; }
+.bk-meta { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.bk-card-date { text-align: right; flex-shrink: 0; }
+.bk-date { font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+.bk-date-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* bottom row: room info + status + actions */
+.bk-card-bottom {
+  margin-top: 12px; padding-top: 11px;
+  border-top: 1px solid var(--line-color);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  flex-wrap: wrap;
+}
+.bk-room-info { font-size: 12.5px; color: var(--muted); flex: 1; min-width: 0; }
+.bk-room-info strong { color: var(--ink-soft); font-weight: 600; }
+.bk-card-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
+
+/* status pill */
+.pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: 20px; font-size: 11.5px; font-weight: 700; }
+.pill-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.pill.pending   { background: #FBF0D8; color: #96701F; }
+.pill.pending .pill-dot   { background: #D79A28; }
+.pill.approved  { background: #DEEEE2; color: #2E6248; }
+.pill.approved .pill-dot  { background: #3C7A5A; }
+.pill.active    { background: #E0F0FF; color: #1A5C9A; }
+.pill.active .pill-dot    { background: #2E82D4; }
+.pill.checked_out { background: #EDEDEF; color: #5A5A6A; }
+.pill.checked_out .pill-dot { background: #8A8A9A; }
+.pill.rejected  { background: #FDEAEA; color: #9A2A2A; }
+.pill.rejected .pill-dot  { background: #C84040; }
+.pill.cancelled { background: #F4F0F0; color: #7A6A6A; }
+.pill.cancelled .pill-dot { background: #B09090; }
+.pill.cancelled{ background: #ECE7DD; color: #6E665A; }
+.pill.cancelled .pill-dot{ background: #9A9182; }
+
+/* action btns */
+.btn-sm {
+  padding: 7px 14px; border-radius: 9px; border: none;
+  font-family: 'Kodchasan', sans-serif; font-size: 12.5px; font-weight: 700;
+  cursor: pointer; transition: all .15s; white-space: nowrap;
+}
+.btn-sm-pine { background: var(--pine); color: #fff; }
+.btn-sm-pine:hover { background: var(--pine-deep); }
+.btn-sm-outline { background: none; border: 1.5px solid var(--line-color); color: var(--muted); }
+.btn-sm-outline:hover { border-color: var(--pine); color: var(--pine); }
+.btn-sm-danger { background: none; border: 1.5px solid rgba(200,64,64,.3); color: #C84040; }
+.btn-sm-danger:hover { background: rgba(200,64,64,.06); border-color: #C84040; }
+.ps-btn {
+  padding: 4px 11px; border-radius: 8px; font-size: 12px; font-weight: 700;
+  border: 1.5px solid var(--line-color); background: none; color: var(--muted);
+  cursor: pointer; transition: all .15s; font-family: 'Kodchasan', sans-serif;
+}
+.ps-btn.active { background: var(--pine); border-color: var(--pine); color: #fff; }
+.ps-label { font-size: 11.5px; color: var(--muted-2); }
+.load-more-btn {
+  display: block; width: 100%; padding: 11px; border-radius: 12px;
+  border: 1.5px dashed var(--line-color); background: none;
+  font-family: 'Kodchasan', sans-serif; font-size: 13px; font-weight: 600; color: var(--muted);
+  cursor: pointer; transition: border-color .15s, color .15s;
+}
+.load-more-btn:hover { border-color: var(--pine); color: var(--pine); }
+.btn-sm-red { background: none; border: 1.5px solid #C84040; color: #C84040; }
+.btn-sm-red:hover { background: #C84040; color: #fff; }
+
+/* ── LINE CHART ── */
+.lc-card {
+  background: var(--card-bg); border-radius: 16px; padding: 18px 20px 16px;
+  border: 1px solid var(--line-color); margin-bottom: 4px;
+}
+.lc-header {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px;
+}
+.lc-title { font-size: 14px; font-weight: 700; color: var(--text); flex-shrink: 0; }
+.lc-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+.lc-seg { display: flex; border-radius: 9px; overflow: hidden; border: 1.5px solid var(--line-color); }
+.lc-seg-btn {
+  padding: 5px 13px; font-size: 12px; font-weight: 700; font-family: 'Kodchasan', sans-serif;
+  background: none; border: none; color: var(--muted); cursor: pointer; transition: all .15s;
+}
+.lc-seg-btn.active { background: var(--pine); color: #fff; }
+.lc-select {
+  padding: 5px 10px; border-radius: 9px; border: 1.5px solid var(--line-color);
+  font-size: 12px; font-weight: 600; font-family: 'Kodchasan', sans-serif;
+  color: var(--text); background: var(--card-bg); cursor: pointer;
+}
+.lc-toggles {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px;
+}
+.lc-tog {
+  display: flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px;
+  border: 1.5px solid var(--line-color); background: none; font-size: 11.5px; font-weight: 600;
+  font-family: 'Kodchasan', sans-serif; color: var(--muted); cursor: pointer; transition: all .15s;
+  opacity: .4;
+}
+.lc-tog.active { opacity: 1; background: var(--bg-alt); border-color: transparent; }
+.lc-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+.lc-canvas-wrap { position: relative; width: 100%; }
+.lc-svg { width: 100%; height: 220px; display: block; overflow: visible; }
+.lc-tooltip {
+  position: absolute; background: var(--card-bg); border: 1px solid var(--line-color);
+  border-radius: 10px; padding: 9px 13px; font-size: 12px; pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,.12); z-index: 10; min-width: 130px;
+  transform: translateX(-50%);
+}
+.lc-tooltip-title { font-size: 11px; color: var(--muted-2); margin-bottom: 6px; font-weight: 600; }
+.lc-tooltip-row { display: flex; align-items: center; gap: 6px; margin: 2px 0; }
+.lc-tooltip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.lc-tooltip-label { color: var(--muted); flex: 1; }
+.lc-tooltip-val { font-weight: 700; color: var(--text); }
+.lc-summary {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px;
+  padding-top: 12px; border-top: 1px solid var(--line-color);
+  font-size: 12px;
+}
+.lc-sum-item { display: flex; align-items: center; gap: 5px; color: var(--muted); }
+.lc-sum-val { font-weight: 700; color: var(--text); }
+.lc-sum-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── ROOM ID PREFIX ── */
+.prefix-hint {
+  font-size: 10.5px; color: var(--muted-2); font-weight: 400; margin-left: 6px;
+}
+.room-id-preview {
+  background: var(--bg-alt); border: 1.5px solid var(--pine);
+  border-radius: 10px; padding: 9px 14px; font-size: 13px; color: var(--muted);
+  margin-bottom: 14px;
+}
+.room-id-preview strong { color: var(--pine); font-size: 15px; letter-spacing: .06em; }
+
+/* ── ROOM COLUMN TOGGLE ── */
+.col-toggle-group { display: flex; align-items: center; gap: 5px; }
+.col-toggle-label { font-size: 11.5px; color: var(--muted-2); font-weight: 600; }
+.col-toggle-btn {
+  padding: 5px 9px; border-radius: 8px; border: 1.5px solid var(--line-color);
+  background: none; font-size: 11px; color: var(--muted); cursor: pointer;
+  font-family: 'Kodchasan', sans-serif; font-weight: 700; letter-spacing: 1px;
+  transition: all .15s; line-height: 1;
+}
+.col-toggle-btn.active { background: var(--pine); border-color: var(--pine); color: #fff; }
+.col-toggle-btn:not(.active):hover { border-color: var(--pine); color: var(--pine); }
+
+/* ── ROOM LOAD-MORE ── */
+.room-load-more-wrap { grid-column: 1 / -1; padding: 4px 0 8px; }
+.room-load-more-btn {
+  display: block; width: 100%; padding: 11px; border-radius: 12px;
+  border: 1.5px dashed var(--line-color); background: none;
+  font-family: 'Kodchasan', sans-serif; font-size: 13px; font-weight: 600; color: var(--muted);
+  cursor: pointer; transition: border-color .15s, color .15s;
+}
+.room-load-more-btn:hover { border-color: var(--pine); color: var(--pine); }
+
+/* ── ROOM PHOTOS ── */
+.room-photos { display: flex; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line-color); }
+.room-photo-thumb { width: 60px; height: 52px; border-radius: 8px; object-fit: cover; cursor: zoom-in; border: 1.5px solid var(--line-color); }
+
+/* ── ROOM EDIT BTN ── */
+.room-edit-btn {
+  padding: 4px 10px; border-radius: 8px; border: 1.5px solid var(--line-color);
+  background: none; font-size: 11.5px; font-weight: 700; color: var(--muted);
+  cursor: pointer; transition: all .15s; font-family: 'Kodchasan', sans-serif;
+}
+.room-edit-btn:hover { border-color: var(--pine); color: var(--pine); background: rgba(58,120,84,.06); }
+
+/* ── EDIT ROOM MODAL ── */
+.room-type-lbl {
+  flex: 1; display: flex; align-items: center; gap: 8px;
+  padding: 11px 14px; border: 1.5px solid var(--line-color); border-radius: 10px;
+  cursor: pointer; font-size: 14px; font-weight: 600; transition: border-color .2s;
+}
+.er-photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 8px; }
+.er-photo-slot { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.er-photo-preview {
+  width: 100%; aspect-ratio: 4/3; border-radius: 10px; border: 1.5px dashed var(--line-color);
+  background: var(--bg-alt); display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.er-photo-preview img { width: 100%; height: 100%; object-fit: cover; border-radius: 9px; }
+.er-photo-empty { font-size: 22px; opacity: .4; }
+.er-photo-btn {
+  padding: 5px 12px; border-radius: 8px; border: 1.5px solid var(--line-color);
+  font-size: 11.5px; font-weight: 700; color: var(--muted); cursor: pointer;
+  font-family: 'Kodchasan', sans-serif; background: none; transition: all .15s; white-space: nowrap;
+}
+.er-photo-btn:hover { border-color: var(--pine); color: var(--pine); }
+.er-photo-clear {
+  font-size: 11px; color: #C84040; background: none; border: none; cursor: pointer;
+  font-family: 'Kodchasan', sans-serif; padding: 2px 4px;
+}
+
+/* ── USER PAGINATION ── */
+.user-page-nav {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  padding: 16px 0 4px; margin-top: 4px;
+}
+.page-nav-btn {
+  padding: 7px 18px; border-radius: 10px; border: 1.5px solid var(--line-color);
+  background: none; font-family: 'Kodchasan', sans-serif; font-size: 13px;
+  font-weight: 600; color: var(--muted); cursor: pointer; transition: all .15s;
+}
+.page-nav-btn:hover:not(:disabled) { border-color: var(--pine); color: var(--pine); }
+.page-nav-btn:disabled { opacity: .35; cursor: not-allowed; }
+.page-nav-info { font-size: 13px; color: var(--muted); font-weight: 600; min-width: 130px; text-align: center; }
+
+/* ── ROOM STATS BAR ── */
+.room-stats-bar {
+  display: flex; gap: 20px; align-items: center; margin-bottom: 12px;
+  padding: 10px 16px; background: var(--bg-alt); border: 1px solid var(--line-color);
+  border-radius: 12px; flex-wrap: wrap;
+}
+.room-stat-item { display: flex; align-items: baseline; gap: 6px; }
+.room-stat-label { font-size: 12px; font-weight: 600; color: var(--muted); }
+.room-stat-num { font-size: 19px; font-weight: 700; color: var(--pine); line-height: 1; }
+.room-stat-num.avail { color: #3C7A5A; }
+.room-stats-sep { color: var(--line-2); font-size: 18px; }
+
+/* ── ROOM FILTER ── */
+.room-filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; align-items: center; }
+.room-filter-bar.last { margin-bottom: 16px; }
+.loc-chip {
+  padding: 6px 16px; border-radius: 20px; border: 1.5px solid var(--line-color);
+  background: var(--surface); font-family: 'Kodchasan', sans-serif;
+  font-size: 12.5px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all .15s;
+}
+.loc-chip:hover { border-color: var(--pine); color: var(--pine); }
+.loc-chip.active { background: var(--pine); border-color: var(--pine); color: #fff; }
+
+/* ── ROOM GRID ── */
+.room-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.room-card {
+  background: var(--surface); border: 1.5px solid var(--line-color);
+  border-radius: 16px; padding: 20px;
+  transition: box-shadow .18s, border-color .18s;
+  position: relative;
+}
+.room-card:hover { box-shadow: 0 6px 24px -10px rgba(30,58,52,.14); }
+.room-card.full { border-color: var(--line-2) !important; background: var(--bg-alt) !important; }
+.room-card.available { border-color: rgba(60,122,90,.3); }
+
+/* availability indicator */
+.avail-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: #3C7A5A; flex-shrink: 0;
+  animation: pulse-green 1.6s ease-in-out infinite;
+}
+@keyframes pulse-green {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(60,122,90,.5); }
+  50%       { opacity: .7; box-shadow: 0 0 0 5px rgba(60,122,90,0); }
+}
+.full-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--line-color); color: var(--muted);
+  font-size: 10.5px; font-weight: 700; border-radius: 20px; padding: 3px 10px;
+}
+.room-type-badge {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 20px; margin-left: 6px;
+  background: rgba(168,131,79,.12); color: var(--brass);
+  border: 1px solid rgba(168,131,79,.2);
+}
+
+.room-card-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; gap: 8px; }
+.room-id { font-size: 17px; font-weight: 700; color: var(--pine); display: flex; align-items: center; gap: 6px; }
+.room-id-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.room-delete-btn {
+  background: none; border: 1.5px solid var(--line-color); border-radius: 8px;
+  padding: 5px 10px; font-size: 12px; font-weight: 600; color: var(--muted-2);
+  cursor: pointer; transition: all .15s; flex-shrink: 0;
+}
+.room-delete-btn:hover { border-color: #C84040; color: #C84040; }
+
+.room-slots { display: flex; flex-direction: column; gap: 8px; }
+.room-slot {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 10px;
+  background: var(--bg-alt); border: 1px solid var(--line-color);
+}
+.room-slot.occupied { background: rgba(30,58,52,.05); border-color: rgba(30,58,52,.15); }
+.room-slot.clickable { cursor: pointer; transition: background .15s, border-color .15s; }
+.room-slot.clickable:hover { background: rgba(30,58,52,.1); border-color: rgba(30,58,52,.3); }
+.slot-icon { font-size: 16px; flex-shrink: 0; }
+.slot-info { flex: 1; min-width: 0; }
+.slot-label { font-size: 10.5px; font-weight: 600; color: var(--muted-2); }
+.slot-emp  { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing:.02em; }
+.slot-val { font-size: 12.5px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.slot-empty { font-size: 12px; color: var(--muted-2); font-style: italic; }
+.slot-go-arrow { font-size: 18px; color: var(--muted-2); flex-shrink: 0; line-height: 1; }
+/* occupied slot action buttons */
+.slot-actions { display: flex; gap: 4px; flex-shrink: 0; align-items: center; }
+.slot-action-btn {
+  background: none; border: 1.5px solid var(--line-color);
+  border-radius: 7px; width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; cursor: pointer; transition: all .15s;
+  color: var(--muted-2); padding: 0; line-height: 1;
+}
+.slot-action-btn.change:hover { border-color: var(--pine); color: var(--pine); background: rgba(30,58,52,.06); }
+.slot-action-btn.remove:hover { border-color: #C84040; color: #C84040; background: rgba(200,64,64,.06); }
+/* confirm modal */
+.confirm-msg { font-size: 14px; color: var(--ink); line-height: 1.75; margin: 0; white-space: pre-wrap; }
+.modal-btn-danger { background: #C84040; color: #fff; border: none; border-radius: 10px; padding: 11px 24px; font-family: 'Kodchasan', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: background .15s; }
+.modal-btn-danger:hover { background: #a83030; }
+/* empty slot — add button */
+.slot-add-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; background: none; border: 1.5px dashed var(--line-2);
+  border-radius: 10px; padding: 10px 12px;
+  font-family: 'Kodchasan', sans-serif; font-size: 12px; font-weight: 600;
+  color: var(--muted-2); cursor: pointer; transition: all .15s; text-align: left;
+}
+.slot-add-btn:hover { border-color: var(--pine); color: var(--pine); background: rgba(30,58,52,.03); }
+/* ── ROOM DETAIL POPUP ── */
+.rd-room-info { text-align: center; padding: 0 0 18px; }
+.rd-room-id   { font-size: 22px; font-weight: 700; color: var(--pine); letter-spacing: .01em; }
+.rd-room-meta { font-size: 13px; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+.rd-room-type { display: inline-block; margin-top: 10px; font-size: 12px; font-weight: 700; padding: 4px 14px; border-radius: 20px; background: rgba(168,131,79,.1); color: var(--brass); border: 1px solid rgba(168,131,79,.22); }
+.rd-divider   { height: 1px; background: var(--line-color); margin: 0 -24px 18px; }
+.rd-slots     { display: flex; flex-direction: column; gap: 10px; }
+.rd-slot      { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 12px; border: 1.5px solid var(--line-color); background: var(--bg-alt); }
+.rd-slot.occupied { border-color: rgba(30,58,52,.2); background: rgba(30,58,52,.04); }
+.rd-slot.clickable { cursor: pointer; transition: all .15s; }
+.rd-slot.clickable:hover { border-color: var(--pine); background: rgba(30,58,52,.08); }
+.rd-slot.empty-slot { opacity: .55; }
+.rd-slot-meta  { flex-shrink: 0; min-width: 72px; }
+.rd-slot-num   { font-size: 11px; font-weight: 700; color: var(--muted-2); }
+.rd-emp-badge  { font-size: 10.5px; font-weight: 700; color: var(--pine); margin-top: 3px; letter-spacing: .02em; }
+.rd-slot-name  { flex: 1; font-size: 14px; font-weight: 700; color: var(--ink); }
+.rd-slot-dept  { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+.rd-empty-text { font-size: 12.5px; color: var(--muted-2); font-style: italic; flex: 1; }
+
+/* slot-assign modal booking list */
+.slot-bk-row {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg-alt); border: 1px solid var(--line-color);
+  border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: all .15s;
+}
+.slot-bk-row:hover { border-color: var(--pine); background: rgba(30,58,52,.04); }
+.slot-bk-info { flex: 1; min-width: 0; }
+.slot-bk-name { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+.slot-bk-meta { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+.slot-bk-date { font-size: 12px; color: var(--muted); white-space: nowrap; font-weight: 600; flex-shrink: 0; }
+
+/* add room btn */
+.btn-add-room {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 14px;
+  background: none; border: 2px dashed var(--line-2);
+  border-radius: 16px; font-family: 'Kodchasan', sans-serif;
+  font-size: 14px; font-weight: 600; color: var(--muted);
+  cursor: pointer; transition: all .2s;
+}
+.btn-add-room:hover { border-color: var(--pine); color: var(--pine); background: rgba(30,58,52,.03); }
+
+/* ── USER TABLE ── */
+.user-table { display: flex; flex-direction: column; gap: 10px; }
+.role-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 700; }
+.role-badge.admin { background: rgba(30,58,52,.1); color: var(--pine); border: 1px solid rgba(30,58,52,.15); }
+.role-badge.user  { background: var(--bg-alt); color: var(--muted); border: 1px solid var(--line-color); }
+
+/* ── USER CARD ── */
+.user-card { background: var(--surface); border: 1px solid var(--line-color); border-radius: 14px; overflow: hidden; transition: box-shadow .15s; }
+.user-card:hover { box-shadow: 0 4px 18px -8px rgba(30,58,52,.12); }
+.user-card.is-admin { border-color: rgba(30,58,52,.22); }
+.user-card-head { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; }
+.user-card-av { width: 46px; height: 46px; border-radius: 50%; background: var(--brass-bg); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--brass); flex-shrink: 0; }
+.user-card-av.admin-av { background: rgba(30,58,52,.1); color: var(--pine); }
+.user-card-body { flex: 1; min-width: 0; }
+.user-card-meta-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-bottom: 4px; }
+.user-card-empid { font-size: 10.5px; font-weight: 700; color: var(--muted); letter-spacing: .04em; }
+.first-login-badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; border-radius: 20px; background: rgba(200,100,40,.1); color: rgba(190,90,30,1); font-size: 10px; font-weight: 700; border: 1px solid rgba(200,100,40,.2); }
+.user-card-name { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+.user-card-sub { font-size: 12px; color: var(--muted); }
+.user-card-email { font-size: 11.5px; color: var(--muted-2); margin-top: 2px; }
+.user-card-actions { display: flex; gap: 5px; align-items: flex-start; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; max-width: 180px; }
+.uca-btn { background: none; border: 1.5px solid var(--line-color); border-radius: 7px; padding: 5px 11px; font-family: 'Kodchasan', sans-serif; font-size: 11.5px; font-weight: 600; cursor: pointer; color: var(--muted); transition: all .15s; white-space: nowrap; }
+.uca-btn.edit:hover  { border-color: var(--pine);  color: var(--pine);  background: rgba(30,58,52,.04); }
+.uca-btn.reset:hover { border-color: var(--brass); color: var(--brass); background: rgba(168,131,79,.06); }
+.uca-btn.role-btn:hover  { border-color: var(--pine); color: var(--pine); }
+.uca-btn.del:hover   { border-color: #C84040; color: #C84040; background: rgba(200,64,64,.04); }
+/* booking summary strip */
+.user-bk-strip { border-top: 1px solid var(--line-color); padding: 9px 18px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; background: var(--bg-alt); }
+.user-bk-stat { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+.user-bk-stat .bk-num { font-size: 14px; font-weight: 700; }
+.user-bk-stat.pend .bk-num { color: var(--brass); }
+.user-bk-stat.appr .bk-num { color: #2E6248; }
+.user-bk-stat.canc .bk-num { color: var(--muted-2); }
+.user-bk-none { font-size: 12px; color: var(--muted-2); font-style: italic; }
+
+/* ── MODALS ── */
+.modal-backdrop { position: fixed; inset: 0; z-index: 500; background: rgba(22,48,42,.4); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 20px; }
+.modal-backdrop.open { display: flex; animation: mFade .2s ease both; }
+@keyframes mFade { from { opacity:0; } to { opacity:1; } }
+.modal { background: var(--surface); border-radius: 20px; width: 480px; max-width: 100%; box-shadow: 0 30px 80px -20px rgba(20,40,35,.45); overflow: hidden; animation: mSlide .22s cubic-bezier(.2,.8,.3,1) both; max-height: 90vh; overflow-y: auto; }
+@keyframes mSlide { from { transform: translateY(20px); opacity:0; } to { transform:none; opacity:1; } }
+.modal-header { background: var(--pine); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; }
+.modal-header-title { font-size: 16px; font-weight: 700; color: #fff; }
+.modal-close { background: none; border: none; color: rgba(255,255,255,.6); font-size: 22px; cursor: pointer; padding: 0 4px; line-height: 1; transition: color .15s; }
+.modal-close:hover { color: #fff; }
+.modal-body { padding: 24px; }
+.modal-footer { padding: 0 24px 22px; display: flex; gap: 10px; justify-content: flex-end; }
+
+/* modal form */
+.m-field { margin-bottom: 16px; }
+.m-label { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 6px; letter-spacing: .04em; text-transform: uppercase; }
+.m-input, .m-select {
+  width: 100%; padding: 11px 14px;
+  border: 1.5px solid var(--line-color); border-radius: 10px;
+  background: var(--surface-soft); font-family: 'Kodchasan', sans-serif;
+  font-size: 14px; color: var(--ink); outline: none; transition: border-color .2s;
+}
+.m-input:focus, .m-select:focus { border-color: var(--pine); }
+.m-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+.m-info-cell { background: var(--bg-alt); border-radius: 10px; padding: 11px 14px; }
+.m-info-label { font-size: 10.5px; font-weight: 600; color: var(--muted); margin-bottom: 3px; }
+.m-info-val { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+
+/* modal btns */
+.modal-btn-back { background: none; border: 1.5px solid var(--line-2); border-radius: 10px; padding: 11px 20px; font-family: 'Kodchasan', sans-serif; font-size: 14px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all .15s; }
+.modal-btn-back:hover { border-color: var(--muted); color: var(--ink); }
+.modal-btn-confirm { background: var(--pine); color: #fff; border: none; border-radius: 10px; padding: 11px 24px; font-family: 'Kodchasan', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: background .15s; box-shadow: 0 8px 20px -8px rgba(30,58,52,.4); }
+.modal-btn-confirm:hover { background: var(--pine-deep); }
+.modal-btn-confirm:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+.modal-btn-confirm.loading { position: relative; color: transparent; }
+.modal-btn-confirm.loading::after { content: ''; position: absolute; inset: 0; margin: auto; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── EMPTY / SKELETON ── */
+.empty-state { text-align: center; padding: 50px 20px; background: var(--surface); border: 1px solid var(--line-color); border-radius: 14px; }
+.empty-icon { font-size: 36px; opacity: .35; margin-bottom: 12px; }
+.empty-title { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+.empty-sub { font-size: 13px; color: var(--muted); }
+.skeleton { background: linear-gradient(90deg, var(--line-color) 25%, var(--bg-alt) 50%, var(--line-color) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 8px; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+.skel-row { background: var(--surface); border: 1px solid var(--line-color); border-radius: 14px; padding: 14px 18px; height: 80px; margin-bottom: 8px; }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--pine); color: #fff; padding: 12px 24px; border-radius: 12px; font-size: 13.5px; font-weight: 600; box-shadow: 0 10px 30px -10px rgba(30,58,52,.5); z-index: 999; opacity: 0; transition: all .3s; pointer-events: none; white-space: nowrap; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.error { background: #B5493B; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  .stat-strip { grid-template-columns: repeat(2, 1fr); }
+  .bk-card-date { display: none; }
+  .bk-card-bottom { gap: 8px; }
+  .user-row { grid-template-columns: 42px 1fr 100px; }
+  .user-row .user-empid { display: none; }
+  .page { padding: 20px 14px 80px; }
+  .topbar { padding: 0 16px; }
+  .topbar-nav { display: none; }
+  .burger-btn { display: flex; }
+  .topbar-user { display: none; }
+  .room-grid { grid-template-columns: 1fr; }
+  .search-box { width: 160px; }
+}
+@media (max-width: 540px) {
+  .stat-strip { grid-template-columns: 1fr 1fr; }
+  .room-grid { grid-template-columns: 1fr; }
+  .tab-btn { padding: 8px 14px; font-size: 12.5px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Mobile nav -->
+<nav class="mobile-nav" id="mobile-nav">
+  <ul class="mobile-nav-inner">
+    <li><a href="dashboard.html">การจอง</a></li>
+    <li><a href="booking.html">จองห้องพัก</a></li>
+    <li><a href="profile.html">โปรไฟล์</a></li>
+    <li><a href="admin.html" class="active">Admin</a></li>
+  </ul>
+</nav>
+
+<!-- Topbar -->
+<header class="topbar">
+  <a class="topbar-logo" href="dashboard.html">
+    <div class="logo-mark"><span>M</span></div>
+    <span class="logo-text">MAISON Residence</span>
+  </a>
+  <nav class="topbar-nav">
+    <a class="nav-link" href="dashboard.html">การจอง</a>
+    <a class="nav-link" href="booking.html">จองห้องพัก</a>
+    <a class="nav-link" href="profile.html">โปรไฟล์</a>
+    <a class="nav-link active" href="admin.html">Admin</a>
+  </nav>
+  <div class="topbar-right">
+    <div class="topbar-user" id="user-menu-btn" onclick="toggleUserMenu()" style="cursor:pointer">
+      <div>
+        <span class="topbar-user-name" id="user-name">—</span>
+        <span class="topbar-user-dept" id="user-dept">—</span>
+      </div>
+      <div class="avatar" id="user-avatar">?</div>
+    </div>
+    <div class="user-dropdown" id="user-dropdown">
+      <a href="profile.html" class="user-dd-item">👤 โปรไฟล์</a>
+      <button class="user-dd-item user-dd-logout" onclick="doLogout()">↩ ออกจากระบบ</button>
+    </div>
+    <button class="burger-btn" id="burger-btn" aria-label="เมนู">
+      <span class="burger-line"></span>
+      <span class="burger-label">เมนู</span>
+    </button>
+  </div>
+</header>
+
+<!-- ── MODAL: Assign Room ── -->
+<div class="modal-backdrop" id="modal-assign">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-header-title">จัดห้องพักและอนุมัติ</span>
+      <button class="modal-close" onclick="closeModal('modal-assign')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="m-info-grid" id="assign-info"></div>
+      <div class="m-field">
+        <div class="m-label">เลือกห้องพัก</div>
+        <select class="m-select" id="assign-room-select" onchange="onRoomSelect()">
+          <option value="">-- เลือกห้อง --</option>
+        </select>
+      </div>
+      <div class="m-field" id="assign-slot-wrap" style="display:none">
+        <div class="m-label">ที่นอน</div>
+        <select class="m-select" id="assign-slot-select">
+          <option value="1">ที่นอน 1</option>
+          <option value="2">ที่นอน 2</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn-back" onclick="closeModal('modal-assign')">ยกเลิก</button>
+      <button class="modal-btn-confirm" id="btn-do-assign" onclick="doAssign()" disabled>อนุมัติและจัดห้อง ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: Add Room ── -->
+<div class="modal-backdrop" id="modal-add-room">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-header-title">เพิ่มห้องพักใหม่</span>
+      <button class="modal-close" onclick="closeModal('modal-add-room')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="m-field">
+        <div class="m-label">ชื่อหอพัก / สถานที่ *</div>
+        <input class="m-input" id="room-location" placeholder="เช่น จุฑาพิชญ์ แมนชั่น" oninput="onRoomLocationInput(this.value)">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="m-field">
+          <div class="m-label">รหัส Prefix *
+            <span class="prefix-hint">ใช้ตัวอักษร A-Z, 2–5 ตัว</span>
+          </div>
+          <input class="m-input" id="room-prefix" placeholder="เช่น CTM" maxlength="5"
+                 style="text-transform:uppercase;letter-spacing:.1em;font-weight:700"
+                 oninput="this.value=this.value.toUpperCase().replace(/[^A-Z]/g,'');updateRoomIdPreview()">
+        </div>
+        <div class="m-field">
+          <div class="m-label">เลขห้อง *</div>
+          <input class="m-input" id="room-no" placeholder="101" oninput="updateRoomIdPreview()">
+        </div>
+      </div>
+      <!-- ID Preview -->
+      <div class="room-id-preview" id="room-id-preview" style="display:none">
+        รหัสห้องที่จะสร้าง: <strong id="room-id-preview-val"></strong>
+      </div>
+      <div class="m-field">
+        <div class="m-label">ประเภทห้อง *</div>
+        <div style="display:flex;gap:10px">
+          <label style="flex:1;display:flex;align-items:center;gap:8px;padding:11px 14px;border:1.5px solid var(--line-color);border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;transition:border-color .2s" id="lbl-fan">
+            <input type="radio" name="room-type" value="พัดลม" id="rt-fan" style="accent-color:var(--pine)" onchange="onRoomTypeChange()"> 🌀 พัดลม
+          </label>
+          <label style="flex:1;display:flex;align-items:center;gap:8px;padding:11px 14px;border:1.5px solid var(--line-color);border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;transition:border-color .2s" id="lbl-ac">
+            <input type="radio" name="room-type" value="ห้องแอร์" id="rt-ac" style="accent-color:var(--pine)" onchange="onRoomTypeChange()"> ❄️ ห้องแอร์
+          </label>
+        </div>
+      </div>
+      <div class="m-field">
+        <div class="m-label">ชั้น</div>
+        <input class="m-input" id="room-floor" placeholder="1">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn-back" onclick="closeModal('modal-add-room')">ยกเลิก</button>
+      <button class="modal-btn-confirm" id="btn-do-add-room" onclick="doAddRoom()">เพิ่มห้อง</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: EDIT ROOM ── -->
+<div class="modal-backdrop" id="modal-edit-room">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <span class="modal-header-title">✏️ แก้ไขห้องพัก <span id="er-room-id-label" style="color:var(--pine);font-size:13px"></span></span>
+      <button class="modal-close" onclick="closeModal('modal-edit-room')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="er-room-id">
+      <div class="m-field">
+        <div class="m-label">ชื่อหอพัก / สถานที่ *</div>
+        <input class="m-input" id="er-location" placeholder="เช่น จุฑาพิชญ์ แมนชั่น">
+      </div>
+      <div class="m-field">
+        <div class="m-label">ประเภทห้อง *</div>
+        <div style="display:flex;gap:10px">
+          <label class="room-type-lbl" id="er-lbl-fan">
+            <input type="radio" name="er-room-type" value="พัดลม" id="er-rt-fan" style="accent-color:var(--pine)" onchange="onErTypeChange()"> 🌀 พัดลม
+          </label>
+          <label class="room-type-lbl" id="er-lbl-ac">
+            <input type="radio" name="er-room-type" value="ห้องแอร์" id="er-rt-ac" style="accent-color:var(--pine)" onchange="onErTypeChange()"> ❄️ ห้องแอร์
+          </label>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="m-field">
+          <div class="m-label">ชั้น</div>
+          <input class="m-input" id="er-floor" placeholder="1">
+        </div>
+        <div class="m-field">
+          <div class="m-label">เลขห้อง</div>
+          <input class="m-input" id="er-room-no" placeholder="101">
+        </div>
+      </div>
+      <!-- Photos -->
+      <div class="m-label" style="margin-bottom:8px">รูปประกอบห้อง (สูงสุด 3 รูป)</div>
+      <div class="er-photo-grid">
+        <div class="er-photo-slot" id="er-photo-slot-1">
+          <div class="er-photo-preview" id="er-photo-preview-1">
+            <span class="er-photo-empty">📷</span>
+          </div>
+          <label class="er-photo-btn">
+            เลือกรูป
+            <input type="file" accept="image/*" id="er-photo-file-1" style="display:none" onchange="erUploadPhoto(1, this)">
+          </label>
+          <button class="er-photo-clear" onclick="erClearPhoto(1)" id="er-photo-clear-1" style="display:none">✕ ลบรูป</button>
+        </div>
+        <div class="er-photo-slot" id="er-photo-slot-2">
+          <div class="er-photo-preview" id="er-photo-preview-2">
+            <span class="er-photo-empty">📷</span>
+          </div>
+          <label class="er-photo-btn">
+            เลือกรูป
+            <input type="file" accept="image/*" id="er-photo-file-2" style="display:none" onchange="erUploadPhoto(2, this)">
+          </label>
+          <button class="er-photo-clear" onclick="erClearPhoto(2)" id="er-photo-clear-2" style="display:none">✕ ลบรูป</button>
+        </div>
+        <div class="er-photo-slot" id="er-photo-slot-3">
+          <div class="er-photo-preview" id="er-photo-preview-3">
+            <span class="er-photo-empty">📷</span>
+          </div>
+          <label class="er-photo-btn">
+            เลือกรูป
+            <input type="file" accept="image/*" id="er-photo-file-3" style="display:none" onchange="erUploadPhoto(3, this)">
+          </label>
+          <button class="er-photo-clear" onclick="erClearPhoto(3)" id="er-photo-clear-3" style="display:none">✕ ลบรูป</button>
+        </div>
+      </div>
+      <div id="er-upload-status" style="font-size:12px;color:var(--muted-2);min-height:18px;margin-top:4px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn-back" onclick="closeModal('modal-edit-room')">ยกเลิก</button>
+      <button class="modal-btn-confirm" id="btn-do-edit-room" onclick="doEditRoom()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: ADD EMPLOYEE ── -->
+<div class="modal-backdrop" id="modal-add-employee">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-header-title">＋ เพิ่มพนักงานใหม่</span>
+      <button class="modal-close" onclick="closeModal('modal-add-employee')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="m-info-grid">
+        <div class="m-field" style="margin-bottom:0">
+          <div class="m-label">รหัสพนักงาน *</div>
+          <input class="m-input" id="ae-empid" placeholder="เช่น 100005" type="text">
+        </div>
+        <div class="m-field" style="margin-bottom:0">
+          <div class="m-label">Role</div>
+          <select class="m-select" id="ae-role">
+            <option value="user">👤 User</option>
+            <option value="admin">🛡️ Admin</option>
+          </select>
+        </div>
+      </div>
+      <div class="m-info-grid" style="margin-top:12px">
+        <div class="m-field" style="margin-bottom:0">
+          <div class="m-label">ชื่อ *</div>
+          <input class="m-input" id="ae-firstname" placeholder="ชื่อ">
+        </div>
+        <div class="m-field" style="margin-bottom:0">
+          <div class="m-label">นามสกุล *</div>
+          <input class="m-input" id="ae-lastname" placeholder="นามสกุล">
+        </div>
+      </div>
+      <div class="m-field" style="margin-top:12px">
+        <div class="m-label">แผนก / ส่วนงาน</div>
+        <input class="m-input" id="ae-dept" placeholder="เช่น IT, HR, Finance">
+      </div>
+      <div class="m-field">
+        <div class="m-label">ตำแหน่ง</div>
+        <input class="m-input" id="ae-position" placeholder="เช่น Developer, Manager">
+      </div>
+      <div class="m-field">
+        <div class="m-label">อีเมล</div>
+        <input class="m-input" id="ae-email" placeholder="email@company.com" type="email">
+      </div>
+      <div style="font-size:12px;color:var(--muted);padding:8px 12px;background:var(--bg-alt);border-radius:8px">
+        💡 พนักงานใหม่จะถูกตั้งให้ตั้ง PIN ในการเข้าระบบครั้งแรก
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn-back" onclick="closeModal('modal-add-employee')">ยกเลิก</button>
+      <button class="modal-btn-confirm" id="btn-do-add-emp" onclick="doAddEmployee()">เพิ่มพนักงาน</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: EDIT EMPLOYEE ── -->
+<div class="modal-backdrop" id="modal-edit-employee">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-header-title">✏️ แก้ไขข้อมูลพนักงาน</span>
+      <button class="modal-close" onclick="closeModal('modal-edit-employee')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="m-info-cell" style="margin-bottom:16px">
+        <div class="m-info-label">รหัสพนักงาน</div>
+        <div class="m-info-val" id="ee-empid-display">—</div>
+      </div>
+      <div class="m-info-grid">
+        <div class="m-field" style="margin-bottom:0">
+          <div class="m-label">ชื่อ *</div>
+          <input class="m-input" id="ee-firstname" placeholder="ชื่อ">
+        </div>
+        <div class="m-field" style="margin-bottom:0">
+          <div class="m-label">นามสกุล *</div>
+          <input class="m-input" id="ee-lastname" placeholder="นามสกุล">
+        </div>
+      </div>
+      <div class="m-field" style="margin-top:12px">
+        <div class="m-label">แผนก / ส่วนงาน</div>
+        <input class="m-input" id="ee-dept" placeholder="เช่น IT, HR">
+      </div>
+      <div class="m-field">
+        <div class="m-label">ตำแหน่ง</div>
+        <input class="m-input" id="ee-position" placeholder="เช่น Developer">
+      </div>
+      <div class="m-field">
+        <div class="m-label">อีเมล</div>
+        <input class="m-input" id="ee-email" placeholder="email@company.com" type="email">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn-back" onclick="closeModal('modal-edit-employee')">ยกเลิก</button>
+      <button class="modal-btn-confirm" id="btn-do-edit-emp" onclick="doEditEmployee()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: ROOM DETAIL ── -->
+<div class="modal-backdrop" id="modal-room-detail">
+  <div class="modal" style="width:420px">
+    <div class="modal-header">
+      <span class="modal-header-title" id="rd-title">ข้อมูลห้องพัก</span>
+      <button class="modal-close" onclick="closeModal('modal-room-detail')">✕</button>
+    </div>
+    <div class="modal-body" id="rd-body"></div>
+    <div class="modal-footer">
+      <button class="modal-btn-back" onclick="closeModal('modal-room-detail')">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: CONFIRM ── -->
+<div class="modal-backdrop" id="modal-confirm">
+  <div class="modal" style="width:400px">
+    <div class="modal-header" id="confirm-header">
+      <span class="modal-header-title" id="confirm-title">ยืนยัน</span>
+      <button class="modal-close" onclick="closeConfirmModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="confirm-msg" id="confirm-msg"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn-back" onclick="closeConfirmModal()">ยกเลิก</button>
+      <button id="btn-confirm-ok" onclick="execConfirm()">ยืนยัน</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: SLOT ASSIGN ── -->
+<div class="modal-backdrop" id="modal-slot-assign">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-header-title" id="slot-assign-title">เพิ่มผู้เข้าพัก</span>
+      <button class="modal-close" onclick="closeModal('modal-slot-assign')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="slot-assign-room-info" style="margin-bottom:14px;padding:10px 14px;background:var(--bg-alt);border-radius:10px;font-size:13px;color:var(--muted);font-weight:600"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--muted-2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">รายการจองที่รอจัดห้อง</div>
+      <div id="slot-booking-list" style="display:flex;flex-direction:column;gap:8px;max-height:360px;overflow-y:auto"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn-back" onclick="closeModal('modal-slot-assign')">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Page -->
+<main class="page">
+
+  <div class="page-header">
+    <div>
+      <div class="page-eyebrow">MAISON Residence - สวัสดิการแรกเข้า TQM</div>
+      <h1 class="page-title">แผงควบคุมระบบจองห้องพัก</h1>
+    </div>
+  </div>
+
+  <!-- Stat strip -->
+  <div class="stat-strip">
+    <div class="stat-card">
+      <div class="stat-label">รายการจองทั้งหมด</div>
+      <div class="stat-num" id="s-total">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">รออนุมัติ</div>
+      <div class="stat-num brass" id="s-pending">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">จัดห้องแล้ว</div>
+      <div class="stat-num pine" id="s-approved">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">กำลังพักอยู่</div>
+      <div class="stat-num" style="color:#2E82D4" id="s-active">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">เช็คเอาต์แล้ว</div>
+      <div class="stat-num" style="color:#8A8A9A" id="s-checkout">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">ห้องพักทั้งหมด</div>
+      <div class="stat-num" id="s-rooms">—</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('bookings')">
+      📋 รายการจอง <span class="tab-badge" id="tab-badge-bookings">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('rooms')">
+      🏠 ห้องพัก
+    </button>
+    <button class="tab-btn" onclick="switchTab('users')">
+      👥 พนักงาน
+    </button>
+  </div>
+
+  <!-- ── TAB: BOOKINGS ── -->
+  <div class="tab-panel active" id="tab-bookings">
+
+    <!-- Active bookings view -->
+    <div id="view-active">
+      <div class="filter-row">
+        <button class="filter-chip active" onclick="setFilter('all', this)">ทั้งหมด</button>
+        <button class="filter-chip" onclick="setFilter('pending', this)">รออนุมัติ</button>
+        <button class="filter-chip" onclick="setFilter('approved', this)">จัดห้องแล้ว</button>
+        <button class="filter-chip" onclick="setFilter('active', this)">กำลังพักอยู่</button>
+        <button class="filter-chip" onclick="setFilter('checked_out', this)">Check Out แล้ว</button>
+        <button class="filter-chip" onclick="setFilter('cancelled', this)">ยกเลิก</button>
+        <div class="filter-spacer"></div>
+        <div style="display:flex;align-items:center;gap:4px">
+          <button class="ps-btn active" id="bk-ps-5"  onclick="setBkPageSize(5,this)">5</button>
+          <button class="ps-btn"        id="bk-ps-10" onclick="setBkPageSize(10,this)">10</button>
+          <span class="ps-label">รายการ</span>
+        </div>
+        <input class="search-box" placeholder="🔍 ค้นหาชื่อ / รหัส" oninput="onSearch(this.value)">
+      </div>
+      <div class="archive-bar">
+        <span id="archive-eligible-text" style="font-size:13px;color:var(--muted)">กำลังตรวจสอบ…</span>
+        <button class="btn-sm btn-sm-outline" id="btn-archive" onclick="doArchive()" style="display:none">📦 Archive รายการเก่า</button>
+        <button class="btn-sm btn-sm-outline" onclick="switchToArchiveView()">🗂 ดูประวัติ Archive →</button>
+      </div>
+      <div id="booking-list" style="display:flex;flex-direction:column;gap:10px">
+        <div class="skel-row skeleton"></div>
+        <div class="skel-row skeleton"></div>
+        <div class="skel-row skeleton"></div>
+      </div>
+      <div id="bk-load-more-wrap" style="display:none;margin-top:6px">
+        <button class="load-more-btn" onclick="bkLoadMore()" id="bk-load-more-btn">โหลดเพิ่มเติม</button>
+      </div>
+    </div>
+
+    <!-- Archive view -->
+    <div id="view-archive" style="display:none">
+      <div class="filter-row" style="margin-bottom:12px">
+        <button class="btn-sm btn-sm-outline" onclick="switchToActiveView()">← กลับรายการปัจจุบัน</button>
+        <div class="filter-spacer"></div>
+        <input class="search-box" placeholder="🔍 ค้นหาใน Archive" oninput="onArchiveSearch(this.value)">
+      </div>
+      <div class="archive-info-bar">
+        🗂 ประวัติทั้งหมดที่ Archive แล้ว (เก่ากว่า 3 เดือน)
+      </div>
+      <div id="archive-list" style="display:flex;flex-direction:column;gap:10px">
+        <div class="empty-state"><div class="empty-icon">🗂</div><div class="empty-title">กำลังโหลด…</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── TAB: ROOMS ── -->
+  <div class="tab-panel" id="tab-rooms">
+    <!-- summary stats -->
+    <div class="room-stats-bar" id="room-stats-bar" style="display:none">
+      <div class="room-stat-item">
+        <span class="room-stat-label">ห้องทั้งหมด</span>
+        <span class="room-stat-num" id="rs-total">0</span>
+      </div>
+      <span class="room-stats-sep">|</span>
+      <div class="room-stat-item">
+        <span class="room-stat-label">ห้องว่าง</span>
+        <span class="room-stat-num avail" id="rs-avail">0</span>
+      </div>
+    </div>
+    <!-- location filter -->
+    <div class="room-filter-bar" id="room-filter-bar">
+      <button class="loc-chip active" onclick="setLocFilter('all', this)">ทั้งหมด</button>
+      <!-- location chips injected by JS -->
+      <div style="flex:1"></div>
+      <button class="btn-sm btn-sm-pine" onclick="openModal('modal-add-room')" style="padding:8px 18px">＋ เพิ่มห้องใหม่</button>
+    </div>
+    <!-- room type filter + column toggle -->
+    <div class="room-filter-bar last" id="room-type-filter-bar">
+      <button class="loc-chip active" onclick="setTypeFilter('all', this)">ทุกประเภท</button>
+      <button class="loc-chip" onclick="setTypeFilter('พัดลม', this)">🌀 พัดลม</button>
+      <button class="loc-chip" onclick="setTypeFilter('ห้องแอร์', this)">❄️ ห้องแอร์</button>
+      <div style="flex:1"></div>
+      <div class="col-toggle-group">
+        <span class="col-toggle-label">คอลัมน์</span>
+        <button class="col-toggle-btn" id="col-btn-2" onclick="setRoomCols(2, this)" title="2 คอลัมน์">▌▌</button>
+        <button class="col-toggle-btn active" id="col-btn-3" onclick="setRoomCols(3, this)" title="3 คอลัมน์">▌▌▌</button>
+      </div>
+    </div>
+    <div class="room-grid" id="room-grid">
+      <div class="skel-row skeleton" style="height:160px;border-radius:16px"></div>
+      <div class="skel-row skeleton" style="height:160px;border-radius:16px"></div>
+      <div class="skel-row skeleton" style="height:160px;border-radius:16px"></div>
+    </div>
+    <div id="room-load-more-wrap" style="display:none;margin-top:12px">
+      <button class="room-load-more-btn" id="room-load-more-btn" onclick="roomLoadMore()">โหลดเพิ่มเติม</button>
+    </div>
+  </div>
+
+  <!-- ── TAB: USERS ── -->
+  <div class="tab-panel" id="tab-users">
+
+    <!-- Booking Line Chart -->
+    <div class="lc-card">
+      <div class="lc-header">
+        <span class="lc-title"><img src="report-ico.gif" style="width:22px;height:22px;vertical-align:middle;margin-right:6px;border-radius:4px"> สรุปการจอง</span>
+        <div class="lc-controls">
+          <!-- Range mode -->
+          <div class="lc-seg" id="lc-seg">
+            <button class="lc-seg-btn active" id="lc-mode-month" onclick="lcSetMode('month',this)">รายวัน</button>
+            <button class="lc-seg-btn" id="lc-mode-year" onclick="lcSetMode('year',this)">รายเดือน</button>
+          </div>
+          <!-- Month picker (shown in month mode) -->
+          <select class="lc-select" id="lc-month-sel" onchange="lcRender()"></select>
+          <!-- Year picker -->
+          <select class="lc-select" id="lc-year-sel" onchange="lcRender()"></select>
+        </div>
+      </div>
+      <!-- Status toggles -->
+      <div class="lc-toggles" id="lc-toggles">
+        <button class="lc-tog active" data-s="pending"    onclick="lcToggle(this)"><span class="lc-dot" style="background:#D4A03B"></span>รออนุมัติ</button>
+        <button class="lc-tog active" data-s="approved"   onclick="lcToggle(this)"><span class="lc-dot" style="background:#3B9A5F"></span>อนุมัติแล้ว</button>
+        <button class="lc-tog active" data-s="active"     onclick="lcToggle(this)"><span class="lc-dot" style="background:#2E82D4"></span>กำลังพัก</button>
+        <button class="lc-tog active" data-s="checked_out" onclick="lcToggle(this)"><span class="lc-dot" style="background:#8A8A9A"></span>Check Out</button>
+        <button class="lc-tog active" data-s="cancelled"  onclick="lcToggle(this)"><span class="lc-dot" style="background:#B0B0C0"></span>ยกเลิก</button>
+        <button class="lc-tog active" data-s="rejected"   onclick="lcToggle(this)"><span class="lc-dot" style="background:#C84040"></span>ปฏิเสธ</button>
+      </div>
+      <!-- SVG canvas -->
+      <div class="lc-canvas-wrap">
+        <svg id="lc-svg" class="lc-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="lc-tooltip" id="lc-tooltip" style="display:none"></div>
+      </div>
+      <div class="lc-summary" id="lc-summary"></div>
+    </div>
+
+    <div class="filter-row" style="margin-top:16px">
+      <button class="btn-sm btn-sm-pine" onclick="openModal('modal-add-employee')" style="padding:8px 18px">＋ เพิ่มพนักงาน</button>
+      <div class="filter-spacer"></div>
+      <input class="search-box" placeholder="🔍 ค้นหาชื่อ / รหัส / แผนก" oninput="onUserSearch(this.value)">
+    </div>
+    <div class="user-table" id="user-list">
+      <div class="skel-row skeleton"></div>
+      <div class="skel-row skeleton"></div>
+      <div class="skel-row skeleton"></div>
+    </div>
+    <!-- User Pagination -->
+    <div class="user-page-nav" id="user-page-nav" style="display:none">
+      <button class="page-nav-btn" id="user-prev-btn" onclick="userPrevPage()">← ก่อนหน้า</button>
+      <span class="page-nav-info" id="user-page-info"></span>
+      <button class="page-nav-btn" id="user-next-btn" onclick="userNextPage()">ถัดไป →</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const GAS_API_URL = "https://script.google.com/macros/s/AKfycbz0epUmQWVp0idbM3T4VwN0aL-NObC-ihOybEm0XQccnsfOZD8-WOcHtBu6tbxExmTG/exec";
+
+// ── SESSION (localStorage + 8h expiry) ───────────────
+function getSession() {
+  try {
+    const ts = +localStorage.getItem("maison_ts") || 0;
+    if ((Date.now() - ts) / 3600000 > 8) { _clearSess(); return null; }
+    const d = localStorage.getItem("maison_session");
+    return d ? JSON.parse(d) : null;
+  } catch(e) { return null; }
+}
+function _clearSess() { localStorage.removeItem("maison_session"); localStorage.removeItem("maison_ts"); }
+function doLogout() { _clearSess(); location.replace("login.html"); }
+function toggleUserMenu() { document.getElementById("user-dropdown").classList.toggle("open"); }
+document.addEventListener("click", e => {
+  const btn = document.getElementById("user-menu-btn");
+  const dd  = document.getElementById("user-dropdown");
+  if (btn && dd && !btn.contains(e.target)) dd.classList.remove("open");
+});
+
+const session = getSession();
+if (!session) location.replace("login.html");
+if (session.role !== "admin") location.replace("dashboard.html");
+
+const initials = n => { const p = (n||"").trim().split(" "); return p.length >= 2 ? (p[0][0]+(p[1][0]||"")).toUpperCase() : (n||"?")[0].toUpperCase(); };
+document.getElementById("user-name").textContent   = session.name;
+document.getElementById("user-dept").textContent   = session.dept;
+document.getElementById("user-avatar").textContent = initials(session.name);
+
+// โหลด profile photo จาก API (ไม่ block หน้าหลัก)
+(async () => {
+  try {
+    const p = await api("getMyProfile");
+    if (p.ok && p.photoUrl) {
+      const av = document.getElementById("user-avatar");
+      av.textContent = "";
+      av.innerHTML = `<img src="${p.photoUrl}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    }
+  } catch(_) {}
+})();
+
+// ── BURGER ───────────────────────────────────────────
+const burgerBtn = document.getElementById("burger-btn");
+const mobileNav = document.getElementById("mobile-nav");
+burgerBtn.addEventListener("click", () => { burgerBtn.classList.toggle("is-open"); mobileNav.classList.toggle("is-open"); });
+mobileNav.addEventListener("click", e => { if (e.target === mobileNav) { burgerBtn.classList.remove("is-open"); mobileNav.classList.remove("is-open"); } });
+
+// ── API ──────────────────────────────────────────────
+async function api(action, params = {}) {
+  const res = await fetch(GAS_API_URL, {
+    method: "POST",
+    body: JSON.stringify({ action, empId: session.empId, role: session.role, ...params }),
+  });
+  return res.json();
+}
+
+// ── TOAST ────────────────────────────────────────────
+function showToast(msg, isError = false) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast" + (isError ? " error" : "");
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+// ── TABS ─────────────────────────────────────────────
+let activeTab = "bookings";
+function switchTab(name) {
+  activeTab = name;
+  document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("tab-" + name).classList.add("active");
+  document.querySelectorAll(".tab-btn").forEach(b => {
+    if (b.getAttribute("onclick").includes("'" + name + "'")) b.classList.add("active");
+  });
+}
+
+// ── MODALS ───────────────────────────────────────────
+function openModal(id)  { document.getElementById(id).classList.add("open"); }
+function closeModal(id) { document.getElementById(id).classList.remove("open"); }
+document.querySelectorAll(".modal-backdrop").forEach(m => {
+  m.addEventListener("click", e => { if (e.target === m) m.classList.remove("open"); });
+});
+
+// ── FORMAT HELPERS ───────────────────────────────────
+const fmtDate = str => {
+  if (!str) return "—";
+  const d = new Date(str);
+  if (isNaN(d)) return str;
+  return d.toLocaleDateString("th-TH", { day: "numeric", month: "short", year: "2-digit" });
+};
+const STATUS_LABEL = {
+  pending    : "รออนุมัติ",
+  approved   : "จัดห้องแล้ว",
+  active     : "กำลังพักอยู่",
+  checked_out: "Check Out แล้ว",
+  cancelled  : "ยกเลิก",
+  rejected   : "ปฏิเสธ",
+};
+
+// ── STATE ────────────────────────────────────────────
+let allBookings  = [];
+let allRooms     = [];
+let allUsers     = [];
+let currentFilter = "all";
+let searchQuery   = "";
+let bkPageSize    = 5;
+let bkShown       = 5;
+let currentBookingId = null;
+
+// ── LOAD ALL ─────────────────────────────────────────
+async function loadAll() {
+  // loadBookings MUST finish before renderUsers — run it first, then the rest in parallel
+  await loadBookings();
+  await Promise.all([loadRooms(), loadUsers()]);
+  renderUsers();   // allBookings is guaranteed ready here
+  loadArchiveStats();
+  lcInit();
+}
+
+// ── BOOKINGS ─────────────────────────────────────────
+async function loadBookings() {
+  try {
+    const res = await api("getAllBookings");
+    if (!res.ok) throw new Error(res.error);
+    allBookings = res.data || [];
+    // sort newest first
+    allBookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    updateStats();
+    renderBookings();
+  } catch (e) {
+    document.getElementById("booking-list").innerHTML =
+      `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">โหลดไม่ได้</div><div class="empty-sub">${e.message}</div></div>`;
+  }
+}
+
+function updateStats() {
+  document.getElementById("s-total").textContent   = allBookings.length;
+  document.getElementById("s-pending").textContent  = allBookings.filter(b => b.status === "pending").length;
+  document.getElementById("s-approved").textContent = allBookings.filter(b => b.status === "approved").length;
+  document.getElementById("s-active").textContent    = allBookings.filter(b => b.status === "active").length;
+  document.getElementById("s-checkout").textContent  = allBookings.filter(b => b.status === "checked_out").length;
+  document.getElementById("tab-badge-bookings").textContent = allBookings.filter(b => b.status === "pending").length;
+}
+
+// ── ARCHIVE ──────────────────────────────────────────
+let allArchived    = [];
+let archiveSearch  = "";
+
+async function loadArchiveStats() {
+  try {
+    const res = await api("getArchiveStats");
+    if (!res.ok) return;
+    const txt = document.getElementById("archive-eligible-text");
+    const btn = document.getElementById("btn-archive");
+    if (res.count === 0) {
+      txt.textContent = `ไม่มีรายการที่ต้อง archive (เกณฑ์: เก่ากว่า ${res.months} เดือน)`;
+      btn.style.display = "none";
+    } else {
+      txt.textContent = `มี ${res.count} รายการเก่ากว่า ${res.months} เดือน พร้อม archive`;
+      btn.style.display = "";
+    }
+  } catch(e) {}
+}
+
+async function doArchive() {
+  confirmModal(
+    "📦 Archive รายการเก่า",
+    `ย้ายรายการ checked_out / cancelled / rejected ที่เก่ากว่า ${CONFIG_ARCHIVE_MONTHS || 3} เดือน ไปยัง Bookings_Archive<br><small style="color:var(--muted)">ข้อมูลจะยังคงอยู่ในระบบ ดูได้จาก "ประวัติ Archive"</small>`,
+    async () => {
+      try {
+        const res = await api("archiveBookings");
+        if (!res.ok) throw new Error(res.error);
+        showToast(`✓ Archive สำเร็จ — ย้าย ${res.archived} รายการ`);
+        await loadBookings();
+        loadArchiveStats();
+      } catch(e) { showToast(e.message, true); }
+    }
+  );
+}
+
+async function loadArchived() {
+  const el = document.getElementById("archive-list");
+  el.innerHTML = `<div class="empty-state"><div class="empty-icon">🗂</div><div class="empty-title">กำลังโหลด…</div></div>`;
+  try {
+    const res = await api("getArchivedBookings");
+    if (!res.ok) throw new Error(res.error);
+    allArchived = res.data || [];
+    renderArchived();
+  } catch(e) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">${e.message}</div></div>`;
+  }
+}
+
+function onArchiveSearch(q) { archiveSearch = q.toLowerCase(); renderArchived(); }
+
+function renderArchived() {
+  let list = allArchived;
+  if (archiveSearch) list = list.filter(b =>
+    (b.firstName + " " + b.lastName).toLowerCase().includes(archiveSearch) ||
+    String(b.empId).includes(archiveSearch) ||
+    String(b.bookingId).toLowerCase().includes(archiveSearch)
+  );
+  const el = document.getElementById("archive-list");
+  if (list.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🗂</div><div class="empty-title">ไม่พบรายการ</div></div>`;
+    return;
+  }
+  el.innerHTML = list.map(b => {
+    const photo = b.photoUrl ? `<img src="${b.photoUrl}" alt="">` : initials(b.firstName);
+    const isSelf = String(b.bookedBy || "") === String(b.empId || "");
+    const byText = b.bookedByName && !isSelf ? `· โดย ${b.bookedByName}` : "";
+    let roomText = `<span style="color:var(--muted-2)">ไม่มีข้อมูลห้อง</span>`;
+    if (b.assignedRoom) {
+      const rm = allRooms.find(r => r.roomId === b.assignedRoom);
+      const detail = rm ? [rm.floor ? "ชั้น "+rm.floor : "", rm.roomNo ? "ห้อง "+rm.roomNo : ""].filter(Boolean).join(" ") : "";
+      roomText = `🏠 <strong>${rm ? (rm.location || b.assignedRoom) : b.assignedRoom}</strong>${detail ? "  ·  " + detail : ""}`;
+    }
+    return `
+      <div class="bk-card" style="opacity:.85">
+        <div class="bk-card-top">
+          <div class="bk-photo">${photo}</div>
+          <div class="bk-main">
+            <div class="bk-name-row">
+              <span class="bk-name">${b.firstName} ${b.lastName}</span>
+              <span class="bk-id-badge">${b.empId || "—"}</span>
+            </div>
+            <div class="bk-meta">${b.bookingId}${b.dept ? " · " + b.dept : ""} ${byText}</div>
+          </div>
+          <div class="bk-card-date">
+            <div class="bk-date">${fmtDate(b.checkIn)}</div>
+            <div class="bk-date-sub">ประสงค์เข้าพัก</div>
+          </div>
+        </div>
+        <div class="bk-card-bottom">
+          <div class="bk-room-info">${roomText}</div>
+          <div class="bk-card-actions">
+            <span class="pill ${b.status}"><span class="pill-dot"></span>${STATUS_LABEL[b.status] || b.status}</span>
+            ${b.archived_at ? `<span style="font-size:11px;color:var(--muted-2)">Archive: ${fmtDate(b.archived_at)}</span>` : ""}
+          </div>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+function switchToArchiveView() {
+  document.getElementById("view-active").style.display  = "none";
+  document.getElementById("view-archive").style.display = "";
+  if (allArchived.length === 0) loadArchived();
+}
+
+function switchToActiveView() {
+  document.getElementById("view-archive").style.display = "none";
+  document.getElementById("view-active").style.display  = "";
+}
+
+function setFilter(f, el) {
+  currentFilter = f;
+  bkShown = bkPageSize;
+  document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+  el.classList.add("active");
+  renderBookings();
+}
+
+function setBkPageSize(n, el) {
+  bkPageSize = n; bkShown = n;
+  document.querySelectorAll(".ps-btn").forEach(b => b.classList.remove("active"));
+  el.classList.add("active");
+  renderBookings();
+}
+
+function bkLoadMore() {
+  bkShown += bkPageSize;
+  renderBookings();
+}
+
+function onSearch(q) { searchQuery = q.toLowerCase(); bkShown = bkPageSize; renderBookings(); }
+
+function renderBookings() {
+  let list = allBookings;
+  if (currentFilter !== "all") list = list.filter(b => b.status === currentFilter);
+  if (searchQuery) list = list.filter(b =>
+    (b.firstName + " " + b.lastName).toLowerCase().includes(searchQuery) ||
+    String(b.empId).includes(searchQuery) ||
+    String(b.bookingId).toLowerCase().includes(searchQuery)
+  );
+
+  // sort: pending ก่อน → newest first
+  list = list.slice().sort((a, b) => {
+    if (a.status === "pending" && b.status !== "pending") return -1;
+    if (a.status !== "pending" && b.status === "pending") return  1;
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+
+  const el      = document.getElementById("booking-list");
+  const moreWrap = document.getElementById("bk-load-more-wrap");
+
+  if (list.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">ไม่มีรายการ</div><div class="empty-sub">ลองเปลี่ยน filter หรือค้นหาใหม่</div></div>`;
+    moreWrap.style.display = "none";
+    return;
+  }
+
+  const visible   = list.slice(0, bkShown);
+  const remaining = list.length - bkShown;
+
+  el.innerHTML = visible.map(b => {
+    const photo   = b.photoUrl ? `<img src="${b.photoUrl}" alt="">` : initials(b.firstName);
+    const safeName = (b.firstName + " " + b.lastName).replace(/'/g, "\\'");
+    const isSelf   = String(b.bookedBy || "") === String(b.empId || "");
+    const byText   = b.bookedByName && !isSelf ? `· โดย ${b.bookedByName}` : "";
+
+    // room info
+    let roomText = `<span style="color:var(--muted-2)">ยังไม่ได้จัดห้อง</span>`;
+    if (b.assignedRoom) {
+      const rm     = allRooms.find(r => r.roomId === b.assignedRoom);
+      const detail = rm ? [rm.floor ? "ชั้น "+rm.floor : "", rm.roomNo ? "ห้อง "+rm.roomNo : ""].filter(Boolean).join(" ") : "";
+      const loc    = rm ? (rm.location || b.assignedRoom) : b.assignedRoom;
+      roomText = `🏠 <strong>${loc}</strong>${detail ? "  ·  " + detail : ""}`;
+    }
+
+    // actions
+    const actions = b.status === "pending"
+      ? `<button class="btn-sm btn-sm-pine"   onclick="openAssignModal('${b.bookingId}')">จัดห้อง →</button>
+         <button class="btn-sm btn-sm-danger" onclick="doRejectBooking('${b.bookingId}','${safeName}')">ปฏิเสธ</button>`
+      : b.status === "approved"
+      ? `<button class="btn-sm btn-sm-pine"    onclick="doCheckIn('${b.bookingId}','${safeName}')">✓ Check In</button>
+         <button class="btn-sm btn-sm-outline" onclick="openAssignModal('${b.bookingId}')">เปลี่ยนห้อง</button>`
+      : b.status === "active"
+      ? `<button class="btn-sm btn-sm-danger"  onclick="doCheckOut('${b.bookingId}','${safeName}')">📦 Check Out</button>`
+      : "";
+
+    return `
+      <div class="bk-card">
+        <div class="bk-card-top">
+          <div class="bk-photo">${photo}</div>
+          <div class="bk-main">
+            <div class="bk-name-row">
+              <span class="bk-name">${b.firstName} ${b.lastName}</span>
+              <span class="bk-id-badge">${b.empId || "—"}</span>
+            </div>
+            <div class="bk-meta">${b.bookingId}${b.dept ? " · " + b.dept : ""} ${byText}</div>
+          </div>
+          <div class="bk-card-date">
+            <div class="bk-date">${fmtDate(b.checkIn)}</div>
+            <div class="bk-date-sub">ประสงค์เข้าพัก</div>
+          </div>
+        </div>
+        <div class="bk-card-bottom">
+          <div class="bk-room-info">${roomText}</div>
+          <div class="bk-card-actions">
+            <span class="pill ${b.status}"><span class="pill-dot"></span>${STATUS_LABEL[b.status] || b.status}</span>
+            ${actions}
+          </div>
+        </div>
+      </div>`;
+  }).join("");
+
+  if (remaining > 0) {
+    moreWrap.style.display = "";
+    document.getElementById("bk-load-more-btn").textContent = `โหลดเพิ่มเติม (${remaining} รายการ)`;
+  } else {
+    moreWrap.style.display = "none";
+  }
+}
+
+// ── ASSIGN MODAL ─────────────────────────────────────
+function openAssignModal(bookingId) {
+  currentBookingId = bookingId;
+  const b = allBookings.find(x => x.bookingId === bookingId);
+  if (!b) return;
+
+  // booking info
+  document.getElementById("assign-info").innerHTML = `
+    <div class="m-info-cell"><div class="m-info-label">ผู้เข้าพัก</div><div class="m-info-val">${b.firstName} ${b.lastName}</div></div>
+    <div class="m-info-cell"><div class="m-info-label">รหัสพนักงาน</div><div class="m-info-val">${b.empId || "—"}</div></div>
+    <div class="m-info-cell"><div class="m-info-label">ประสงค์เข้าพัก</div><div class="m-info-val">${fmtDate(b.checkIn)}</div></div>
+    <div class="m-info-cell"><div class="m-info-label">เลขจอง</div><div class="m-info-val">${b.bookingId}</div></div>
+  `;
+
+  // populate rooms
+  const sel = document.getElementById("assign-room-select");
+  sel.innerHTML = '<option value="">-- เลือกห้อง --</option>';
+  allRooms.forEach(r => {
+    const slot1 = r.occupant1 ? `(ที่นอน 1: ${r.occupant1})` : "";
+    const slot2 = r.occupant2 ? `(ที่นอน 2: ${r.occupant2})` : "";
+    const full  = r.occupant1 && r.occupant2;
+    if (!full) {
+      const opt = document.createElement("option");
+      opt.value = r.roomId;
+      opt.textContent = `${r.roomId} — ${r.location || ""}  ${slot1} ${slot2}`.trim();
+      sel.appendChild(opt);
+    }
+  });
+
+  document.getElementById("assign-slot-wrap").style.display = "none";
+  document.getElementById("btn-do-assign").disabled = true;
+  openModal("modal-assign");
+}
+
+function onRoomSelect() {
+  const roomId = document.getElementById("assign-room-select").value;
+  if (!roomId) { document.getElementById("assign-slot-wrap").style.display = "none"; document.getElementById("btn-do-assign").disabled = true; return; }
+
+  const room = allRooms.find(r => r.roomId === roomId);
+  const slotSel = document.getElementById("assign-slot-select");
+  slotSel.innerHTML = "";
+  if (!room.occupant1) { const o = document.createElement("option"); o.value="1"; o.textContent="ที่นอน 1 (ว่าง)"; slotSel.appendChild(o); }
+  if (!room.occupant2) { const o = document.createElement("option"); o.value="2"; o.textContent="ที่นอน 2 (ว่าง)"; slotSel.appendChild(o); }
+  document.getElementById("assign-slot-wrap").style.display = "";
+  document.getElementById("btn-do-assign").disabled = false;
+}
+
+async function doAssign() {
+  const btn    = document.getElementById("btn-do-assign");
+  const roomId = document.getElementById("assign-room-select").value;
+  const slot   = parseInt(document.getElementById("assign-slot-select").value);
+  if (!roomId || !slot) return;
+
+  btn.classList.add("loading"); btn.disabled = true;
+  try {
+    const res = await api("assignRoom", { bookingId: currentBookingId, roomId, slot });
+    if (!res.ok) throw new Error(res.error);
+    showToast("✓ จัดห้องและอนุมัติเรียบร้อยแล้ว");
+    closeModal("modal-assign");
+    await loadAll();
+  } catch (e) {
+    showToast(e.message, true);
+  } finally {
+    btn.classList.remove("loading"); btn.disabled = false;
+  }
+}
+
+// ── ROOMS ────────────────────────────────────────────
+const ROOM_PAGE_SIZE = 20;
+let locFilter  = "all";
+let typeFilter = "all";
+let roomShown  = ROOM_PAGE_SIZE;
+let roomCols   = 3;
+
+function setRoomCols(n, btn) {
+  roomCols = n;
+  document.querySelectorAll(".col-toggle-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  document.getElementById("room-grid").style.gridTemplateColumns = `repeat(${n}, 1fr)`;
+}
+
+// Transparent color palette per location (bg / border)
+const LOC_PALETTE = [
+  { bg: "rgba(168,131,79,.09)", border: "rgba(168,131,79,.28)" },  // brass
+  { bg: "rgba(65,105,160,.07)", border: "rgba(65,105,160,.22)" },  // blue
+  { bg: "rgba(140,80,150,.07)", border: "rgba(140,80,150,.22)" },  // purple
+  { bg: "rgba(200,100,60,.07)", border: "rgba(200,100,60,.22)" },  // orange
+  { bg: "rgba(30,58,52,.07)",   border: "rgba(30,58,52,.22)"   },  // pine-dark
+];
+// Named location palettes — bg / border / optional glow shadow
+const LOC_GREEN  = { bg: "#ffffff", border: "rgba(60,130,100,.55)" };
+const LOC_ORANGE = {
+  bg:     "#ffffff",
+  border: "rgba(200,100,40,.7)",
+  shadow: "0 0 0 3px rgba(200,100,40,.12), 0 0 16px 3px rgba(200,100,40,.18)",
+};
+// Name-based overrides: keyword (substring) → color object (takes priority over palette cycling)
+const LOC_NAME_MAP = [
+  { keyword: "จุฑา",    color: LOC_GREEN  },
+  { keyword: "สุวนันท์", color: LOC_ORANGE },
+];
+let locColorMap = {}; // location → { bg, border }
+
+async function loadRooms() {
+  try {
+    const res = await api("getRooms");
+    if (!res.ok) throw new Error(res.error);
+    allRooms = res.data || [];
+    document.getElementById("s-rooms").textContent = allRooms.length;
+    buildLocFilters();
+    renderRooms();
+    document.getElementById("room-stats-bar").style.display = "";
+  } catch (e) {
+    document.getElementById("room-grid").innerHTML =
+      `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">โหลดไม่ได้</div><div class="empty-sub">${e.message}</div></div>`;
+  }
+}
+
+function buildLocFilters() {
+  const locs = [...new Set(allRooms.map(r => r.location || "").filter(Boolean))];
+  // build color map — name-based overrides first, then cycle palette
+  locColorMap = {};
+  let paletteIdx = 0;
+  locs.forEach(loc => {
+    const named = LOC_NAME_MAP.find(m => loc.includes(m.keyword));
+    if (named) {
+      locColorMap[loc] = named.color;
+    } else {
+      locColorMap[loc] = LOC_PALETTE[paletteIdx % LOC_PALETTE.length];
+      paletteIdx++;
+    }
+  });
+
+  const bar = document.getElementById("room-filter-bar");
+  // clear old chips (keep ทั้งหมด chip only; spacer & add-btn stay after)
+  Array.from(bar.querySelectorAll(".loc-chip:not(:first-child)")).forEach(c => c.remove());
+  const allChip = bar.querySelector(".loc-chip");
+  locs.forEach(loc => {
+    const btn = document.createElement("button");
+    btn.className = "loc-chip";
+    btn.textContent = loc;
+    btn.onclick = () => setLocFilter(loc, btn);
+    allChip.after(btn);
+  });
+}
+
+function setLocFilter(loc, el) {
+  locFilter = loc; roomShown = ROOM_PAGE_SIZE;
+  document.querySelectorAll("#room-filter-bar .loc-chip").forEach(c => c.classList.remove("active"));
+  el.classList.add("active");
+  renderRooms();
+}
+
+function setTypeFilter(type, el) {
+  typeFilter = type; roomShown = ROOM_PAGE_SIZE;
+  document.querySelectorAll("#room-type-filter-bar .loc-chip").forEach(c => c.classList.remove("active"));
+  el.classList.add("active");
+  renderRooms();
+}
+
+function roomLoadMore() {
+  roomShown += ROOM_PAGE_SIZE;
+  renderRooms();
+}
+
+function renderRooms() {
+  let list = allRooms;
+  if (locFilter  !== "all") list = list.filter(r => r.location === locFilter);
+  if (typeFilter !== "all") list = list.filter(r => (r.roomType || "") === typeFilter);
+
+  // update stats
+  const availCount = list.filter(r => !(r.occupant1 && r.occupant2)).length;
+  document.getElementById("rs-total").textContent = list.length;
+  document.getElementById("rs-avail").textContent = availCount;
+
+  const el       = document.getElementById("room-grid");
+  const moreWrap = document.getElementById("room-load-more-wrap");
+  const moreBtn  = document.getElementById("room-load-more-btn");
+
+  if (list.length === 0) {
+    el.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🏠</div><div class="empty-title">ไม่พบห้องพัก</div><div class="empty-sub">ลองเปลี่ยน filter หรือเพิ่มห้องใหม่</div></div>`;
+    if (moreWrap) moreWrap.style.display = "none";
+    return;
+  }
+
+  const visible   = list.slice(0, roomShown);
+  const remaining = list.length - visible.length;
+
+  el.innerHTML = visible.map(r => {
+    const isFull      = !!(r.occupant1 && r.occupant2);
+    const isEmpty     = !r.occupant1 && !r.occupant2;
+    const hasOccupant = !!(r.occupant1 || r.occupant2);
+    const cardClass   = isFull ? "room-card full" : "room-card available";
+    const pal         = locColorMap[r.location] ?? LOC_PALETTE[0];
+    const cardStyle   = isFull ? "" : `background:${pal.bg};border-color:${pal.border};${pal.shadow ? "box-shadow:"+pal.shadow+";" : ""}`;
+    const headClick   = hasOccupant
+      ? `onclick="openRoomDetailPopup('${r.roomId}')" style="cursor:pointer"`
+      : "";
+    const statusEl = isFull
+      ? `<span class="full-badge">⬛ เต็มแล้ว</span>`
+      : `<span style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#3C7A5A"><span class="avail-dot"></span>มีที่ว่าง</span>`;
+    const deleteBtn = isEmpty
+      ? `<button class="room-delete-btn" onclick="doDeleteRoom('${r.roomId}', event)" title="ลบห้องนี้">🗑</button>`
+      : "";
+    const typeLabel = r.roomType ? `<span class="room-type-badge">${r.roomType === "ห้องแอร์" ? "❄️ แอร์" : "🌀 พัดลม"}</span>` : "";
+    const subInfo   = [r.floor ? "ชั้น " + r.floor : "", r.roomNo ? "ห้อง " + r.roomNo : ""].filter(Boolean).join(" ");
+
+    // Photos
+    const photos = [r.photo1, r.photo2, r.photo3].filter(Boolean);
+    const photoSection = photos.length
+      ? `<div class="room-photos">${photos.map(p => `<img class="room-photo-thumb" src="${p}" alt="room photo" onclick="window.open('${p}','_blank');event.stopPropagation()">`).join("")}</div>`
+      : "";
+
+    return `
+      <div class="${cardClass}" style="${cardStyle}">
+        <div class="room-card-head" ${headClick}>
+          <div>
+            <div class="room-id">🏠 ${r.roomId}${typeLabel}</div>
+            <div class="room-id-sub">${r.location || ""}${subInfo ? " · " + subInfo : ""}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+            ${statusEl}
+            <div style="display:flex;gap:6px">
+              <button class="room-edit-btn" onclick="openEditRoomModal('${r.roomId}');event.stopPropagation()" title="แก้ไขข้อมูลห้อง">✏️ แก้ไข</button>
+              ${deleteBtn}
+            </div>
+          </div>
+        </div>
+        <div class="room-slots">
+          ${roomSlotHTML(r, r.occupant1, 1)}
+          ${roomSlotHTML(r, r.occupant2, 2)}
+        </div>
+        ${photoSection}
+      </div>`;
+  }).join("");
+
+  if (moreWrap) {
+    moreWrap.style.display = remaining > 0 ? "" : "none";
+    if (moreBtn) moreBtn.textContent = `โหลดเพิ่มเติม (${remaining} ห้อง)`;
+  }
+}
+
+function roomSlotHTML(room, occupant, slotNum) {
+  if (occupant) {
+    // occupant column เก็บ bookingId (จาก assignRoom)
+    const bk    = allBookings.find(b => String(b.bookingId) === String(occupant));
+    const bkId  = bk ? bk.bookingId : null;
+    const empId = bk ? bk.empId : occupant;
+    const name  = bk ? `${bk.firstName} ${bk.lastName}` : occupant;
+    const safeName = name.replace(/'/g, "\\'");
+
+    const bkStatus = bk ? bk.status : "";
+    const statusBadge = bkStatus === "active"
+      ? `<span style="display:inline-block;margin-top:3px;font-size:10px;font-weight:700;color:#2E82D4;background:#E0F0FF;border-radius:6px;padding:1px 7px">🏠 พักอยู่</span>`
+      : bkStatus === "approved"
+      ? `<span style="display:inline-block;margin-top:3px;font-size:10px;font-weight:700;color:#2E6248;background:#DEEEE2;border-radius:6px;padding:1px 7px">✓ จัดห้องแล้ว</span>`
+      : "";
+
+    const checkInBtn = (bkId && bkStatus === "approved")
+      ? `<button class="slot-action-btn" style="color:#2E82D4;border-color:#2E82D4;font-size:10px;padding:3px 7px;font-weight:700"
+           title="Check In" onclick="doCheckIn('${bkId}','${safeName}');event.stopPropagation()">✓ In</button>`
+      : "";
+    const checkOutBtn = (bkId && bkStatus === "active")
+      ? `<button class="slot-action-btn remove" style="font-size:10px;padding:3px 7px;font-weight:700"
+           title="Check Out" onclick="doCheckOut('${bkId}','${safeName}');event.stopPropagation()">📦 Out</button>`
+      : "";
+
+    const actions = bkId ? `
+      <div class="slot-actions" onclick="event.stopPropagation()">
+        ${checkInBtn}${checkOutBtn}
+        <button class="slot-action-btn change"
+          title="เปลี่ยนห้อง"
+          onclick="openChangeRoomConfirm('${room.roomId}',${slotNum},'${bkId}','${safeName}')">⇄</button>
+        <button class="slot-action-btn remove"
+          title="นำออกจากห้อง"
+          onclick="openRemoveConfirm('${room.roomId}',${slotNum},'${bkId}','${safeName}')">✕</button>
+      </div>` : `<span class="slot-go-arrow">›</span>`;
+
+    const clickable = bkId ? "clickable" : "";
+    const onclick   = bkId ? `onclick="goToBooking('${bkId}')"` : "";
+    return `
+      <div class="room-slot occupied ${clickable}" ${onclick}>
+        <span class="slot-icon">🛏️</span>
+        <div class="slot-info">
+          <div class="slot-label">ที่นอน ${slotNum}</div>
+          <div class="slot-emp">${empId}</div>
+          <div class="slot-val">${name}</div>
+          ${statusBadge}
+        </div>
+        ${actions}
+      </div>`;
+  } else {
+    return `
+      <button class="slot-add-btn" onclick="openSlotAssignModal('${room.roomId}', ${slotNum})">
+        <span style="font-size:15px;line-height:1">＋</span> เพิ่มผู้เข้าพัก (ที่นอน ${slotNum})
+      </button>`;
+  }
+}
+
+// ── EDIT ROOM ────────────────────────────────────────
+const ER_IMGBB_KEY = "634f349492429106ef296d1d0bd1414b";
+let erPhotos = { 1: "", 2: "", 3: "" }; // current photo URLs
+
+function openEditRoomModal(roomId) {
+  const r = allRooms.find(x => x.roomId === roomId);
+  if (!r) return;
+
+  document.getElementById("er-room-id").value          = r.roomId;
+  document.getElementById("er-room-id-label").textContent = r.roomId;
+  document.getElementById("er-location").value          = r.location || "";
+  document.getElementById("er-floor").value             = r.floor    || "";
+  document.getElementById("er-room-no").value           = r.roomNo   || "";
+  document.getElementById("er-rt-fan").checked  = r.roomType === "พัดลม";
+  document.getElementById("er-rt-ac").checked   = r.roomType === "ห้องแอร์";
+  onErTypeChange();
+
+  erPhotos = { 1: r.photo1 || "", 2: r.photo2 || "", 3: r.photo3 || "" };
+  [1, 2, 3].forEach(i => erSetPhotoPreview(i, erPhotos[i]));
+  document.getElementById("er-upload-status").textContent = "";
+  openModal("modal-edit-room");
+}
+
+function onErTypeChange() {
+  document.getElementById("er-lbl-fan").style.borderColor = document.getElementById("er-rt-fan").checked ? "var(--pine)" : "var(--line-color)";
+  document.getElementById("er-lbl-ac").style.borderColor  = document.getElementById("er-rt-ac").checked  ? "var(--pine)" : "var(--line-color)";
+}
+
+function erSetPhotoPreview(slot, url) {
+  const prev  = document.getElementById(`er-photo-preview-${slot}`);
+  const clear = document.getElementById(`er-photo-clear-${slot}`);
+  if (url) {
+    prev.innerHTML  = `<img src="${url}" alt="photo ${slot}">`;
+    clear.style.display = "";
+  } else {
+    prev.innerHTML  = `<span class="er-photo-empty">📷</span>`;
+    clear.style.display = "none";
+  }
+}
+
+async function erUploadPhoto(slot, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById("er-upload-status");
+  statusEl.textContent = `กำลังอัปโหลดรูป ${slot}…`;
+  try {
+    const b64 = await new Promise((res, rej) => {
+      const reader = new FileReader();
+      reader.onload = e => res(e.target.result.split(",")[1]);
+      reader.onerror = rej;
+      reader.readAsDataURL(file);
+    });
+    const form = new FormData();
+    form.append("key",   ER_IMGBB_KEY);
+    form.append("image", b64);
+    form.append("name",  `room_${document.getElementById("er-room-id").value}_${slot}`);
+    const json = await (await fetch("https://api.imgbb.com/1/upload", { method: "POST", body: form })).json();
+    if (!json.success) throw new Error(json.error?.message || "Upload ไม่สำเร็จ");
+    erPhotos[slot] = json.data.display_url;
+    erSetPhotoPreview(slot, erPhotos[slot]);
+    statusEl.textContent = `✓ รูป ${slot} อัปโหลดสำเร็จ`;
+  } catch(e) {
+    statusEl.textContent = `❌ ${e.message}`;
+  }
+  input.value = ""; // reset
+}
+
+function erClearPhoto(slot) {
+  erPhotos[slot] = "";
+  erSetPhotoPreview(slot, "");
+  document.getElementById("er-upload-status").textContent = "";
+}
+
+async function doEditRoom() {
+  const btn      = document.getElementById("btn-do-edit-room");
+  const roomId   = document.getElementById("er-room-id").value;
+  const location = document.getElementById("er-location").value.trim();
+  const floor    = document.getElementById("er-floor").value.trim();
+  const roomNo   = document.getElementById("er-room-no").value.trim();
+  const roomType = document.getElementById("er-rt-fan").checked ? "พัดลม"
+                 : document.getElementById("er-rt-ac").checked  ? "ห้องแอร์" : "";
+
+  if (!location || !roomType) { showToast("กรุณากรอก หอพัก และ ประเภทห้อง", true); return; }
+
+  btn.classList.add("loading"); btn.disabled = true;
+  try {
+    const res = await api("updateRoom", { data: {
+      roomId, location, floor, roomNo, roomType,
+      photo1: erPhotos[1], photo2: erPhotos[2], photo3: erPhotos[3],
+    }});
+    if (!res.ok) throw new Error(res.error);
+    showToast(`✓ อัพเดทห้อง ${roomId} แล้ว`);
+    closeModal("modal-edit-room");
+    await loadRooms();
+  } catch(e) {
+    showToast(e.message, true);
+  } finally {
+    btn.classList.remove("loading"); btn.disabled = false;
+  }
+}
+
+// ── CHECK IN ─────────────────────────────────────────
+async function doCheckIn(bookingId, name) {
+  confirmModal(
+    "✓ Check In",
+    `ยืนยันให้ <strong>${name}</strong> เข้าพักห้องแล้ว?<br><small style="color:var(--muted)">ระบบจะบันทึกเวลา Check In อัตโนมัติ</small>`,
+    async () => {
+      try {
+        const res = await api("checkIn", { bookingId });
+        if (!res.ok) throw new Error(res.error);
+        showToast("✓ Check In สำเร็จ — " + name);
+        await loadAll();
+      } catch(e) { showToast(e.message, true); }
+    }
+  );
+}
+
+// ── CHECK OUT ────────────────────────────────────────
+async function doCheckOut(bookingId, name) {
+  confirmModal(
+    "📦 Check Out",
+    `ยืนยัน Check Out <strong>${name}</strong>?<br><small style="color:var(--muted)">ระบบจะเคลียร์ห้องและบันทึกเวลาออกอัตโนมัติ</small>`,
+    async () => {
+      try {
+        const res = await api("checkOut", { bookingId });
+        if (!res.ok) throw new Error(res.error);
+        showToast("✓ Check Out สำเร็จ — " + name);
+        await loadAll();
+      } catch(e) { showToast(e.message, true); }
+    },
+    true  // isDanger
+  );
+}
+
+// ── REJECT BOOKING ───────────────────────────────────
+async function doRejectBooking(bookingId, name) {
+  confirmModal(
+    "ปฏิเสธคำขอจอง",
+    `ยืนยันปฏิเสธคำขอของ <strong>${name}</strong>?`,
+    async () => {
+      try {
+        const res = await api("rejectBooking", { bookingId });
+        if (!res.ok) throw new Error(res.error);
+        showToast("✓ ปฏิเสธคำขอแล้ว");
+        await loadBookings();
+      } catch(e) { showToast(e.message, true); }
+    },
+    true  // isDanger
+  );
+}
+
+async function doDeleteRoom(roomId, e) {
+  e.stopPropagation();
+  if (!confirm(`ลบห้อง ${roomId} ออกจากระบบ?`)) return;
+  try {
+    const res = await api("deleteRoom", { roomId });
+    if (!res.ok) throw new Error(res.error);
+    showToast("✓ ลบห้อง " + roomId + " แล้ว");
+    await loadRooms();
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+// ── SLOT ASSIGN ──────────────────────────────────────
+let slotAssignRoomId = null;
+let slotAssignSlot   = null;
+
+function openSlotAssignModal(roomId, slotNum) {
+  slotAssignRoomId = roomId;
+  slotAssignSlot   = slotNum;
+
+  const room = allRooms.find(r => r.roomId === roomId);
+  document.getElementById("slot-assign-title").textContent = `เพิ่มผู้เข้าพัก — ที่นอน ${slotNum}`;
+  const locPart  = room ? (room.location || "") : "";
+  const floorPart = room && room.floor ? " · ชั้น " + room.floor : "";
+  const roomPart  = room && room.roomNo ? " ห้อง " + room.roomNo : "";
+  document.getElementById("slot-assign-room-info").innerHTML =
+    `🏠 <strong>${roomId}</strong>  ${locPart}${floorPart}${roomPart}`;
+
+  // pending bookings with no room yet
+  const pending = allBookings.filter(b => b.status === "pending" && !b.assignedRoom);
+  const listEl  = document.getElementById("slot-booking-list");
+
+  if (pending.length === 0) {
+    listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">ไม่มีรายการจองที่รอจัดห้อง</div><div class="empty-sub">รายการจองทั้งหมดได้รับการจัดห้องแล้ว</div></div>`;
+  } else {
+    listEl.innerHTML = pending.map(b => `
+      <div class="slot-bk-row" onclick="doSlotAssign('${b.bookingId}')">
+        <div class="slot-bk-info">
+          <div class="slot-bk-name">${b.firstName} ${b.lastName}${b.nickname ? " (" + b.nickname + ")" : ""}</div>
+          <div class="slot-bk-meta">${b.empId || "—"}${b.dept ? "  ·  " + b.dept : ""}  ·  ${b.bookingId}</div>
+        </div>
+        <div class="slot-bk-date">${fmtDate(b.checkIn)}</div>
+        <button class="btn-sm btn-sm-pine" style="flex-shrink:0;pointer-events:none">จัดเข้า →</button>
+      </div>
+    `).join("");
+  }
+  openModal("modal-slot-assign");
+}
+
+async function doSlotAssign(bookingId) {
+  try {
+    const res = await api("assignRoom", { bookingId, roomId: slotAssignRoomId, slot: slotAssignSlot });
+    if (!res.ok) throw new Error(res.error);
+    showToast("✓ จัดห้องและอนุมัติเรียบร้อยแล้ว");
+    closeModal("modal-slot-assign");
+    await loadAll();
+  } catch (e) {
+    showToast(e.message, true);
+  }
+}
+
+function goToBooking(bookingId) {
+  window.location.href = `detail.html?id=${bookingId}`;
+}
+
+// ── ROOM DETAIL POPUP ─────────────────────────────────
+function openRoomDetailPopup(roomId) {
+  const room = allRooms.find(r => r.roomId === roomId);
+  if (!room) return;
+
+  document.getElementById("rd-title").textContent = `🏠 ${roomId}`;
+
+  const typeLabel = room.roomType === "ห้องแอร์" ? "❄️ ห้องแอร์"
+    : room.roomType === "พัดลม" ? "🌀 พัดลม"
+    : room.roomType || "";
+
+  const slotHTML = (occupant, slotNum) => {
+    if (!occupant) return `
+      <div class="rd-slot empty-slot">
+        <div class="rd-slot-meta"><div class="rd-slot-num">ที่นอน ${slotNum}</div></div>
+        <span class="rd-empty-text">ว่าง</span>
+      </div>`;
+    const bk    = allBookings.find(b => String(b.bookingId) === String(occupant));
+    const empId = bk ? bk.empId : occupant;
+    const name  = bk ? `${bk.firstName} ${bk.lastName}${bk.nickname ? " ("+bk.nickname+")" : ""}` : occupant;
+    const dept  = bk && bk.dept ? bk.dept : "";
+    const bkId  = bk ? bk.bookingId : null;
+    const safeName = name.replace(/'/g, "\\'");
+
+    // ปุ่ม action — ต้อง stopPropagation ไม่ให้ยิง onclick ของ row
+    const actionBtns = bkId ? `
+      <div class="slot-actions" onclick="event.stopPropagation()">
+        <button class="slot-action-btn change" title="เปลี่ยนห้อง"
+          onclick="closeModal('modal-room-detail');openChangeRoomConfirm('${roomId}',${slotNum},'${bkId}','${safeName}')">⇄</button>
+        <button class="slot-action-btn remove" title="นำออกจากห้อง"
+          onclick="closeModal('modal-room-detail');openRemoveConfirm('${roomId}',${slotNum},'${bkId}','${safeName}')">✕</button>
+      </div>` : "";
+
+    // คลิกที่ row (นอกปุ่ม) → ไป detail
+    const rowClick = bkId ? `onclick="closeModal('modal-room-detail');goToBooking('${bkId}')"` : "";
+    return `
+      <div class="rd-slot occupied ${bkId ? 'clickable' : ''}" ${rowClick}>
+        <div class="rd-slot-meta">
+          <div class="rd-slot-num">ที่นอน ${slotNum}</div>
+          <div class="rd-emp-badge">${empId}</div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="rd-slot-name">${name}</div>
+          ${dept ? `<div class="rd-slot-dept">${dept}</div>` : ""}
+        </div>
+        ${actionBtns}
+      </div>`;
+  };
+
+  document.getElementById("rd-body").innerHTML = `
+    <div class="rd-room-info">
+      <div class="rd-room-id">${roomId}</div>
+      <div class="rd-room-meta">
+        ${room.location || ""}${room.floor ? " · ชั้น " + room.floor : ""}${room.roomNo ? " · ห้อง " + room.roomNo : ""}
+      </div>
+      ${typeLabel ? `<div class="rd-room-type">${typeLabel}</div>` : ""}
+    </div>
+    <div class="rd-divider"></div>
+    <div class="rd-slots">
+      ${slotHTML(room.occupant1, 1)}
+      ${slotHTML(room.occupant2, 2)}
+    </div>`;
+
+  openModal("modal-room-detail");
+}
+
+// ── CONFIRM MODAL ─────────────────────────────────────
+let _confirmCallback = null;
+
+function confirmModal(title, msg, onConfirm, isDanger = false) {
+  document.getElementById("confirm-title").textContent = title;
+  document.getElementById("confirm-msg").innerHTML     = msg;
+  const btn = document.getElementById("btn-confirm-ok");
+  btn.className = isDanger ? "modal-btn-danger" : "modal-btn-confirm";
+  btn.textContent = "ยืนยัน";
+  _confirmCallback = onConfirm;
+  openModal("modal-confirm");
+}
+function closeConfirmModal() { closeModal("modal-confirm"); _confirmCallback = null; }
+function execConfirm() { closeModal("modal-confirm"); if (_confirmCallback) { _confirmCallback(); _confirmCallback = null; } }
+
+// ── CHANGE ROOM FLOW ──────────────────────────────────
+function openChangeRoomConfirm(roomId, slot, bookingId, name) {
+  confirmModal(
+    "เปลี่ยนห้องพัก",
+    `ย้าย "${name}" ออกจากห้อง ${roomId} (ที่นอน ${slot})?\n\nระบบจะนำรายการจองกลับสู่สถานะ "รออนุมัติ" และเปิดให้เลือกห้องใหม่ทันที`,
+    async () => {
+      try {
+        const res = await api("unassignRoom", { bookingId, roomId, slot });
+        if (!res.ok) throw new Error(res.error);
+        showToast("✓ ย้ายออกแล้ว — กรุณาจัดห้องใหม่");
+        await loadAll();
+        openAssignModal(bookingId);
+      } catch (e) { showToast(e.message, true); }
+    }
+  );
+}
+
+// ── REMOVE FROM ROOM FLOW ─────────────────────────────
+function openRemoveConfirm(roomId, slot, bookingId, name) {
+  confirmModal(
+    "นำออกจากห้อง",
+    `นำ "${name}" ออกจากห้อง ${roomId} (ที่นอน ${slot})?\n\nสถานะการจองจะกลับเป็น "รออนุมัติ"`,
+    async () => {
+      try {
+        const res = await api("unassignRoom", { bookingId, roomId, slot });
+        if (!res.ok) throw new Error(res.error);
+        showToast("✓ นำออกจากห้องแล้ว");
+        await loadAll();
+      } catch (e) { showToast(e.message, true); }
+    },
+    true  // isDanger → red button
+  );
+}
+
+function onRoomTypeChange() {
+  document.getElementById("lbl-fan").style.borderColor = document.getElementById("rt-fan").checked ? "var(--pine)" : "var(--line-color)";
+  document.getElementById("lbl-ac").style.borderColor  = document.getElementById("rt-ac").checked  ? "var(--pine)" : "var(--line-color)";
+}
+
+// Auto-suggest prefix เมื่อพิมพ์ชื่อหอพัก
+function onRoomLocationInput(val) {
+  const prefixEl = document.getElementById("room-prefix");
+  if (!val.trim()) { updateRoomIdPreview(); return; }
+
+  // 1. ถ้าหอพักนี้มีอยู่แล้วใน allRooms → ดึง prefix จาก ID แรกที่เจอ
+  const existing = allRooms.find(r => r.location.trim() === val.trim());
+  if (existing && existing.roomId.includes("-")) {
+    const suggested = existing.roomId.split("-")[0];
+    prefixEl.value = suggested;
+    updateRoomIdPreview();
+    return;
+  }
+
+  // 2. Known mappings
+  const known = [
+    { keyword: "สุวนันท์", prefix: "SWP" },
+    { keyword: "สวนันท์",  prefix: "SWP" },
+    { keyword: "จุฑาพิชญ์", prefix: "CTM" },
+  ];
+  const match = known.find(k => val.includes(k.keyword));
+  if (match) { prefixEl.value = match.prefix; updateRoomIdPreview(); return; }
+
+  // 3. Auto-generate จากตัวย่อคำในชื่อ (2–3 คำแรก)
+  const words = val.trim().split(/\s+/);
+  // เอาพยัญชนะแรกของแต่ละคำ (ASCII ก่อน ถ้าไม่มีให้ skip)
+  let auto = words.map(w => {
+    const eng = w.match(/[A-Za-z]/)?.[0]?.toUpperCase() || "";
+    return eng;
+  }).filter(Boolean).join("").slice(0, 4);
+  prefixEl.value = auto || "";
+  updateRoomIdPreview();
+}
+
+function updateRoomIdPreview() {
+  const prefix = (document.getElementById("room-prefix")?.value || "").toUpperCase().trim();
+  const roomNo = (document.getElementById("room-no")?.value || "").trim();
+  const preview = document.getElementById("room-id-preview");
+  const previewVal = document.getElementById("room-id-preview-val");
+  if (prefix && roomNo && preview) {
+    preview.style.display = "";
+    previewVal.textContent = `${prefix}-${roomNo}`;
+  } else if (preview) {
+    preview.style.display = "none";
+  }
+}
+
+async function doAddRoom() {
+  const btn      = document.getElementById("btn-do-add-room");
+  const location = document.getElementById("room-location").value.trim();
+  const prefix   = document.getElementById("room-prefix").value.toUpperCase().trim();
+  const floor    = document.getElementById("room-floor").value.trim();
+  const roomNo   = document.getElementById("room-no").value.trim();
+  const rtFan    = document.getElementById("rt-fan");
+  const rtAc     = document.getElementById("rt-ac");
+  const roomType = rtFan.checked ? "พัดลม" : rtAc.checked ? "ห้องแอร์" : "";
+
+  if (!location || !prefix || !roomNo || !roomType) {
+    showToast("กรุณากรอกข้อมูลให้ครบ (หอพัก / รหัส Prefix / เลขห้อง / ประเภทห้อง)", true); return;
+  }
+  if (!/^[A-Z]{2,5}$/.test(prefix)) {
+    showToast("รหัส Prefix ต้องเป็นตัวอักษรภาษาอังกฤษ 2–5 ตัว เช่น CTM, SWP", true); return;
+  }
+
+  btn.classList.add("loading"); btn.disabled = true;
+  try {
+    const res = await api("addRoom", { data: { location, prefix, floor, roomNo, roomType } });
+    if (!res.ok) throw new Error(res.error);
+    showToast("✓ เพิ่มห้อง " + res.roomId + " เรียบร้อย");
+    closeModal("modal-add-room");
+    ["room-location","room-prefix","room-floor","room-no"].forEach(id => document.getElementById(id).value = "");
+    rtFan.checked = false; rtAc.checked = false;
+    onRoomTypeChange();
+    document.getElementById("room-id-preview").style.display = "none";
+    await loadRooms();
+  } catch (e) {
+    showToast(e.message, true);
+  } finally {
+    btn.classList.remove("loading"); btn.disabled = false;
+  }
+}
+
+// ── USERS ────────────────────────────────────────────
+const USER_PAGE_SIZE = 20;
+let userSearchQ = "";
+let userPage = 0; // 0-based
+
+// ── LINE CHART ENGINE ────────────────────────────────
+const LC = {
+  STATUSES: ["pending","approved","active","checked_out","cancelled","rejected"],
+  LABELS:   { pending:"รออนุมัติ", approved:"อนุมัติแล้ว", active:"กำลังพัก",
+               checked_out:"Check Out", cancelled:"ยกเลิก", rejected:"ปฏิเสธ" },
+  COLORS:   { pending:"#D4A03B", approved:"#3B9A5F", active:"#2E82D4",
+               checked_out:"#8A8A9A", cancelled:"#B0B0C0", rejected:"#C84040" },
+  mode: "month",           // "month" | "year"
+  activeSet: new Set(["pending","approved","active","checked_out","cancelled","rejected"]),
+  PAD: { t:10, r:18, b:36, l:36 },
+};
+
+function lcInit() {
+  const now = new Date();
+  const ySel = document.getElementById("lc-year-sel");
+  const mSel = document.getElementById("lc-month-sel");
+  if (!ySel) return;
+  // populate years: from earliest booking year up to current
+  const years = new Set([now.getFullYear()]);
+  allBookings.forEach(b => { const d = new Date(b.createdAt); if (!isNaN(d)) years.add(d.getFullYear()); });
+  [...years].sort().forEach(y => {
+    const o = document.createElement("option");
+    o.value = y; o.textContent = `ปี ${y}`;
+    if (y === now.getFullYear()) o.selected = true;
+    ySel.appendChild(o);
+  });
+  // months
+  const TH_MONTHS = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.",
+                      "ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+  TH_MONTHS.forEach((name, i) => {
+    const o = document.createElement("option");
+    o.value = i; o.textContent = name;
+    if (i === now.getMonth()) o.selected = true;
+    mSel.appendChild(o);
+  });
+  lcRender();
+}
+
+function lcSetMode(mode, btn) {
+  LC.mode = mode;
+  document.querySelectorAll(".lc-seg-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  const mSel = document.getElementById("lc-month-sel");
+  if (mSel) mSel.style.display = mode === "month" ? "" : "none";
+  lcRender();
+}
+
+function lcToggle(btn) {
+  const s = btn.dataset.s;
+  if (LC.activeSet.has(s)) {
+    if (LC.activeSet.size <= 1) return; // keep at least 1
+    LC.activeSet.delete(s);
+    btn.classList.remove("active");
+  } else {
+    LC.activeSet.add(s);
+    btn.classList.add("active");
+  }
+  lcRender();
+}
+
+function lcRender() {
+  const svg = document.getElementById("lc-svg");
+  if (!svg || !allBookings.length) return;
+
+  const ySel = document.getElementById("lc-year-sel");
+  const mSel = document.getElementById("lc-month-sel");
+  const selYear  = ySel ? +ySel.value : new Date().getFullYear();
+  const selMonth = mSel ? +mSel.value : new Date().getMonth();
+
+  // Build X-axis buckets
+  let buckets = [];
+  const TH_MONTHS_SHORT = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.",
+                             "ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+
+  if (LC.mode === "month") {
+    const days = new Date(selYear, selMonth + 1, 0).getDate();
+    for (let d = 1; d <= days; d++) buckets.push({ label: d.toString(), key: `${selYear}-${String(selMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}` });
+  } else {
+    for (let mo = 0; mo < 12; mo++) buckets.push({ label: TH_MONTHS_SHORT[mo], key: `${selYear}-${String(mo+1).padStart(2,'0')}` });
+  }
+
+  // Count bookings per bucket per status
+  const activeSt = LC.STATUSES.filter(s => LC.activeSet.has(s));
+  const data = {}; // data[status][bucketIndex] = count
+  activeSt.forEach(s => { data[s] = new Array(buckets.length).fill(0); });
+
+  allBookings.forEach(b => {
+    if (!activeSt.includes(b.status)) return;
+    const d = new Date(b.createdAt);
+    if (isNaN(d) || d.getFullYear() !== selYear) return;
+    if (LC.mode === "month") {
+      if (d.getMonth() !== selMonth) return;
+      const idx = d.getDate() - 1;
+      if (idx >= 0 && idx < buckets.length) data[b.status][idx]++;
+    } else {
+      const idx = d.getMonth();
+      data[b.status][idx]++;
+    }
+  });
+
+  // Compute totals for summary
+  const totals = {};
+  activeSt.forEach(s => { totals[s] = data[s].reduce((a, b) => a + b, 0); });
+  const grandTotal = Object.values(totals).reduce((a, b) => a + b, 0);
+
+  // SVG dimensions
+  const W = svg.getBoundingClientRect().width || 600;
+  const H = 220;
+  const { t, r, b: pb, l } = LC.PAD;
+  const cW = W - l - r;
+  const cH = H - t - pb;
+
+  // Y-axis max
+  const allVals = activeSt.flatMap(s => data[s]);
+  const maxVal = Math.max(...allVals, 1);
+  const yMax = Math.ceil(maxVal / Math.max(1, Math.ceil(maxVal / 4))) * Math.max(1, Math.ceil(maxVal / 4));
+  const yTicks = 4;
+
+  // Helpers
+  const xPos = i => l + (buckets.length <= 1 ? cW / 2 : (i / (buckets.length - 1)) * cW);
+  const yPos = v => t + cH - (v / yMax) * cH;
+
+  let svgHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+
+  // Grid lines & Y labels
+  for (let i = 0; i <= yTicks; i++) {
+    const v = Math.round((yMax / yTicks) * i);
+    const y = yPos(v);
+    svgHTML += `<line x1="${l}" y1="${y}" x2="${W - r}" y2="${y}" stroke="var(--line-color)" stroke-width="1" stroke-dasharray="${i===0?'none':'4,3'}"/>`;
+    svgHTML += `<text x="${l - 5}" y="${y + 4}" text-anchor="end" font-size="10" fill="var(--muted-2)" font-family="Kodchasan,sans-serif">${v}</text>`;
+  }
+
+  // X labels — show every N-th to avoid overlap
+  const maxLabels = Math.floor(cW / 22);
+  const step = Math.max(1, Math.ceil(buckets.length / maxLabels));
+  buckets.forEach((bk, i) => {
+    if (i % step !== 0 && i !== buckets.length - 1) return;
+    const x = xPos(i);
+    svgHTML += `<text x="${x}" y="${H - pb + 16}" text-anchor="middle" font-size="10" fill="var(--muted-2)" font-family="Kodchasan,sans-serif">${bk.label}</text>`;
+  });
+
+  // Lines + dots per status
+  activeSt.forEach(s => {
+    const color = LC.COLORS[s];
+    const pts = data[s].map((v, i) => `${xPos(i).toFixed(1)},${yPos(v).toFixed(1)}`).join(" ");
+    // Area fill
+    const first = `${xPos(0).toFixed(1)},${yPos(0).toFixed(1)}`;
+    const last  = `${xPos(buckets.length-1).toFixed(1)},${yPos(0).toFixed(1)}`;
+    svgHTML += `<polygon points="${pts} ${last} ${first}" fill="${color}" fill-opacity="0.07"/>`;
+    // Line
+    svgHTML += `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    // Dots (only show if not too many points)
+    if (buckets.length <= 31) {
+      data[s].forEach((v, i) => {
+        if (v === 0) return;
+        const cx = xPos(i).toFixed(1), cy = yPos(v).toFixed(1);
+        svgHTML += `<circle cx="${cx}" cy="${cy}" r="3.5" fill="${color}" stroke="var(--card-bg)" stroke-width="1.5"/>`;
+      });
+    }
+  });
+
+  // Invisible hover bars for tooltip
+  buckets.forEach((bk, i) => {
+    const x = xPos(i);
+    const tooltipData = JSON.stringify(activeSt.map(s => ({ s, v: data[s][i] })));
+    svgHTML += `<rect x="${(x - (cW/buckets.length/2)).toFixed(1)}" y="${t}" width="${Math.max(4,(cW/buckets.length)).toFixed(1)}" height="${cH}" fill="transparent"
+      onmouseenter="lcShowTip(event,${i},'${bk.label.replace(/'/g,"\\'")}',${i===0?'true':'false'},${i===buckets.length-1?'true':'false'})"
+      onmouseleave="lcHideTip()"
+    />`;
+  });
+
+  svgHTML += `</svg>`;
+  svg.innerHTML = svgHTML;
+
+  // Store data for tooltip
+  LC._buckets = buckets;
+  LC._data = data;
+  LC._activeSt = activeSt;
+  LC._xPos = xPos;
+  LC._W = W;
+
+  // Summary row
+  const sumEl = document.getElementById("lc-summary");
+  if (sumEl) {
+    sumEl.innerHTML = activeSt.map(s => `
+      <div class="lc-sum-item">
+        <div class="lc-sum-dot" style="background:${LC.COLORS[s]}"></div>
+        ${LC.LABELS[s]} <span class="lc-sum-val">${totals[s]}</span>
+      </div>`).join("") +
+      `<div class="lc-sum-item" style="margin-left:auto;font-weight:700">รวม <span class="lc-sum-val" style="margin-left:4px">${grandTotal}</span></div>`;
+  }
+}
+
+function lcShowTip(e, idx, label, isFirst, isLast) {
+  const tip = document.getElementById("lc-tooltip");
+  if (!tip || !LC._buckets) return;
+  const activeSt = LC._activeSt;
+  const data = LC._data;
+  let html = `<div class="lc-tooltip-title">${label}</div>`;
+  activeSt.forEach(s => {
+    const v = data[s][idx];
+    html += `<div class="lc-tooltip-row">
+      <div class="lc-tooltip-dot" style="background:${LC.COLORS[s]}"></div>
+      <div class="lc-tooltip-label">${LC.LABELS[s]}</div>
+      <div class="lc-tooltip-val">${v}</div>
+    </div>`;
+  });
+  tip.innerHTML = html;
+  const wrap = tip.parentElement.getBoundingClientRect();
+  const ex = e.clientX - wrap.left;
+  const ey = e.clientY - wrap.top;
+  tip.style.display = "";
+  const tipW = 150;
+  let left = ex;
+  if (isFirst) left = Math.max(tipW/2, left);
+  if (isLast)  left = Math.min(wrap.width - tipW/2, left);
+  tip.style.left  = left + "px";
+  tip.style.top   = (ey - 20) + "px";
+}
+
+function lcHideTip() {
+  const tip = document.getElementById("lc-tooltip");
+  if (tip) tip.style.display = "none";
+}
+
+function renderMonthlyChart() { lcRender(); }
+async function loadUsers() {
+  try {
+    const res = await api("getUsers");
+    if (!res.ok) throw new Error(res.error);
+    allUsers = res.data || [];
+  } catch (e) {
+    document.getElementById("user-list").innerHTML =
+      `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">โหลดไม่ได้</div><div class="empty-sub">${e.message}</div></div>`;
+  }
+}
+
+function onUserSearch(q) { userSearchQ = q.toLowerCase(); userPage = 0; renderUsers(); }
+function userPrevPage() { if (userPage > 0) { userPage--; renderUsers(); } }
+function userNextPage() { userPage++; renderUsers(); }
+
+function renderUsers() {
+  let list = [...allUsers];
+  if (userSearchQ) list = list.filter(u =>
+    u.name.toLowerCase().includes(userSearchQ) ||
+    String(u.empId).includes(userSearchQ) ||
+    (u.dept||"").toLowerCase().includes(userSearchQ)
+  );
+  // Admin ขึ้นก่อน, เรียงตาม empId รอง
+  list.sort((a, b) => {
+    if (a.role === "admin" && b.role !== "admin") return -1;
+    if (a.role !== "admin" && b.role === "admin") return 1;
+    return String(a.empId).localeCompare(String(b.empId));
+  });
+
+  const el = document.getElementById("user-list");
+  const navEl = document.getElementById("user-page-nav");
+
+  if (list.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">ไม่พบพนักงาน</div></div>`;
+    if (navEl) navEl.style.display = "none";
+    return;
+  }
+
+  const totalPages = Math.ceil(list.length / USER_PAGE_SIZE);
+  if (userPage >= totalPages) userPage = Math.max(0, totalPages - 1);
+
+  const start = userPage * USER_PAGE_SIZE;
+  const visible = list.slice(start, start + USER_PAGE_SIZE);
+
+  // pagination nav
+  if (navEl) {
+    navEl.style.display = totalPages > 1 ? "" : "none";
+    document.getElementById("user-page-info").textContent =
+      `หน้า ${userPage + 1} / ${totalPages}  (${list.length} คน)`;
+    document.getElementById("user-prev-btn").disabled = userPage === 0;
+    document.getElementById("user-next-btn").disabled = userPage >= totalPages - 1;
+  }
+
+  el.innerHTML = visible.map(u => {
+    const isSelf   = String(u.empId) === String(session.empId);
+    const isAdmin  = u.role === "admin";
+    const av       = initials(u.name);
+
+    // booking summary from allBookings
+    const uid = String(u.empId).trim();
+    const myBooks = allBookings.filter(b =>
+      String(b.empId   ?? "").trim() === uid ||
+      String(b.bookedBy ?? "").trim() === uid
+    );
+    const pendCount  = myBooks.filter(b => b.status === "pending").length;
+    const apprCount  = myBooks.filter(b => ["approved","active"].includes(b.status)).length;
+    const doneCount  = myBooks.filter(b => ["checked_out","cancelled","rejected"].includes(b.status)).length;
+    const totalCount = myBooks.length;
+
+    const bkStrip = totalCount === 0
+      ? `<span class="user-bk-none">ยังไม่มีรายการจอง</span>`
+      : `<span class="user-bk-stat pend"><span class="bk-num">${pendCount}</span> รออนุมัติ</span>
+         <span class="user-bk-stat appr"><span class="bk-num">${apprCount}</span> อนุมัติ/พักอยู่</span>
+         <span class="user-bk-stat canc"><span class="bk-num">${doneCount}</span> เสร็จ/ยกเลิก</span>
+         <span class="user-bk-stat total" style="margin-left:4px;font-weight:700;color:var(--text)">รวม ${totalCount}</span>`;
+
+    const firstLoginBadge = u.isFirstLogin
+      ? `<span class="first-login-badge">⚠ ยังไม่ตั้ง PIN</span>` : "";
+
+    const actions = `
+      <button class="uca-btn edit" onclick="openEditEmployee('${u.empId}')">✏️ แก้ไข</button>
+      ${!isSelf ? `<button class="uca-btn reset" onclick="doResetPin('${u.empId}','${(u.name||"").replace(/'/g,"\\'")}')">🔑 รีเซ็ต PIN</button>` : ""}
+      ${!isSelf ? `<button class="uca-btn role-btn" onclick="toggleRole('${u.empId}','${u.role}',this)">${isAdmin ? "ถอด Admin" : "ตั้ง Admin"}</button>` : ""}
+      ${!isSelf ? `<button class="uca-btn del" onclick="doDeleteEmployee('${u.empId}','${(u.name||"").replace(/'/g,"\\'")}')">🗑 ลบ</button>` : ""}
+      ${isSelf ? `<span style="font-size:11px;color:var(--muted-2);padding:5px">(คุณ)</span>` : ""}`;
+
+    return `
+    <div class="user-card ${isAdmin ? 'is-admin' : ''}">
+      <div class="user-card-head">
+        <div class="user-card-av ${isAdmin ? 'admin-av' : ''}">${av}</div>
+        <div class="user-card-body">
+          <div class="user-card-meta-row">
+            <span class="user-card-empid">${u.empId}</span>
+            <span class="role-badge ${u.role}">${isAdmin ? "🛡️ Admin" : "👤 User"}</span>
+            ${firstLoginBadge}
+          </div>
+          <div class="user-card-name">${u.name || "—"}</div>
+          <div class="user-card-sub">${[u.dept, u.position].filter(Boolean).join("  ·  ") || "—"}</div>
+          ${u.email ? `<div class="user-card-email">${u.email}</div>` : ""}
+        </div>
+        <div class="user-card-actions">${actions}</div>
+      </div>
+      <div class="user-bk-strip">${bkStrip}</div>
+    </div>`;
+  }).join("");
+}
+
+async function toggleRole(empId, currentRole, btn) {
+  const newRole = currentRole === "admin" ? "user" : "admin";
+  confirmModal(
+    "เปลี่ยน Role",
+    `เปลี่ยน EMP·${empId} เป็น "${newRole === 'admin' ? '🛡️ Admin' : '👤 User'}" ?`,
+    async () => {
+      btn.disabled = true;
+      try {
+        const res = await api("updateRole", { targetEmpId: empId, newRole });
+        if (!res.ok) throw new Error(res.error);
+        showToast(`✓ เปลี่ยน role เป็น ${newRole} แล้ว`);
+        await loadUsers(); renderUsers();
+      } catch (e) { showToast(e.message, true); btn.disabled = false; }
+    }
+  );
+}
+
+// ── EMPLOYEE CRUD ─────────────────────────────────────
+let editEmpId = null;
+
+async function doAddEmployee() {
+  const btn = document.getElementById("btn-do-add-emp");
+  const empId     = document.getElementById("ae-empid").value.trim();
+  const firstName = document.getElementById("ae-firstname").value.trim();
+  const lastName  = document.getElementById("ae-lastname").value.trim();
+  const dept      = document.getElementById("ae-dept").value.trim();
+  const position  = document.getElementById("ae-position").value.trim();
+  const email     = document.getElementById("ae-email").value.trim();
+  const role      = document.getElementById("ae-role").value;
+  if (!empId || !firstName || !lastName) { showToast("กรุณากรอก รหัส / ชื่อ / นามสกุล", true); return; }
+
+  btn.classList.add("loading"); btn.disabled = true;
+  try {
+    const res = await api("addEmployee", { data: { empId, firstName, lastName, dept, position, email, role } });
+    if (!res.ok) throw new Error(res.error);
+    showToast(`✓ เพิ่มพนักงาน EMP·${empId} แล้ว`);
+    closeModal("modal-add-employee");
+    ["ae-empid","ae-firstname","ae-lastname","ae-dept","ae-position","ae-email"].forEach(id => document.getElementById(id).value = "");
+    await loadUsers(); renderUsers();
+  } catch (e) { showToast(e.message, true); }
+  finally { btn.classList.remove("loading"); btn.disabled = false; }
+}
+
+function openEditEmployee(empId) {
+  const u = allUsers.find(x => String(x.empId) === String(empId));
+  if (!u) return;
+  editEmpId = empId;
+  // fallback: ถ้า API ไม่ส่ง firstName/lastName แยก ให้ split จาก name
+  let fn = u.firstName || "";
+  let ln = u.lastName  || "";
+  if (!fn && u.name) {
+    const parts = u.name.trim().split(/\s+/);
+    fn = parts[0] || "";
+    ln = parts.slice(1).join(" ") || "";
+  }
+  document.getElementById("ee-empid-display").textContent = empId;
+  document.getElementById("ee-firstname").value  = fn;
+  document.getElementById("ee-lastname").value   = ln;
+  document.getElementById("ee-dept").value       = u.dept     || "";
+  document.getElementById("ee-position").value   = u.position || "";
+  document.getElementById("ee-email").value      = u.email    || "";
+  openModal("modal-edit-employee");
+}
+
+async function doEditEmployee() {
+  const btn = document.getElementById("btn-do-edit-emp");
+  const firstName = document.getElementById("ee-firstname").value.trim();
+  const lastName  = document.getElementById("ee-lastname").value.trim();
+  const dept      = document.getElementById("ee-dept").value.trim();
+  const position  = document.getElementById("ee-position").value.trim();
+  const email     = document.getElementById("ee-email").value.trim();
+  if (!firstName || !lastName) { showToast("กรุณากรอก ชื่อ / นามสกุล", true); return; }
+
+  btn.classList.add("loading"); btn.disabled = true;
+  try {
+    const res = await api("editEmployee", { data: { empId: editEmpId, firstName, lastName, dept, position, email } });
+    if (!res.ok) throw new Error(res.error);
+    showToast(`✓ อัพเดทข้อมูล EMP·${editEmpId} แล้ว`);
+    closeModal("modal-edit-employee");
+    await loadUsers(); renderUsers();
+  } catch (e) { showToast(e.message, true); }
+  finally { btn.classList.remove("loading"); btn.disabled = false; }
+}
+
+function doDeleteEmployee(empId, name) {
+  confirmModal(
+    "ลบพนักงานออกจากระบบ",
+    `ลบ "${name}" (EMP·${empId}) ออกจากระบบ?\nข้อมูลการเข้าสู่ระบบจะถูกลบด้วย`,
+    async () => {
+      try {
+        const res = await api("deleteEmployee", { targetEmpId: empId });
+        if (!res.ok) throw new Error(res.error);
+        showToast(`✓ ลบ EMP·${empId} แล้ว`);
+        await loadUsers(); renderUsers();
+      } catch (e) { showToast(e.message, true); }
+    },
+    true
+  );
+}
+
+function doResetPin(empId, name) {
+  confirmModal(
+    "รีเซ็ต PIN",
+    `รีเซ็ต PIN ของ "${name}" (EMP·${empId})?\nพนักงานจะต้องตั้ง PIN ใหม่ในการเข้าระบบครั้งถัดไป`,
+    async () => {
+      try {
+        const res = await api("resetPin", { targetEmpId: empId });
+        if (!res.ok) throw new Error(res.error);
+        showToast(`✓ รีเซ็ต PIN ของ EMP·${empId} แล้ว`);
+        await loadUsers(); renderUsers();
+      } catch (e) { showToast(e.message, true); }
+    }
+  );
+}
+
+// ── INIT ─────────────────────────────────────────────
+loadAll();
+let _lcResizeTimer;
+window.addEventListener("resize", () => {
+  clearTimeout(_lcResizeTimer);
+  _lcResizeTimer = setTimeout(lcRender, 120);
+});
+</script>
+</body>
+</html>

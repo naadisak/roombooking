@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kodchasan:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: #EDE7DA; color: #23201B; font-family: 'Kodchasan', sans-serif; -webkit-font-smoothing: antialiased; }
+  input, select, textarea, button { font-family: inherit; }
+  a { color: #A8834F; text-decoration: none; }
+  a:hover { color: #8C6A3B; }
+  ::placeholder { color: #B4AB99; }
+  input:focus, select:focus, textarea:focus { outline: none; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes pop { 0% { transform: scale(.7); opacity: 0; } 60% { transform: scale(1.06); } 100% { transform: scale(1); opacity: 1; } }
+</style>
+</helmet>
+<div style="min-height:100vh;width:100%;display:flex;flex-direction:column;">
+
+  <!-- ================= LOGIN ================= -->
+  <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+  <div style="min-height:100vh;display:grid;grid-template-columns:{{ loginCols }};animation:fadeIn .5s ease;">
+    <!-- hero -->
+    <div style="position:relative;overflow:hidden;background:linear-gradient(155deg,#1E3A34 0%,#16302A 55%,#122824 100%);color:#F3EFE6;padding:56px 60px;display:{{ heroDisp }};flex-direction:column;justify-content:space-between;min-height:100vh;">
+      <div style="position:absolute;inset:20px;border:1px solid rgba(200,168,118,.28);pointer-events:none;"></div>
+      <div style="position:relative;display:flex;align-items:center;gap:14px;">
+        <div style="width:46px;height:46px;border:1px solid #C9A876;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Kodchasan',sans-serif;font-size:26px;color:#C9A876;">M</div>
+        <div style="line-height:1;">
+          <div style="font-family:'Kodchasan',sans-serif;font-size:22px;letter-spacing:.14em;">MAISON</div>
+          <div style="font-size:10.5px;letter-spacing:.34em;color:rgba(201,168,118,.85);text-transform:uppercase;margin-top:5px;">Residence</div>
+        </div>
+      </div>
+
+      <div style="position:relative;max-width:440px;">
+        <div style="font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#C9A876;margin-bottom:22px;">Employee Stay Program</div>
+        <h1 style="font-family:'Kodchasan',sans-serif;font-weight:600;font-size:58px;line-height:1.02;margin:0 0 20px;">ที่พักสำหรับ<br><span style="font-style:italic;color:#C9A876;">พนักงาน</span> ของคุณ</h1>
+        <p style="font-size:15px;line-height:1.75;color:rgba(243,239,230,.72);margin:0;">ระบบลงทะเบียนและจองห้องพักสำหรับพนักงาน จัดการผู้เข้าพัก วันเข้าพัก และติดตามสถานะการอนุมัติ ได้ในที่เดียว</p>
+      </div>
+
+      <div style="position:relative;display:flex;gap:34px;">
+        <div><div style="font-family:'Kodchasan',sans-serif;font-size:34px;color:#C9A876;line-height:1;">128</div><div style="font-size:11px;letter-spacing:.14em;color:rgba(243,239,230,.6);margin-top:6px;text-transform:uppercase;">Rooms</div></div>
+        <div style="width:1px;background:rgba(201,168,118,.28);"></div>
+        <div><div style="font-family:'Kodchasan',sans-serif;font-size:34px;color:#C9A876;line-height:1;">24/7</div><div style="font-size:11px;letter-spacing:.14em;color:rgba(243,239,230,.6);margin-top:6px;text-transform:uppercase;">Front Desk</div></div>
+        <div style="width:1px;background:rgba(201,168,118,.28);"></div>
+        <div><div style="font-family:'Kodchasan',sans-serif;font-size:34px;color:#C9A876;line-height:1;">4.9</div><div style="font-size:11px;letter-spacing:.14em;color:rgba(243,239,230,.6);margin-top:6px;text-transform:uppercase;">Rating</div></div>
+      </div>
+    </div>
+
+    <!-- form -->
+    <div style="display:flex;align-items:center;justify-content:center;padding:48px 40px;background:#F5F1E8;">
+      <div style="width:100%;max-width:388px;animation:fadeUp .6s ease;">
+        <div style="font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#A8834F;margin-bottom:14px;">Sign in · เข้าสู่ระบบ</div>
+        <h2 style="font-family:'Kodchasan',sans-serif;font-weight:600;font-size:36px;margin:0 0 8px;color:#23201B;">Welcome back</h2>
+        <p style="margin:0 0 32px;color:#857D6E;font-size:14px;">เข้าสู่ระบบด้วยรหัสพนักงานของคุณ</p>
+
+        <label style="display:block;font-size:12.5px;font-weight:600;color:#4A453C;margin-bottom:8px;letter-spacing:.01em;">รหัสพนักงาน <span style="color:#A8834F;font-weight:400;">Employee ID</span></label>
+        <input value="{{ loginId }}" onChange="{{ h.setLoginId }}" placeholder="เช่น EMP-10482" style="width:100%;padding:14px 16px;border:1px solid #DBD2C0;border-radius:11px;background:#FFFDF8;font-size:15px;color:#23201B;margin-bottom:18px;transition:border .2s;" />
+
+        <label style="display:block;font-size:12.5px;font-weight:600;color:#4A453C;margin-bottom:8px;letter-spacing:.01em;">รหัสผ่าน <span style="color:#A8834F;font-weight:400;">Password</span></label>
+        <input value="{{ loginPw }}" onChange="{{ h.setLoginPw }}" type="password" placeholder="••••••••" style="width:100%;padding:14px 16px;border:1px solid #DBD2C0;border-radius:11px;background:#FFFDF8;font-size:15px;color:#23201B;margin-bottom:14px;" />
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;font-size:13px;">
+          <label style="display:flex;align-items:center;gap:8px;color:#857D6E;cursor:pointer;"><input type="checkbox" style="accent-color:#1E3A34;width:15px;height:15px;" />จดจำฉันไว้</label>
+          <a href="#">ลืมรหัสผ่าน?</a>
+        </div>
+
+        <button onClick="{{ h.login }}" style="width:100%;padding:15px;background:#1E3A34;color:#F3EFE6;border:none;border-radius:11px;font-size:15px;font-weight:600;letter-spacing:.02em;cursor:pointer;box-shadow:0 12px 24px -12px rgba(30,58,52,.6);transition:transform .15s,background .2s;" style-hover="background:#16302A;transform:translateY(-1px);">เข้าสู่ระบบ →</button>
+
+        <div style="text-align:center;margin-top:28px;font-size:13px;color:#9A9182;">ยังไม่มีบัญชี? <a href="#">ติดต่อฝ่ายบุคคล</a></div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ================= APP (dashboard + booking + done) ================= -->
+  <sc-if value="{{ isApp }}" hint-placeholder-val="{{ false }}">
+  <div style="min-height:100vh;display:flex;flex-direction:column;">
+    <!-- top bar -->
+    <div style="position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:16px 34px;background:rgba(245,241,232,.86);backdrop-filter:blur(12px);border-bottom:1px solid #E2DAC9;">
+      <div onClick="{{ h.goDash }}" style="display:flex;align-items:center;gap:12px;cursor:pointer;">
+        <div style="width:38px;height:38px;border:1px solid #1E3A34;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Kodchasan',sans-serif;font-size:21px;color:#1E3A34;">M</div>
+        <div style="line-height:1;">
+          <div style="font-family:'Kodchasan',sans-serif;font-size:18px;letter-spacing:.14em;color:#1E3A34;">MAISON</div>
+          <div style="font-size:9px;letter-spacing:.3em;color:#A8834F;text-transform:uppercase;margin-top:3px;">Residence</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="display:flex;gap:2px;">
+          <a href="Profile.dc.html" style="padding:8px 13px;border-radius:9px;font-size:13.5px;color:#857D6E;">โปรไฟล์</a>
+          <a href="Superadmin.dc.html" style="padding:8px 13px;border-radius:9px;font-size:13.5px;color:#857D6E;">Admin</a>
+        </div>
+        <a href="Profile.dc.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+          <div style="text-align:right;line-height:1.3;">
+            <div style="font-size:13.5px;font-weight:600;color:#23201B;">{{ profile.fullName }}</div>
+            <div style="font-size:11.5px;color:#9A9182;">{{ profile.dept }}</div>
+          </div>
+          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(150deg,#1E3A34,#2C574B);color:#F3EFE6;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;font-family:'Kodchasan',sans-serif;">{{ profile.initials }}</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- ---------- DASHBOARD ---------- -->
+    <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1;max-width:1080px;width:100%;margin:0 auto;padding:{{ appPad }};animation:fadeUp .5s ease;">
+      <!-- greeting + CTA -->
+      <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between;margin-bottom:40px;">
+        <div>
+          <div style="font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#A8834F;margin-bottom:12px;">Dashboard · ภาพรวม</div>
+          <h1 style="font-family:'Kodchasan',sans-serif;font-weight:600;font-size:{{ dashH1 }};margin:0;color:#23201B;line-height:1.05;">สวัสดี, <span style="font-style:italic;">{{ profile.firstName }}</span></h1>
+          <p style="margin:10px 0 0;color:#857D6E;font-size:14.5px;">จัดการรายการจองห้องพักและติดตามสถานะการอนุมัติของคุณ</p>
+        </div>
+        <button onClick="{{ h.startBooking }}" style="display:inline-flex;align-items:center;gap:10px;padding:15px 26px;background:#1E3A34;color:#F3EFE6;border:none;border-radius:12px;font-size:14.5px;font-weight:600;cursor:pointer;box-shadow:0 14px 28px -14px rgba(30,58,52,.65);transition:transform .15s;" style-hover="transform:translateY(-2px);"><span style="font-size:18px;line-height:0;">＋</span> ทำรายการจองห้องพัก</button>
+      </div>
+
+      <!-- stat strip -->
+      <div style="display:grid;grid-template-columns:{{ gcStats }};gap:14px;margin-bottom:38px;">
+        <div style="background:#FBF8F1;border:1px solid #E7DFCE;border-radius:16px;padding:22px 24px;">
+          <div style="font-size:12px;color:#9A9182;margin-bottom:10px;">ทั้งหมด · Total</div>
+          <div style="font-family:'Kodchasan',sans-serif;font-size:38px;color:#1E3A34;line-height:1;">{{ stats.total }}</div>
+        </div>
+        <div style="background:#FBF8F1;border:1px solid #E7DFCE;border-radius:16px;padding:22px 24px;">
+          <div style="font-size:12px;color:#9A9182;margin-bottom:10px;">รออนุมัติ · Pending</div>
+          <div style="font-family:'Kodchasan',sans-serif;font-size:38px;color:#B0842F;line-height:1;">{{ stats.pending }}</div>
+        </div>
+        <div style="background:#FBF8F1;border:1px solid #E7DFCE;border-radius:16px;padding:22px 24px;">
+          <div style="font-size:12px;color:#9A9182;margin-bottom:10px;">อนุมัติแล้ว · Approved</div>
+          <div style="font-family:'Kodchasan',sans-serif;font-size:38px;color:#3C7A5A;line-height:1;">{{ stats.approved }}</div>
+        </div>
+      </div>
+
+      <!-- booked item list -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+        <h2 style="font-family:'Kodchasan',sans-serif;font-weight:600;font-size:24px;margin:0;color:#23201B;">รายการจองของฉัน <span style="color:#B4AB99;font-size:16px;">Booked Items</span></h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <sc-for list="{{ bookings }}" as="bk" hint-placeholder-count="3">
+          <div onClick="{{ bk.onClick }}" style="{{ cardStyle }}" style-hover="box-shadow:0 16px 34px -22px rgba(30,58,52,.4);transform:translateY(-1px);">
+            <div style="width:54px;height:62px;border-radius:12px;overflow:hidden;flex:none;background:{{ bk.avatarBg }};">
+              <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ bk.photoId }}" src="{{ bk.photoSrc }}" shape="rounded" radius="12" placeholder="รูป" fit="cover" hint-size="54px,62px" style="display:block;width:54px;height:62px;"></x-import>
+            </div>
+            <div style="min-width:0;flex:1;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span style="font-size:15.5px;font-weight:600;color:#23201B;">{{ bk.guest }}</span>
+                <span style="font-size:11px;color:#A8834F;background:#F2EAD9;padding:2px 9px;border-radius:20px;">{{ bk.id }}</span>
+              </div>
+              <div style="font-size:12.5px;color:#857D6E;margin-top:5px;">{{ bk.dateRange }} · {{ bk.room }} · {{ bk.func }}</div>
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:7px;flex:none;padding:7px 13px;border-radius:22px;background:{{ bk.statusBg }};">
+              <span style="width:8px;height:8px;border-radius:50%;flex:none;background:{{ bk.statusDot }};"></span>
+              <span style="font-size:12px;font-weight:600;white-space:nowrap;color:{{ bk.statusText }};">{{ bk.statusLabel }}</span>
+            </div>
+            <sc-if value="{{ notMob }}" hint-placeholder-val="{{ true }}">
+              <span style="font-size:22px;color:#C4BBA8;line-height:1;flex:none;">›</span>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ---------- BOOKING FLOW ---------- -->
+    <sc-if value="{{ isBooking }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;max-width:960px;width:100%;margin:0 auto;padding:{{ appPad }};animation:fadeUp .45s ease;">
+      <!-- header -->
+      <div style="margin-bottom:30px;">
+        <div style="font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#A8834F;margin-bottom:10px;">New Booking · จองห้องพัก</div>
+        <h1 style="font-family:'Kodchasan',sans-serif;font-weight:600;font-size:{{ bookH1 }};margin:0;color:#23201B;line-height:1.15;">ทำรายการจองห้องพัก</h1>
+      </div>
+
+      <!-- stepper -->
+      <div style="position:relative;display:flex;justify-content:space-between;margin:0 6px 40px;">
+        <div style="position:absolute;top:19px;left:19px;right:19px;height:2px;background:#E2DAC9;"></div>
+        <div style="position:absolute;top:19px;left:19px;height:2px;background:#A8834F;transition:width .4s ease;width:{{ progressWidth }};"></div>
+        <sc-for list="{{ steps }}" as="st" hint-placeholder-count="3">
+          <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:9px;background:transparent;">
+            <div style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;border:2px solid {{ st.ring }};background:{{ st.bg }};color:{{ st.fg }};transition:all .3s;font-family:'Kodchasan',sans-serif;">{{ st.mark }}</div>
+            <div style="text-align:center;">
+              <div style="font-size:13px;font-weight:600;white-space:nowrap;color:{{ st.labelColor }};">{{ st.label }}</div>
+              <div style="font-size:10.5px;color:#B4AB99;letter-spacing:.06em;text-transform:uppercase;margin-top:2px;">{{ st.sub }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- card -->
+      <div style="background:#FFFDF8;border:1px solid #E7DFCE;border-radius:20px;padding:{{ cardPad }};box-shadow:0 30px 60px -40px rgba(30,58,52,.35);">
+
+        <!-- STEP 1 : guest info -->
+        <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+        <div style="animation:fadeUp .4s ease;">
+          <h3 style="font-family:'Kodchasan',sans-serif;font-weight:600;font-size:24px;margin:0 0 4px;color:#23201B;">ข้อมูลผู้เข้าพัก</h3>
+          <p style="margin:0 0 28px;color:#9A9182;font-size:13.5px;">Guest Information — กรอกข้อมูลของผู้ที่จะเข้าพัก</p>
+
+          <div style="display:grid;grid-template-columns:{{ gcGuest }};gap:28px;align-items:start;">
+            <!-- photo -->
+            <div>
+              <label style="display:block;font-size:12.5px;font-weight:600;color:#4A453C;margin-bottom:10px;">รูปถ่ายหน้าตรง</label>
+              <div style="width:150px;height:190px;">
+                <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="guest-photo" shape="rounded" radius="14" placeholder="อัปโหลดรูปถ่าย" fit="cover" hint-size="150px,190px" style="display:block;width:150px;height:190px;"></x-import>
+              </div>
+              <div style="font-size:11px;color:#B4AB99;margin-top:8px;line-height:1.5;">แนะนำพื้นหลังสีอ่อน<br>รูปแบบ JPG / PNG</div>
+            </div>
+
+            <!-- fields grid -->
+            <div style="display:grid;grid-template-columns:{{ gcFields }};gap:18px 20px;">
+              <div style="grid-column:1 / -1;">
+                <label style="display:block;font-size:12.5px;font-weight:600;color:#4A453C;margin-bottom:7px;">รหัสพนักงาน <span style="color:#A8834F;font-weight:400;">Employee ID</span></label>
+                <input value="{{ f.empId }}" onChange="{{ h.set.empId }}" placeholder="EMP-xxxxx" style="width:100%;padding:12px 14px;border:1px solid #DBD2C0;border-radius:10px;background:#FBF8F1;font-size:14.5px;color:#23201B;" />
+              </div>
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:600;color:#4A453C;margin-bottom:7px;">ชื่อ <span style="color:#A8834F;font-weight:400;">First name</span></label>
+                <input value="{{ f.firstName }}" onChange="{{ h.set.firstName }}" placeholder="ชื่อจริง" style="width:100%;padding:12px 14px;border:1px solid #DBD2C0;border-radius:10px;background:#FBF8F1;font-size:14.5px;color:#23201B;" />
+              </div>
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:600;color:#4A453C;margin-bottom:7px;">นามสกุล <span style="color:#A8834F;font-weight:400;">Last name</span></label>
+                <input value="{{ f.lastName }}" onChange="{{ h.set.lastName }}" placeholder="นามสกุล" style="width:100%;padding:12px 14px;border:1px solid #DBD2C0;border-radius:10px;background:#FBF8F1;font-size:14.5px;color:#23201B;" />
+              </div>
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:600;color:#4A453C;margin-bottom:7px;">ชื่อเล่น <span style="color:#A8834F;font-weight:400;">Nickname</span></label>
+                <input value="{{ f.nickname }}" onChange="{{ h.set.nickname }}" placeholder="ชื่อเล่น" style="width:100%;padding:12px 14px;border:1px solid #DBD2C0;border-radius:10px;background:#FBF8F1;font-size:14.5px;color:#23201B;" />
+              </div>
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:600;color:#4A453C;margin-bottom:7px;">เพศ <span style="color:#A8834F;font-weight:400;">Gender</span></label>
+                <select value="{{ f.gender }}" onChange="{{ h.set.gender }}" style="width:100%;padding:12px 14px;border:1px solid #DBD2C0;border-radius:10px;background:#FBF8F1;font-size:14.5px;color:#23201B;appearance:none;cursor:pointer;">
+                  <option value="">เลือกเพศ</option>
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
+                  <option value="ไม่ระบุ">ไม่ระบุ</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:600;color:#4A453C;margin-bottom:7px;">ศาสนา <span style="color:#A8834F;font-weight:400;">Religion</span></label>
+                <select value="{{ f.religion }}" onChange="{{ h.set.religion }}" style="width:100%;padding:12px 14px;border:1px solid #DBD2C0;border-radius:10px;background:#FBF8F1;font-size:14.5px;color:#23201B;appearance:none;cursor:pointer;">
+                  <option value="">เลือกศาสนา</option>
+                  <option value="พุทธ">พุทธ</option>
+                  <option value="คริสต์">คริสต์</option>
+                  <option value="อิสลาม">อิสลาม</option>
+                  <option value="ฮินดู">ฮินดู</option>
+                  <option value="อื่น ๆ">อื่น ๆ</option>
+                </select>
+              </div>
+              <div style="grid-column:1 / -1;">
+                <label style="display:block;font-size:12.5px;font-weight:600;color:#4A453C;margin-bottom:7px;">เลขบัตรประชาชน <span style="color:#A8834F;font-weight:400;">National ID</span></label>
+                <input value="{{ f.idCard }}" onChange="{{ h.set.idCard }}" placeholder="x-xxxx-xxxxx-xx-x" style="width:100%;padding:12px 14px;border:1px solid #DBD2C0;border-radius:10px;background:#FBF8F1;font-size:14.5px;color:#23201B;letter-spacing:.06em;" />
+              </div>
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:600;color:#4A453C;margin-bottom:7px;">เบอร์ติดต่อ <span style="color:#A8834F;font-weight:400;">Phone</span></label>
+                <input value="{{ f.phone }}" onChange="{{ h.set.phone }}" placeholder="08x-xxx-xxxx" style="width:100%;padding:12px 14px;border:1px solid #DBD2C0;border-radius:10px;background:#FBF8F1;font-size:14.5px;color:#23201B;" />
+              </div>
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:600;color:#4A453C;margin-bottom:7px;">วันเริ่มงาน <span style="color:#A8834F;font-weight:400;">Start date</span></label>
+                <input value="{{ f.startDate }}" onChange="{{ h.set.startDate }}" type="date" style="width:100%;padding:12px 14px;border:1px solid #DBD2C0;border-radius:10px;background:#FBF8F1;font-size:14.5px;color:#23201B;" />
+              </div>
+            </div>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- STEP 2 : dates / calendar -->
+        <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+        <div style="animation:fadeUp .4s ease;">
+          <h3 style="font-family:'Kodchasan',sans-serif;font-weight:600;font-size:24px;margin:0 0 4px;color:#23201B;">ระบุวันที่เข้าพัก</h3>
+          <p style="margin:0 0 26px;color:#9A9182;font-size:13.5px;">Stay Dates — เลือกวันเช็คอินและเช็คเอาท์บนปฏิทิน</p>
+
+          <div style="display:grid;grid-template-columns:{{ gcCal }};gap:24px;align-items:start;">
+            <!-- calendar -->
+            <div style="border:1px solid #E7DFCE;border-radius:16px;padding:22px 22px 26px;background:#FBF8F1;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+                <button onClick="{{ h.prevMonth }}" style="width:34px;height:34px;border:1px solid #DBD2C0;border-radius:9px;background:#FFFDF8;color:#4A453C;font-size:16px;cursor:pointer;">‹</button>
+                <div style="font-family:'Kodchasan',sans-serif;font-size:20px;font-weight:600;color:#23201B;">{{ calTitle }}</div>
+                <button onClick="{{ h.nextMonth }}" style="width:34px;height:34px;border:1px solid #DBD2C0;border-radius:9px;background:#FFFDF8;color:#4A453C;font-size:16px;cursor:pointer;">›</button>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px;">
+                <sc-for list="{{ weekdays }}" as="wd" hint-placeholder-count="7">
+                  <div style="text-align:center;font-size:11px;font-weight:600;color:#A8834F;padding:4px 0;">{{ wd }}</div>
+                </sc-for>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">
+                <sc-for list="{{ days }}" as="d" hint-placeholder-count="42">
+                  <button onClick="{{ d.onClick }}" disabled="{{ d.disabled }}" style="{{ d.style }}">{{ d.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+
+            <!-- summary of selection + function -->
+            <div style="display:flex;flex-direction:column;gap:16px;">
+              <div style="border:1px solid #E7DFCE;border-radius:14px;padding:18px 20px;background:#FFFDF8;">
+                <div style="font-size:11.5px;color:#9A9182;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">เช็คอิน · Check-in</div>
+                <div style="font-family:'Kodchasan',sans-serif;font-size:22px;color:#1E3A34;">{{ checkInLabel }}</div>
+              </div>
+              <div style="border:1px solid #E7DFCE;border-radius:14px;padding:18px 20px;background:#FFFDF8;">
+                <div style="font-size:11.5px;color:#9A9182;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">เช็คเอาท์ · Check-out</div>
+                <div style="font-family:'Kodchasan',sans-serif;font-size:22px;color:#1E3A34;">{{ checkOutLabel }}</div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;border:1px dashed #C9A876;border-radius:14px;padding:14px 20px;background:#F7F0E2;">
+                <span style="font-size:13px;color:#857D6E;">รวมทั้งหมด</span>
+                <span style="font-size:16px;font-weight:600;color:#A8834F;">{{ nightsLabel }}</span>
+              </div>
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:600;color:#4A453C;margin-bottom:7px;">วัตถุประสงค์ <span style="color:#A8834F;font-weight:400;">Function</span></label>
+                <select value="{{ f.func }}" onChange="{{ h.set.func }}" style="width:100%;padding:12px 14px;border:1px solid #DBD2C0;border-radius:10px;background:#FBF8F1;font-size:14.5px;color:#23201B;appearance:none;cursor:pointer;">
+                  <option value="">เลือกวัตถุประสงค์</option>
+                  <option value="อบรม / สัมมนา">อบรม / สัมมนา</option>
+                  <option value="ประชุม / Workshop">ประชุม / Workshop</option>
+                  <option value="ปฏิบัติงานนอกพื้นที่">ปฏิบัติงานนอกพื้นที่</option>
+                  <option value="พนักงานใหม่ / Onboarding">พนักงานใหม่ / Onboarding</option>
+                  <option value="เดินทางเพื่อธุรกิจ">เดินทางเพื่อธุรกิจ</option>
+                  <option value="อื่น ๆ">อื่น ๆ</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:600;color:#4A453C;margin-bottom:7px;">ประเภทห้อง <span style="color:#A8834F;font-weight:400;">Room type</span></label>
+                <select value="{{ f.room }}" onChange="{{ h.set.room }}" style="width:100%;padding:12px 14px;border:1px solid #DBD2C0;border-radius:10px;background:#FBF8F1;font-size:14.5px;color:#23201B;appearance:none;cursor:pointer;">
+                  <option value="Standard">Standard Single</option>
+                  <option value="Deluxe Twin">Deluxe Twin</option>
+                  <option value="Superior">Superior</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- STEP 3 : summary -->
+        <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+        <div style="animation:fadeUp .4s ease;">
+          <h3 style="font-family:'Kodchasan',sans-serif;font-weight:600;font-size:24px;margin:0 0 4px;color:#23201B;">ตรวจสอบและยืนยัน</h3>
+          <p style="margin:0 0 26px;color:#9A9182;font-size:13.5px;">Review &amp; Confirm — ตรวจสอบข้อมูลก่อนส่งคำขอ</p>
+
+          <div style="display:grid;grid-template-columns:{{ gcHalf }};gap:16px;">
+            <div style="grid-column:1 / -1;display:flex;align-items:center;gap:16px;background:linear-gradient(150deg,#1E3A34,#16302A);border-radius:16px;padding:20px 24px;color:#F3EFE6;">
+              <div style="width:48px;height:48px;border-radius:12px;background:rgba(201,168,118,.9);color:#16302A;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'Kodchasan',sans-serif;font-size:19px;">{{ sumInitials }}</div>
+              <div>
+                <div style="font-size:17px;font-weight:600;">{{ sumName }}</div>
+                <div style="font-size:12.5px;color:rgba(243,239,230,.7);margin-top:3px;">{{ f.empId }} · {{ sumNick }}</div>
+              </div>
+            </div>
+
+            <div style="border:1px solid #E7DFCE;border-radius:14px;padding:16px 20px;background:#FBF8F1;">
+              <div style="font-size:11px;color:#9A9182;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">เพศ / ศาสนา</div>
+              <div style="font-size:14.5px;color:#23201B;">{{ sumGenderReligion }}</div>
+            </div>
+            <div style="border:1px solid #E7DFCE;border-radius:14px;padding:16px 20px;background:#FBF8F1;">
+              <div style="font-size:11px;color:#9A9182;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">เบอร์ติดต่อ</div>
+              <div style="font-size:14.5px;color:#23201B;">{{ sumPhone }}</div>
+            </div>
+            <div style="border:1px solid #E7DFCE;border-radius:14px;padding:16px 20px;background:#FBF8F1;">
+              <div style="font-size:11px;color:#9A9182;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">เลขบัตรประชาชน</div>
+              <div style="font-size:14.5px;color:#23201B;letter-spacing:.04em;">{{ sumId }}</div>
+            </div>
+            <div style="border:1px solid #E7DFCE;border-radius:14px;padding:16px 20px;background:#FBF8F1;">
+              <div style="font-size:11px;color:#9A9182;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">วันเริ่มงาน</div>
+              <div style="font-size:14.5px;color:#23201B;">{{ sumStart }}</div>
+            </div>
+
+            <div style="grid-column:1 / -1;border:1px solid #C9A876;border-radius:14px;padding:20px 24px;background:#F7F0E2;display:flex;flex-wrap:wrap;gap:26px;align-items:center;justify-content:space-between;">
+              <div>
+                <div style="font-size:11px;color:#A8834F;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">ช่วงวันเข้าพัก</div>
+                <div style="font-family:'Kodchasan',sans-serif;font-size:22px;color:#1E3A34;">{{ sumDates }}</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:13px;color:#857D6E;">{{ sumRoom }} · {{ sumFunc }}</div>
+                <div style="font-size:15px;font-weight:600;color:#A8834F;margin-top:4px;">{{ nightsLabel }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- nav buttons -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:34px;padding-top:26px;border-top:1px solid #EDE5D4;">
+          <button onClick="{{ h.back }}" style="padding:13px 24px;background:transparent;color:#857D6E;border:1px solid #DBD2C0;border-radius:11px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;" style-hover="background:#F2EAD9;color:#4A453C;">← ย้อนกลับ</button>
+          <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ h.submit }}" style="padding:14px 30px;background:#A8834F;color:#FFFDF8;border:none;border-radius:11px;font-size:14.5px;font-weight:600;cursor:pointer;box-shadow:0 14px 26px -14px rgba(168,131,79,.7);transition:transform .15s;" style-hover="transform:translateY(-2px);">ยืนยันการจอง ✓</button>
+          </sc-if>
+          <sc-if value="{{ notStep3 }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ h.next }}" style="padding:14px 30px;background:#1E3A34;color:#F3EFE6;border:none;border-radius:11px;font-size:14.5px;font-weight:600;cursor:pointer;box-shadow:0 14px 26px -14px rgba(30,58,52,.65);transition:transform .15s;" style-hover="transform:translateY(-2px);">ถัดไป →</button>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ---------- DONE ---------- -->
+    <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:60px 34px;">
+      <div style="max-width:440px;text-align:center;animation:fadeUp .5s ease;">
+        <div style="width:88px;height:88px;margin:0 auto 28px;border-radius:50%;background:linear-gradient(150deg,#3C7A5A,#2E6248);display:flex;align-items:center;justify-content:center;box-shadow:0 20px 40px -18px rgba(60,122,90,.7);animation:pop .5s ease;">
+          <span style="color:#fff;font-size:40px;line-height:0;">✓</span>
+        </div>
+        <div style="font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#A8834F;margin-bottom:14px;">Request submitted</div>
+        <h1 style="font-family:'Kodchasan',sans-serif;font-weight:600;font-size:38px;margin:0 0 12px;color:#23201B;">ส่งคำขอเรียบร้อย</h1>
+        <p style="margin:0 0 8px;color:#857D6E;font-size:14.5px;line-height:1.7;">คำขอจองห้องพักของ <strong style="color:#23201B;">{{ sumName }}</strong> ถูกส่งเข้าระบบแล้ว<br>สถานะปัจจุบัน: <span style="color:#B0842F;font-weight:600;">อยู่ระหว่างดำเนินการ</span></p>
+        <div style="display:inline-flex;align-items:center;gap:8px;margin:22px 0 30px;background:#FBF8F1;border:1px solid #E7DFCE;border-radius:22px;padding:8px 18px;font-size:13px;color:#857D6E;">หมายเลขคำขอ <strong style="color:#A8834F;">{{ newBookingId }}</strong></div>
+        <div>
+          <button onClick="{{ h.goDash }}" style="padding:14px 30px;background:#1E3A34;color:#F3EFE6;border:none;border-radius:11px;font-size:14.5px;font-weight:600;cursor:pointer;box-shadow:0 14px 26px -14px rgba(30,58,52,.65);">กลับสู่หน้าหลัก</button>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ---------- DETAIL ---------- -->
+    <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;max-width:820px;width:100%;margin:0 auto;padding:{{ appPad }};animation:fadeUp .45s ease;">
+      <div onClick="{{ h.goDash }}" style="display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:#857D6E;cursor:pointer;margin-bottom:22px;" style-hover="color:#4A453C;">← กลับสู่รายการจอง</div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;justify-content:space-between;margin-bottom:26px;">
+        <div>
+          <div style="font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#A8834F;margin-bottom:10px;">Booking Detail · รายละเอียด</div>
+          <h1 style="font-family:'Kodchasan',sans-serif;font-weight:600;font-size:34px;line-height:1.15;margin:0;color:#23201B;">รายละเอียดการจอง</h1>
+          <div style="font-size:13px;color:#A8834F;margin-top:8px;">หมายเลข {{ detail.id }}</div>
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:9px;padding:9px 18px;border-radius:24px;background:{{ detail.statusBg }};">
+          <span style="width:9px;height:9px;border-radius:50%;background:{{ detail.statusDot }};"></span>
+          <span style="font-size:13.5px;font-weight:600;color:{{ detail.statusText }};">{{ detail.statusLabel }}</span>
+        </div>
+      </div>
+
+      <div style="background:#FFFDF8;border:1px solid #E7DFCE;border-radius:20px;padding:{{ cardPad }};box-shadow:0 30px 60px -44px rgba(30,58,52,.32);">
+        <!-- guest header -->
+        <div style="display:flex;align-items:center;gap:16px;background:linear-gradient(150deg,#1E3A34,#16302A);border-radius:16px;padding:18px 22px;color:#F3EFE6;margin-bottom:22px;">
+          <div style="width:56px;height:68px;border-radius:12px;overflow:hidden;flex:none;background:{{ detail.avatarBg }};">
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ detail.photoId }}" src="{{ detail.photoSrc }}" shape="rounded" radius="12" placeholder="รูป" fit="cover" hint-size="56px,68px" style="display:block;width:56px;height:68px;"></x-import>
+          </div>
+          <div>
+            <div style="font-size:18px;font-weight:600;">{{ detail.guest }}</div>
+            <div style="font-size:12.5px;color:rgba(243,239,230,.7);margin-top:3px;">{{ detail.empId }} · {{ detail.nickname }}</div>
+          </div>
+        </div>
+
+        <!-- info grid -->
+        <div style="display:grid;grid-template-columns:{{ gcHalf }};gap:14px;">
+          <div style="border:1px solid #E7DFCE;border-radius:13px;padding:15px 18px;background:#FBF8F1;">
+            <div style="font-size:11px;color:#9A9182;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">เพศ / ศาสนา</div>
+            <div style="font-size:14.5px;color:#23201B;">{{ detail.genderReligion }}</div>
+          </div>
+          <div style="border:1px solid #E7DFCE;border-radius:13px;padding:15px 18px;background:#FBF8F1;">
+            <div style="font-size:11px;color:#9A9182;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">เบอร์ติดต่อ</div>
+            <div style="font-size:14.5px;color:#23201B;">{{ detail.phone }}</div>
+          </div>
+          <div style="border:1px solid #E7DFCE;border-radius:13px;padding:15px 18px;background:#FBF8F1;">
+            <div style="font-size:11px;color:#9A9182;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">เลขบัตรประชาชน</div>
+            <div style="font-size:14.5px;color:#23201B;letter-spacing:.04em;">{{ detail.idCard }}</div>
+          </div>
+          <div style="border:1px solid #E7DFCE;border-radius:13px;padding:15px 18px;background:#FBF8F1;">
+            <div style="font-size:11px;color:#9A9182;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">วันเริ่มงาน</div>
+            <div style="font-size:14.5px;color:#23201B;">{{ detail.startTxt }}</div>
+          </div>
+          <div style="border:1px solid #E7DFCE;border-radius:13px;padding:15px 18px;background:#FBF8F1;">
+            <div style="font-size:11px;color:#9A9182;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">เช็คอิน</div>
+            <div style="font-size:14.5px;color:#23201B;">{{ detail.checkInTxt }}</div>
+          </div>
+          <div style="border:1px solid #E7DFCE;border-radius:13px;padding:15px 18px;background:#FBF8F1;">
+            <div style="font-size:11px;color:#9A9182;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">เช็คเอาท์</div>
+            <div style="font-size:14.5px;color:#23201B;">{{ detail.checkOutTxt }}</div>
+          </div>
+          <div style="grid-column:1 / -1;border:1px solid #C9A876;border-radius:13px;padding:18px 22px;background:#F7F0E2;display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:11px;color:#A8834F;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;">ห้องพัก / วัตถุประสงค์</div>
+              <div style="font-size:15px;color:#1E3A34;font-weight:600;">{{ detail.room }} · {{ detail.func }}</div>
+            </div>
+            <div style="font-size:15px;font-weight:600;color:#A8834F;">{{ detail.nightsTxt }}</div>
+          </div>
+        </div>
+
+        <!-- cancel action -->
+        <sc-if value="{{ canCancel }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:24px;padding-top:22px;border-top:1px solid #EDE5D4;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;">
+          <div style="font-size:13px;color:#857D6E;line-height:1.6;max-width:420px;">รายการนี้ยังอยู่ระหว่างดำเนินการ<br>คุณสามารถทำเรื่องขอยกเลิกได้ก่อนที่ผู้ดูแลจะอนุมัติ</div>
+          <button onClick="{{ h.askCancel }}" style="padding:12px 24px;background:transparent;color:#A6483C;border:1px solid #E0B4AB;border-radius:11px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;" style-hover="background:#F7E7E3;border-color:#A6483C;">ขอยกเลิกรายการ</button>
+        </div>
+        </sc-if>
+        <sc-if value="{{ notCancel }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:24px;padding-top:22px;border-top:1px solid #EDE5D4;font-size:13px;color:#9A9182;line-height:1.6;">รายการนี้ไม่สามารถขอยกเลิกได้ — ยกเลิกได้เฉพาะรายการที่ยังอยู่ระหว่างดำเนินการเท่านั้น</div>
+        </sc-if>
+      </div>
+    </div>
+    </sc-if>
+
+  </div>
+  </sc-if>
+
+  <!-- cancel confirm modal -->
+  <sc-if value="{{ confirmCancel }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;z-index:60;background:rgba(22,48,42,.5);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn .2s ease;">
+    <div style="width:100%;max-width:400px;background:#FFFDF8;border-radius:20px;padding:32px;text-align:center;box-shadow:0 40px 80px -30px rgba(22,48,42,.6);animation:pop .32s ease;">
+      <div style="width:60px;height:60px;margin:0 auto 20px;border-radius:50%;background:#F7E7E3;display:flex;align-items:center;justify-content:center;color:#A6483C;font-size:28px;">!</div>
+      <h3 style="font-family:'Kodchasan',sans-serif;font-weight:600;font-size:26px;margin:0 0 10px;color:#23201B;">ยืนยันการขอยกเลิก?</h3>
+      <p style="margin:0 0 26px;color:#857D6E;font-size:14px;line-height:1.6;">รายการจอง {{ detail.id }} ของ {{ detail.guest }}<br>จะถูกยกเลิกและไม่สามารถกู้คืนได้</p>
+      <div style="display:flex;gap:12px;">
+        <button onClick="{{ h.closeCancel }}" style="flex:1;padding:13px;background:transparent;color:#857D6E;border:1px solid #DBD2C0;border-radius:11px;font-size:14px;font-weight:600;cursor:pointer;">ไม่ยกเลิก</button>
+        <button onClick="{{ h.doCancel }}" style="flex:1;padding:13px;background:#A6483C;color:#FFFDF8;border:none;border-radius:11px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 12px 24px -12px rgba(166,72,60,.6);">ยืนยันยกเลิก</button>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    screen: 'login',
+    step: 1,
+    loginId: '',
+    loginPw: '',
+    calY: 2026,
+    calM: 6, // July (0-indexed)
+    vw: (typeof window !== 'undefined' ? window.innerWidth : 1200),
+    form: {
+      empId: 'EMP-10482', firstName: '', lastName: '', nickname: '',
+      gender: '', religion: '', idCard: '', phone: '', startDate: '',
+      func: '', room: 'Deluxe Twin', checkIn: null, checkOut: null
+    },
+    lastId: '',
+    detailId: null,
+    confirmCancel: false,
+    bookings: [
+      { id: '#BK-2607-018', guest: 'สุพิชญา ทองใบ', photoId: 'photo-bk1', photoSrc: 'avatars/bk1.png', dateRange: '12 – 15 ก.ค. 2569', room: 'Deluxe Twin', func: 'อบรม / สัมมนา', status: 'approved',
+        empId: 'EMP-10233', nickname: 'ฟ้า', gender: 'หญิง', religion: 'พุทธ', idCard: '1-1005-xxxxx-42-1', phone: '089-556-1220', startTxt: '2 ก.ค. 2569', checkInTxt: '12 ก.ค. 2569', checkOutTxt: '15 ก.ค. 2569', nights: 3 },
+      { id: '#BK-2607-011', guest: 'กิตติพงษ์ วัฒนา', photoId: 'photo-bk2', photoSrc: 'avatars/bk2.png', dateRange: '05 – 06 ก.ค. 2569', room: 'Standard', func: 'ประชุม / Workshop', status: 'pending',
+        empId: 'EMP-10874', nickname: 'ต้น', gender: 'ชาย', religion: 'พุทธ', idCard: '1-1099-xxxxx-08-6', phone: '081-224-9931', startTxt: '10 มิ.ย. 2569', checkInTxt: '5 ก.ค. 2569', checkOutTxt: '6 ก.ค. 2569', nights: 1 },
+      { id: '#BK-2606-097', guest: 'อารยา พงษ์ศักดิ์', photoId: 'photo-bk3', photoSrc: 'avatars/bk3.png', dateRange: '28 – 30 มิ.ย. 2569', room: 'Superior', func: 'ปฏิบัติงานนอกพื้นที่', status: 'rejected',
+        empId: 'EMP-09920', nickname: 'อร', gender: 'หญิง', religion: 'คริสต์', idCard: '1-2044-xxxxx-77-3', phone: '086-771-4408', startTxt: '18 พ.ค. 2569', checkInTxt: '28 มิ.ย. 2569', checkOutTxt: '30 มิ.ย. 2569', nights: 2 }
+    ]
+  };
+
+  componentDidMount() {
+    this._onResize = () => this.setState({ vw: window.innerWidth });
+    window.addEventListener('resize', this._onResize);
+    this.setState({ vw: window.innerWidth });
+  }
+  componentWillUnmount() { if (this._onResize) window.removeEventListener('resize', this._onResize); }
+
+  TH_MON = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  EN_MON = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  TODAY = '2026-07-08';
+
+  setF(key) { return (e) => { const v = e && e.target ? e.target.value : e; this.setState(s => ({ form: { ...s.form, [key]: v } })); }; }
+
+  iso(y, m, d) { return y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0'); }
+
+  thaiDate(iso) {
+    if (!iso) return null;
+    const [y, m, d] = iso.split('-').map(Number);
+    return { d, m: m - 1, y, txt: d + ' ' + this.TH_MON[m - 1] + ' ' + (y + 543) };
+  }
+
+  nights() {
+    const { checkIn, checkOut } = this.state.form;
+    if (!checkIn || !checkOut) return 0;
+    return Math.round((new Date(checkOut) - new Date(checkIn)) / 86400000);
+  }
+
+  initials(name) {
+    if (!name) return '—';
+    const p = name.trim().split(/\s+/);
+    return (p[0] ? p[0][0] : '') + (p[1] ? p[1][0] : '');
+  }
+
+  pickDate(iso) {
+    this.setState(s => {
+      const { checkIn, checkOut } = s.form;
+      if (!checkIn || checkOut || iso <= checkIn) {
+        return { form: { ...s.form, checkIn: iso, checkOut: null } };
+      }
+      return { form: { ...s.form, checkOut: iso } };
+    });
+  }
+
+  buildDays() {
+    const { calY, calM, form } = this.state;
+    const first = new Date(calY, calM, 1).getDay();
+    const dim = new Date(calY, calM + 1, 0).getDate();
+    const out = [];
+    for (let i = 0; i < first; i++) out.push({ blank: true });
+    for (let d = 1; d <= dim; d++) {
+      const iso = this.iso(calY, calM, d);
+      const past = iso < this.TODAY;
+      const isIn = iso === form.checkIn;
+      const isOut = iso === form.checkOut;
+      const inRange = form.checkIn && form.checkOut && iso > form.checkIn && iso < form.checkOut;
+      const sel = isIn || isOut;
+      let bg = 'transparent', color = past ? '#CFC7B6' : '#4A453C', border = '1px solid transparent', weight = '500';
+      if (inRange) { bg = '#EEE3CE'; color = '#8C6A3B'; }
+      if (sel) { bg = '#1E3A34'; color = '#F3EFE6'; weight = '600'; border = '1px solid #1E3A34'; }
+      const style = 'height:38px;border-radius:9px;font-size:14px;font-family:inherit;font-weight:' + weight +
+        ';background:' + bg + ';color:' + color + ';border:' + border +
+        ';cursor:' + (past ? 'not-allowed' : 'pointer') + ';transition:background .15s;';
+      out.push({ blank: false, label: String(d), disabled: past, style, onClick: past ? (() => {}) : (() => this.pickDate(iso)) });
+    }
+    while (out.length % 7 !== 0) out.push({ blank: true });
+    // render blanks as disabled empty buttons
+    return out.map(c => c.blank
+      ? { label: '', disabled: true, style: 'height:38px;background:transparent;border:none;', onClick: () => {} }
+      : c);
+  }
+
+  renderVals() {
+    const s = this.state;
+    const f = s.form;
+    const screen = s.screen;
+    const mob = (s.vw || 1200) < 760;
+    const cardStyleBase = 'background:#FFFDF8;border:1px solid #E7DFCE;border-radius:16px;cursor:pointer;transition:box-shadow .2s,transform .15s;';
+    const cardStyle = mob
+      ? 'display:flex;align-items:center;gap:12px;padding:14px 15px;' + cardStyleBase
+      : 'display:flex;align-items:center;gap:16px;padding:18px 22px;' + cardStyleBase;
+    const statusMeta = {
+      pending:  { label: 'อยู่ระหว่างดำเนินการ', bg: '#FBF0D8', dot: '#D79A28', text: '#96701F' },
+      approved: { label: 'อนุมัติ',              bg: '#DEEEE2', dot: '#3C7A5A', text: '#2E6248' },
+      rejected: { label: 'ปฏิเสธ',               bg: '#F5DDD8', dot: '#B5493B', text: '#A6483C' },
+      cancelled:{ label: 'ยกเลิกแล้ว',           bg: '#ECE7DD', dot: '#9A9182', text: '#6E665A' }
+    };
+    const avatarBgs = ['linear-gradient(150deg,#1E3A34,#2C574B)','linear-gradient(150deg,#8C6A3B,#B8946A)','linear-gradient(150deg,#5A4A6B,#7A6A8B)'];
+
+    const bookings = s.bookings.map((b, i) => {
+      const m = statusMeta[b.status];
+      return {
+        ...b, guestInitials: this.initials(b.guest), avatarBg: avatarBgs[i % avatarBgs.length],
+        statusLabel: m.label, statusBg: m.bg, statusDot: m.dot, statusText: m.text,
+        nightsTxt: b.nights ? (b.nights + ' คืน · ' + b.nights + ' nights') : '—',
+        genderReligion: (b.gender || '—') + ' · ' + (b.religion || '—'),
+        onClick: () => this.setState({ screen: 'detail', detailId: b.id, confirmCancel: false })
+      };
+    });
+    const detail = s.detailId ? bookings.find(b => b.id === s.detailId) : null;
+    const canCancel = detail && detail.status === 'pending';
+    const stats = {
+      total: s.bookings.length,
+      pending: s.bookings.filter(b => b.status === 'pending').length,
+      approved: s.bookings.filter(b => b.status === 'approved').length
+    };
+
+    // stepper
+    const stepDefs = [
+      { n: 1, label: 'ผู้เข้าพัก', sub: 'Guest' },
+      { n: 2, label: 'วันเข้าพัก', sub: 'Dates' },
+      { n: 3, label: 'สรุป', sub: 'Confirm' }
+    ];
+    const steps = stepDefs.map(d => {
+      const done = s.step > d.n, active = s.step === d.n;
+      return {
+        ...d,
+        mark: done ? '✓' : String(d.n),
+        ring: done || active ? '#A8834F' : '#E2DAC9',
+        bg: done ? '#A8834F' : active ? '#FFFDF8' : '#F5F1E8',
+        fg: done ? '#FFFDF8' : active ? '#A8834F' : '#B4AB99',
+        labelColor: active ? '#23201B' : done ? '#4A453C' : '#B4AB99'
+      };
+    });
+    const progressWidth = s.step === 1 ? '0%' : s.step === 2 ? '50%' : '100%';
+
+    const ci = this.thaiDate(f.checkIn), co = this.thaiDate(f.checkOut);
+    const nn = this.nights();
+
+    // summary
+    const fullGuest = ((f.firstName || '') + ' ' + (f.lastName || '')).trim() || 'ผู้เข้าพัก';
+
+    const h = {
+      setLoginId: e => this.setState({ loginId: e.target.value }),
+      setLoginPw: e => this.setState({ loginPw: e.target.value }),
+      login: () => this.setState(st => ({ screen: 'dashboard', form: { ...st.form, empId: st.loginId || st.form.empId } })),
+      goDash: () => this.setState({ screen: 'dashboard', detailId: null, confirmCancel: false }),
+      askCancel: () => this.setState({ confirmCancel: true }),
+      closeCancel: () => this.setState({ confirmCancel: false }),
+      doCancel: () => this.setState(st => ({
+        confirmCancel: false,
+        bookings: st.bookings.map(b => b.id === st.detailId ? { ...b, status: 'cancelled' } : b)
+      })),
+      startBooking: () => this.setState({
+        screen: 'booking', step: 1,
+        form: { empId: 'EMP-10482', firstName: '', lastName: '', nickname: '', gender: '', religion: '', idCard: '', phone: '', startDate: '', func: '', room: 'Deluxe Twin', checkIn: null, checkOut: null }
+      }),
+      next: () => this.setState(st => ({ step: Math.min(3, st.step + 1) })),
+      back: () => this.setState(st => st.step > 1 ? { step: st.step - 1 } : { screen: 'dashboard' }),
+      prevMonth: () => this.setState(st => { let m = st.calM - 1, y = st.calY; if (m < 0) { m = 11; y--; } return { calM: m, calY: y }; }),
+      nextMonth: () => this.setState(st => { let m = st.calM + 1, y = st.calY; if (m > 11) { m = 0; y++; } return { calM: m, calY: y }; }),
+      set: {
+        empId: this.setF('empId'), firstName: this.setF('firstName'), lastName: this.setF('lastName'),
+        nickname: this.setF('nickname'), gender: this.setF('gender'), religion: this.setF('religion'),
+        idCard: this.setF('idCard'), phone: this.setF('phone'), startDate: this.setF('startDate'),
+        func: this.setF('func'), room: this.setF('room')
+      },
+      submit: () => this.setState(st => {
+        const num = String(19 + st.bookings.length).padStart(3, '0');
+        const id = '#BK-2607-0' + num;
+        const g = ((st.form.firstName || '') + ' ' + (st.form.lastName || '')).trim() || 'ผู้เข้าพัก';
+        const dr = st.form.checkIn && st.form.checkOut
+          ? this.thaiDate(st.form.checkIn).d + ' – ' + this.thaiDate(st.form.checkOut).d + ' ' + this.TH_MON[this.thaiDate(st.form.checkOut).m] + ' ' + (this.thaiDate(st.form.checkOut).y + 543)
+          : 'รอระบุวันที่';
+        const ciT = st.form.checkIn ? this.thaiDate(st.form.checkIn).txt : '—';
+        const coT = st.form.checkOut ? this.thaiDate(st.form.checkOut).txt : '—';
+        const stT = st.form.startDate && this.thaiDate(st.form.startDate) ? this.thaiDate(st.form.startDate).txt : (st.form.startDate || '—');
+        const nb = { id, guest: g, photoId: 'guest-photo', photoSrc: '', dateRange: dr, room: st.form.room, func: st.form.func || 'ไม่ระบุ', status: 'pending',
+          empId: st.form.empId, nickname: st.form.nickname || '—', gender: st.form.gender, religion: st.form.religion,
+          idCard: st.form.idCard || '—', phone: st.form.phone || '—', startTxt: stT, checkInTxt: ciT, checkOutTxt: coT, nights: this.nights() };
+        return { screen: 'done', lastId: id, bookings: [nb, ...st.bookings] };
+      })
+    };
+
+    const dateRangeTxt = (ci && co) ? (ci.d + ' – ' + co.txt) : 'ยังไม่ได้เลือก';
+
+    return {
+      isLogin: screen === 'login',
+      isApp: screen !== 'login',
+      isDashboard: screen === 'dashboard',
+      isBooking: screen === 'booking',
+      isDone: screen === 'done',
+      isDetail: screen === 'detail',
+      detail: detail || {},
+      canCancel: !!canCancel,
+      notCancel: !canCancel,
+      confirmCancel: s.confirmCancel,
+      isStep1: s.step === 1, isStep2: s.step === 2, isStep3: s.step === 3, notStep3: s.step !== 3,
+      loginId: s.loginId, loginPw: s.loginPw,
+      profile: { fullName: 'ธนวัฒน์ ศรีสุพรรณ', firstName: 'ธนวัฒน์', dept: 'ฝ่ายทรัพยากรบุคคล', initials: 'ธศ' },
+      bookings, stats, steps, progressWidth,
+      f,
+      // calendar
+      calTitle: this.EN_MON[s.calM] + ' ' + (s.calY + 543),
+      weekdays: ['อา','จ','อ','พ','พฤ','ศ','ส'],
+      days: this.buildDays(),
+      checkInLabel: ci ? ci.txt : 'เลือกวัน',
+      checkOutLabel: co ? co.txt : 'เลือกวัน',
+      nightsLabel: nn > 0 ? (nn + ' คืน · ' + nn + ' nights') : '— คืน',
+      // summary
+      sumInitials: this.initials(fullGuest), sumName: fullGuest,
+      sumNick: f.nickname || '—',
+      sumGenderReligion: ((f.gender || '—') + ' · ' + (f.religion || '—')),
+      sumPhone: f.phone || '—', sumId: f.idCard || '—',
+      sumStart: f.startDate ? (this.thaiDate(f.startDate) ? this.thaiDate(f.startDate).txt : f.startDate) : '—',
+      sumDates: dateRangeTxt, sumRoom: f.room, sumFunc: f.func || 'ไม่ระบุ',
+      newBookingId: s.lastId,
+      // responsive
+      mob, notMob: !mob,
+      cardStyle,
+      loginCols: mob ? '1fr' : '1.05fr 1fr',
+      heroDisp: mob ? 'none' : 'flex',
+      gcStats: mob ? '1fr 1fr' : 'repeat(3,1fr)',
+      gcGuest: mob ? '1fr' : '170px 1fr',
+      gcFields: mob ? '1fr' : '1fr 1fr',
+      gcCal: mob ? '1fr' : '1.15fr .85fr',
+      gcHalf: mob ? '1fr' : '1fr 1fr',
+      bookH1: mob ? '27px' : '36px',
+      dashH1: mob ? '32px' : '44px',
+      appPad: mob ? '28px 18px 70px' : '44px 34px 80px',
+      cardPad: mob ? '22px 20px' : '36px 40px',
+      h
+    };
+  }
+}
+</script>
+</body>
+</html>

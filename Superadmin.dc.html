@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kodchasan:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: #EDE7DA; color: #23201B; font-family: 'Kodchasan', sans-serif; -webkit-font-smoothing: antialiased; }
+  input, select, textarea, button { font-family: inherit; }
+  a { color: #A8834F; text-decoration: none; }
+  a:hover { color: #8C6A3B; }
+  ::placeholder { color: #B4AB99; }
+  input:focus, select:focus, textarea:focus { outline: none; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes toastIn { from { opacity: 0; transform: translate(-50%,16px); } to { opacity: 1; transform: translate(-50%,0); } }
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column;">
+  <!-- top bar -->
+  <div style="position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:15px 30px;background:#16302A;border-bottom:1px solid #244A41;color:#F3EFE6;">
+    <div style="display:flex;align-items:center;gap:24px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:38px;height:38px;border:1px solid #C9A876;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;color:#C9A876;font-weight:600;">M</div>
+        <div style="line-height:1;">
+          <div style="font-size:18px;letter-spacing:.14em;font-weight:600;">MAISON</div>
+          <div style="font-size:9px;letter-spacing:.3em;color:#C9A876;text-transform:uppercase;margin-top:3px;">Admin Console</div>
+        </div>
+      </div>
+      <span style="font-size:10.5px;font-weight:700;letter-spacing:.14em;background:#C9A876;color:#16302A;padding:4px 10px;border-radius:6px;">SUPER ADMIN</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <a href="ระบบจองห้องพัก.dc.html" style="padding:8px 14px;border-radius:9px;font-size:13.5px;color:rgba(243,239,230,.7);">จองห้องพัก</a>
+      <a href="Profile.dc.html" style="padding:8px 14px;border-radius:9px;font-size:13.5px;color:rgba(243,239,230,.7);">โปรไฟล์</a>
+    </div>
+  </div>
+
+  <!-- tab nav -->
+  <div style="background:#F5F1E8;border-bottom:1px solid #E2DAC9;padding:0 30px;display:flex;gap:4px;overflow:auto;">
+    <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+      <div onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</div>
+    </sc-for>
+  </div>
+
+  <div style="flex:1;max-width:1180px;width:100%;margin:0 auto;padding:{{ pad }};animation:fadeUp .4s ease;">
+
+    <!-- ============ TAB: ASSIGN ============ -->
+    <sc-if value="{{ isAssign }}" hint-placeholder-val="{{ true }}">
+    <div>
+      <div style="margin-bottom:22px;">
+        <h1 style="font-size:{{ h1 }};font-weight:600;margin:0 0 6px;color:#23201B;line-height:1.1;">จัดห้องพักให้ผู้จอง</h1>
+        <p style="margin:0;color:#857D6E;font-size:13.5px;">ลากรายชื่อจาก “รอจัดห้อง” ไปวางในห้องพัก · 1 ห้องพักได้สูงสุด 2 คน · ระบบจะส่งอีเมลแจ้งเตือนผู้จองทุกครั้งที่อัปเดต</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:{{ assignCols }};gap:22px;align-items:start;">
+        <!-- pending pool -->
+        <div onDragOver="{{ h.allowDrop }}" onDrop="{{ h.dropPool }}" style="background:#FFFDF8;border:1px solid #E7DFCE;border-radius:18px;padding:20px;position:sticky;top:120px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div style="font-size:15px;font-weight:600;color:#23201B;">รอจัดห้อง</div>
+            <span style="font-size:12px;font-weight:600;color:#96701F;background:#FBF0D8;padding:3px 10px;border-radius:20px;">{{ unassignedCount }} คน</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;min-height:60px;">
+            <sc-for list="{{ unassigned }}" as="g" hint-placeholder-count="4">
+              <div draggable="true" onDragStart="{{ g.onDragStart }}" onDragEnd="{{ h.dragEnd }}" style="display:flex;align-items:center;gap:11px;padding:10px 12px;border:1px solid #E7DFCE;border-radius:12px;background:#FBF8F1;cursor:grab;">
+                <div style="width:38px;height:44px;flex:none;border-radius:8px;overflow:hidden;background:{{ g.color }};">
+                  <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ g.photoId }}" src="{{ g.photoSrc }}" shape="rounded" radius="8" fit="cover" placeholder="รูป" hint-size="38px,44px" style="display:block;width:38px;height:44px;"></x-import>
+                </div>
+                <div style="min-width:0;flex:1;">
+                  <div style="font-size:13.5px;font-weight:600;color:#23201B;">{{ g.name }}</div>
+                  <div style="font-size:11.5px;color:#857D6E;">{{ g.id }} · {{ g.dateRange }}</div>
+                </div>
+                <span style="font-size:16px;color:#C4BBA8;">⠿</span>
+              </div>
+            </sc-for>
+            <sc-if value="{{ allAssigned }}" hint-placeholder-val="{{ false }}">
+              <div style="text-align:center;color:#B4AB99;font-size:13px;padding:20px 0;">จัดห้องครบทุกคนแล้ว ✓</div>
+            </sc-if>
+          </div>
+        </div>
+
+        <!-- rooms board -->
+        <div style="display:grid;grid-template-columns:{{ boardCols }};gap:14px;">
+          <sc-for list="{{ rooms }}" as="r" hint-placeholder-count="4">
+            <div onDragOver="{{ h.allowDrop }}" onDrop="{{ r.onDrop }}" style="{{ r.style }}">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                <div>
+                  <div style="font-size:14.5px;font-weight:600;color:#23201B;">{{ r.title }}</div>
+                  <div style="font-size:11.5px;color:#9A9182;margin-top:2px;white-space:nowrap;">{{ r.sub }}</div>
+                </div>
+                <span style="font-size:12px;font-weight:700;color:{{ r.badgeColor }};background:{{ r.badgeBg }};padding:3px 10px;border-radius:20px;">{{ r.count }}/2</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;min-height:52px;">
+                <sc-for list="{{ r.occ }}" as="o" hint-placeholder-count="2">
+                  <div draggable="true" onDragStart="{{ o.onDragStart }}" onDragEnd="{{ h.dragEnd }}" style="display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;background:#F2EAD9;cursor:grab;">
+                    <div style="width:26px;height:26px;flex:none;border-radius:50%;background:{{ o.color }};color:#F3EFE6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;">{{ o.initials }}</div>
+                    <span style="flex:1;min-width:0;font-size:13px;font-weight:500;color:#23201B;">{{ o.name }}</span>
+                    <span onClick="{{ o.onRemove }}" style="font-size:15px;color:#A6483C;cursor:pointer;padding:0 2px;">×</span>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ r.empty }}" hint-placeholder-val="{{ true }}">
+                  <div style="border:1.5px dashed #DBD2C0;border-radius:10px;text-align:center;color:#B4AB99;font-size:12px;padding:14px 0;">ลากรายชื่อมาวางที่นี่</div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ TAB: ROOMS ============ -->
+    <sc-if value="{{ isRooms }}" hint-placeholder-val="{{ false }}">
+    <div>
+      <div style="margin-bottom:22px;">
+        <h1 style="font-size:{{ h1 }};font-weight:600;margin:0 0 6px;color:#23201B;line-height:1.1;">การจัดการห้องพัก</h1>
+        <p style="margin:0;color:#857D6E;font-size:13.5px;">เพิ่ม Location / อาคาร / ชั้น / ห้อง และเพิ่มผู้เข้าพักจากรายการที่รออนุมัติ</p>
+      </div>
+
+      <!-- add room form -->
+      <div style="background:#FFFDF8;border:1px solid #E7DFCE;border-radius:18px;padding:22px 24px;margin-bottom:22px;">
+        <div style="font-size:14.5px;font-weight:600;color:#23201B;margin-bottom:16px;">เพิ่มห้องพักใหม่</div>
+        <div style="display:grid;grid-template-columns:{{ formCols }};gap:14px;align-items:end;">
+          <div>
+            <label style="display:block;font-size:12px;font-weight:600;color:#4A453C;margin-bottom:6px;">Location</label>
+            <input value="{{ nr.location }}" onChange="{{ h.setNr.location }}" placeholder="เช่น สำนักงานใหญ่" style="width:100%;padding:11px 13px;border:1px solid #DBD2C0;border-radius:9px;background:#FBF8F1;font-size:14px;" />
+          </div>
+          <div>
+            <label style="display:block;font-size:12px;font-weight:600;color:#4A453C;margin-bottom:6px;">อาคาร</label>
+            <input value="{{ nr.building }}" onChange="{{ h.setNr.building }}" placeholder="A" style="width:100%;padding:11px 13px;border:1px solid #DBD2C0;border-radius:9px;background:#FBF8F1;font-size:14px;" />
+          </div>
+          <div>
+            <label style="display:block;font-size:12px;font-weight:600;color:#4A453C;margin-bottom:6px;">ชั้น</label>
+            <input value="{{ nr.floor }}" onChange="{{ h.setNr.floor }}" placeholder="3" style="width:100%;padding:11px 13px;border:1px solid #DBD2C0;border-radius:9px;background:#FBF8F1;font-size:14px;" />
+          </div>
+          <div>
+            <label style="display:block;font-size:12px;font-weight:600;color:#4A453C;margin-bottom:6px;">ห้อง</label>
+            <input value="{{ nr.no }}" onChange="{{ h.setNr.no }}" placeholder="305" style="width:100%;padding:11px 13px;border:1px solid #DBD2C0;border-radius:9px;background:#FBF8F1;font-size:14px;" />
+          </div>
+          <button onClick="{{ h.addRoom }}" style="padding:12px 22px;background:#1E3A34;color:#F3EFE6;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;">＋ เพิ่มห้อง</button>
+        </div>
+      </div>
+
+      <!-- rooms list -->
+      <div style="display:grid;grid-template-columns:{{ boardCols }};gap:14px;">
+        <sc-for list="{{ rooms }}" as="r" hint-placeholder-count="4">
+          <div style="background:#FFFDF8;border:1px solid #E7DFCE;border-radius:15px;padding:16px 18px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div>
+                <div style="font-size:14.5px;font-weight:600;color:#23201B;">{{ r.title }}</div>
+                <div style="font-size:11.5px;color:#9A9182;margin-top:2px;white-space:nowrap;">{{ r.sub }}</div>
+              </div>
+              <span style="font-size:12px;font-weight:700;color:{{ r.badgeColor }};background:{{ r.badgeBg }};padding:3px 10px;border-radius:20px;">{{ r.count }}/2</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;">
+              <sc-for list="{{ r.occ }}" as="o" hint-placeholder-count="1">
+                <span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:#23201B;background:#F2EAD9;padding:5px 10px;border-radius:18px;">
+                  <span style="width:18px;height:18px;border-radius:50%;background:{{ o.color }};color:#F3EFE6;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;">{{ o.initials }}</span>
+                  {{ o.name }}
+                </span>
+              </sc-for>
+            </div>
+            <!-- add from pending -->
+            <sc-if value="{{ r.canAdd }}" hint-placeholder-val="{{ true }}">
+            <div style="margin-top:12px;">
+              <sc-if value="{{ r.picking }}" hint-placeholder-val="{{ false }}">
+                <div style="border:1px solid #E7DFCE;border-radius:10px;overflow:hidden;">
+                  <div style="font-size:11.5px;color:#9A9182;padding:8px 12px;background:#FBF8F1;border-bottom:1px solid #EDE5D4;">เลือกจากรายการรออนุมัติ</div>
+                  <sc-for list="{{ r.pickList }}" as="p" hint-placeholder-count="3">
+                    <div onClick="{{ p.onPick }}" style="padding:9px 12px;font-size:13px;color:#23201B;cursor:pointer;border-bottom:1px solid #F1EAD9;" style-hover="background:#F7F0E2;">{{ p.name }} <span style="color:#9A9182;font-size:11.5px;">· {{ p.id }}</span></div>
+                  </sc-for>
+                  <sc-if value="{{ noPending }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:12px;font-size:12.5px;color:#B4AB99;text-align:center;">ไม่มีรายการรออนุมัติ</div>
+                  </sc-if>
+                  <div onClick="{{ h.closePick }}" style="padding:8px 12px;font-size:12px;color:#857D6E;text-align:center;cursor:pointer;background:#FBF8F1;">ปิด</div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ r.notPicking }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ r.onOpenPick }}" style="width:100%;padding:9px;background:transparent;color:#A8834F;border:1.5px dashed #C9A876;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;">＋ Add ผู้เข้าพัก</button>
+              </sc-if>
+            </div>
+            </sc-if>
+            <sc-if value="{{ r.full }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:12px;font-size:12px;color:#3C7A5A;text-align:center;">ห้องเต็ม (2/2)</div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ TAB: USERS ============ -->
+    <sc-if value="{{ isUsers }}" hint-placeholder-val="{{ false }}">
+    <div>
+      <div style="margin-bottom:22px;">
+        <h1 style="font-size:{{ h1 }};font-weight:600;margin:0 0 6px;color:#23201B;line-height:1.1;">การจัดการสมาชิก</h1>
+        <p style="margin:0;color:#857D6E;font-size:13.5px;">เพิ่ม / ลบสมาชิกที่เข้าระบบเพื่อจองห้องได้ และกำหนดสิทธิ์ให้เป็น Admin</p>
+      </div>
+
+      <!-- add user -->
+      <div style="background:#FFFDF8;border:1px solid #E7DFCE;border-radius:18px;padding:20px 24px;margin-bottom:22px;display:grid;grid-template-columns:{{ userFormCols }};gap:14px;align-items:end;">
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#4A453C;margin-bottom:6px;">ชื่อ–สกุล</label>
+          <input value="{{ nu.name }}" onChange="{{ h.setNu.name }}" placeholder="ชื่อ นามสกุล" style="width:100%;padding:11px 13px;border:1px solid #DBD2C0;border-radius:9px;background:#FBF8F1;font-size:14px;" />
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:#4A453C;margin-bottom:6px;">รหัสพนักงาน</label>
+          <input value="{{ nu.empId }}" onChange="{{ h.setNu.empId }}" placeholder="EMP-xxxxx" style="width:100%;padding:11px 13px;border:1px solid #DBD2C0;border-radius:9px;background:#FBF8F1;font-size:14px;" />
+        </div>
+        <button onClick="{{ h.addUser }}" style="padding:12px 22px;background:#1E3A34;color:#F3EFE6;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;">＋ เพิ่มสมาชิก</button>
+      </div>
+
+      <div style="background:#FFFDF8;border:1px solid #E7DFCE;border-radius:18px;overflow:hidden;">
+        <sc-for list="{{ users }}" as="u" hint-placeholder-count="4">
+          <div style="display:flex;align-items:center;gap:14px;padding:15px 20px;border-bottom:1px solid #F1EAD9;">
+            <div style="width:40px;height:40px;flex:none;border-radius:50%;background:{{ u.color }};color:#F3EFE6;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;">{{ u.initials }}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:14.5px;font-weight:600;color:#23201B;">{{ u.name }}</div>
+              <div style="font-size:12px;color:#857D6E;">{{ u.empId }}</div>
+            </div>
+            <span style="font-size:11.5px;font-weight:700;color:{{ u.roleColor }};background:{{ u.roleBg }};padding:4px 11px;border-radius:20px;">{{ u.roleLabel }}</span>
+            <button onClick="{{ u.onToggle }}" style="padding:8px 14px;background:transparent;color:#4A453C;border:1px solid #DBD2C0;border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;">{{ u.toggleLabel }}</button>
+            <button onClick="{{ u.onRemove }}" style="width:34px;height:34px;flex:none;background:transparent;color:#A6483C;border:1px solid #E0B4AB;border-radius:9px;font-size:15px;cursor:pointer;">×</button>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+  </div>
+
+  <!-- toast -->
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;bottom:26px;left:50%;z-index:80;transform:translateX(-50%);display:flex;align-items:center;gap:11px;background:{{ toastBg }};color:#F3EFE6;padding:13px 22px;border-radius:13px;box-shadow:0 20px 40px -16px rgba(22,48,42,.6);animation:toastIn .25s ease;max-width:calc(100vw - 32px);">
+    <span style="font-size:16px;">{{ toastIcon }}</span>
+    <span style="font-size:13.5px;font-weight:500;">{{ toastMsg }}</span>
+  </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    vw: (typeof window !== 'undefined' ? window.innerWidth : 1200),
+    tab: 'assign',
+    dragId: null,
+    toast: null,
+    pickRoom: null,
+    nr: { location: 'สำนักงานใหญ่', building: '', floor: '', no: '' },
+    nu: { name: '', empId: '' },
+    guests: [
+      { id: '#BK-2607-011', name: 'กิตติพงษ์ วัฒนา', empId: 'EMP-10874', photoId: 'g1', photoSrc: 'avatars/bk2.png', color: '#8C6A3B', dateRange: '5 – 6 ก.ค. 2569' },
+      { id: '#BK-2607-018', name: 'สุพิชญา ทองใบ', empId: 'EMP-10233', photoId: 'g2', photoSrc: 'avatars/bk1.png', color: '#1E3A34', dateRange: '12 – 15 ก.ค. 2569' },
+      { id: '#BK-2607-024', name: 'ณัฐพล ศรีวิชัย', empId: 'EMP-10231', photoId: 'g3', photoSrc: 'avatars/bk4.png', color: '#2C574B', dateRange: '12 – 14 ก.ค. 2569' },
+      { id: '#BK-2607-031', name: 'ปวีณา แก้วมณี', empId: 'EMP-10990', photoId: 'g4', photoSrc: 'avatars/bk5.png', color: '#7A6A8B', dateRange: '15 – 16 ก.ค. 2569' },
+      { id: '#BK-2606-097', name: 'อารยา พงษ์ศักดิ์', empId: 'EMP-09920', photoId: 'g5', photoSrc: 'avatars/bk3.png', color: '#5A4A6B', dateRange: '18 – 20 ก.ค. 2569' }
+    ],
+    rooms: [
+      { id: 'r1', location: 'สำนักงานใหญ่', building: 'A', floor: '3', no: '301', occupants: [] },
+      { id: 'r2', location: 'สำนักงานใหญ่', building: 'A', floor: '3', no: '302', occupants: ['#BK-2607-018'] },
+      { id: 'r3', location: 'สำนักงานใหญ่', building: 'A', floor: '4', no: '415', occupants: [] },
+      { id: 'r4', location: 'สำนักงานใหญ่', building: 'B', floor: '2', no: '208', occupants: [] }
+    ],
+    users: [
+      { id: 'u1', name: 'ธนวัฒน์ ศรีสุพรรณ', empId: 'EMP-10482', role: 'admin' },
+      { id: 'u2', name: 'กิตติพงษ์ วัฒนา', empId: 'EMP-10874', role: 'user' },
+      { id: 'u3', name: 'ณัฐพล ศรีวิชัย', empId: 'EMP-10231', role: 'user' },
+      { id: 'u4', name: 'ปวีณา แก้วมณี', empId: 'EMP-10990', role: 'user' }
+    ]
+  };
+
+  PALETTE = ['#1E3A34','#8C6A3B','#5A4A6B','#2C574B','#7A6A8B','#B8946A','#3C7A5A'];
+
+  componentDidMount() {
+    this._onResize = () => this.setState({ vw: window.innerWidth });
+    window.addEventListener('resize', this._onResize);
+    this.setState({ vw: window.innerWidth });
+  }
+  componentWillUnmount() { if (this._onResize) window.removeEventListener('resize', this._onResize); }
+
+  initials(name) {
+    if (!name) return '?';
+    const p = name.trim().split(/\s+/);
+    return (p[0] ? p[0][0] : '') + (p[1] ? p[1][0] : '');
+  }
+  roomLabel(r) { return 'อาคาร ' + r.building + ' · ห้อง ' + r.no; }
+  guestById(id) { return this.state.guests.find(g => g.id === id); }
+  colorFor(i) { return this.PALETTE[i % this.PALETTE.length]; }
+
+  showToast(msg, type) {
+    const key = Date.now();
+    this.setState({ toast: { msg, type: type || 'ok', key } });
+    setTimeout(() => this.setState(s => (s.toast && s.toast.key === key ? { toast: null } : {})), 2900);
+  }
+
+  doAssign(roomId, gid) {
+    const s = this.state;
+    if (!gid) return;
+    const target = s.rooms.find(r => r.id === roomId);
+    const already = target.occupants.includes(gid);
+    if (!already && target.occupants.length >= 2) {
+      this.showToast('ห้องนี้เต็มแล้ว (สูงสุด 2 คน)', 'warn');
+      this.setState({ dragId: null });
+      return;
+    }
+    const rooms = s.rooms.map(r => ({ ...r, occupants: r.occupants.filter(x => x !== gid) }));
+    const tr = rooms.find(r => r.id === roomId);
+    tr.occupants = [...tr.occupants, gid];
+    const g = this.guestById(gid);
+    this.setState({ rooms, dragId: null, pickRoom: null });
+    this.showToast('จัด ' + (g ? g.name : '') + ' เข้า ' + this.roomLabel(tr) + ' · ส่งอีเมลแจ้งเตือนแล้ว', 'ok');
+  }
+
+  removeOccupant(gid) {
+    const s = this.state;
+    const g = this.guestById(gid);
+    this.setState({ rooms: s.rooms.map(r => ({ ...r, occupants: r.occupants.filter(x => x !== gid) })) });
+    this.showToast('นำ ' + (g ? g.name : '') + ' ออกจากห้อง · แจ้งอีเมลผู้จองแล้ว', 'warn');
+  }
+
+  renderVals() {
+    const s = this.state;
+    const mob = (s.vw || 1200) < 860;
+
+    const assignedIds = new Set();
+    s.rooms.forEach(r => r.occupants.forEach(id => assignedIds.add(id)));
+    const unassigned = s.guests.filter(g => !assignedIds.has(g.id)).map(g => ({
+      ...g,
+      onDragStart: () => this.setState({ dragId: g.id })
+    }));
+
+    const rooms = s.rooms.map(r => {
+      const occ = r.occupants.map((id, i) => {
+        const g = this.guestById(id) || { name: id };
+        return {
+          id, name: g.name, initials: this.initials(g.name), color: g.color || this.colorFor(i),
+          onDragStart: () => this.setState({ dragId: id }),
+          onRemove: () => this.removeOccupant(id)
+        };
+      });
+      const count = r.occupants.length;
+      const full = count >= 2;
+      const highlight = !!s.dragId && !full;
+      const pickList = unassigned.map(g => ({ name: g.name, id: g.id, onPick: () => this.doAssign(r.id, g.id) }));
+      return {
+        id: r.id, title: 'ห้อง ' + r.no, sub: 'อาคาร ' + r.building + ' · ชั้น ' + r.floor,
+        count, full, empty: count === 0,
+        canAdd: !full, picking: s.pickRoom === r.id, notPicking: s.pickRoom !== r.id,
+        pickList,
+        badgeBg: full ? '#DEEEE2' : count === 1 ? '#FBF0D8' : '#ECE7DD',
+        badgeColor: full ? '#2E6248' : count === 1 ? '#96701F' : '#8A8272',
+        occ,
+        onDrop: (e) => { if (e && e.preventDefault) e.preventDefault(); this.doAssign(r.id, s.dragId); },
+        onOpenPick: () => this.setState({ pickRoom: r.id }),
+        style: 'background:#FFFDF8;border:1.5px solid ' + (highlight ? '#A8834F' : '#E7DFCE') +
+          ';border-radius:15px;padding:16px 18px;transition:border .15s;' + (highlight ? 'box-shadow:0 0 0 3px rgba(168,131,79,.12);' : '')
+      };
+    });
+
+    const users = s.users.map((u, i) => ({
+      id: u.id, name: u.name, empId: u.empId, initials: this.initials(u.name), color: this.colorFor(i),
+      roleLabel: u.role === 'admin' ? 'ADMIN' : 'สมาชิก',
+      roleBg: u.role === 'admin' ? '#1E3A34' : '#ECE7DD',
+      roleColor: u.role === 'admin' ? '#F3EFE6' : '#6E665A',
+      toggleLabel: u.role === 'admin' ? 'ลดเป็นสมาชิก' : 'ตั้งเป็น Admin',
+      onToggle: () => { this.setState(st => ({ users: st.users.map(x => x.id === u.id ? { ...x, role: x.role === 'admin' ? 'user' : 'admin' } : x) })); this.showToast('อัปเดตสิทธิ์ของ ' + u.name + ' แล้ว', 'ok'); },
+      onRemove: () => { this.setState(st => ({ users: st.users.filter(x => x.id !== u.id) })); this.showToast('ลบสมาชิก ' + u.name + ' แล้ว', 'warn'); }
+    }));
+
+    const tabDefs = [
+      { key: 'assign', label: 'รายการจอง · จัดห้อง' },
+      { key: 'rooms', label: 'จัดการห้องพัก' },
+      { key: 'users', label: 'จัดการสมาชิก' }
+    ];
+    const tabs = tabDefs.map(t => ({
+      label: t.label,
+      onClick: () => this.setState({ tab: t.key, pickRoom: null }),
+      style: 'padding:14px 18px;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap;border-bottom:2px solid ' +
+        (s.tab === t.key ? '#A8834F' : 'transparent') + ';color:' + (s.tab === t.key ? '#23201B' : '#9A9182') + ';'
+    }));
+
+    const setNr = k => e => this.setState(st => ({ nr: { ...st.nr, [k]: e.target.value } }));
+    const setNu = k => e => this.setState(st => ({ nu: { ...st.nu, [k]: e.target.value } }));
+
+    const h = {
+      allowDrop: (e) => { if (e && e.preventDefault) e.preventDefault(); },
+      dragEnd: () => this.setState({ dragId: null }),
+      dropPool: (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        if (s.dragId && assignedIds.has(s.dragId)) this.removeOccupant(s.dragId);
+        this.setState({ dragId: null });
+      },
+      setNr: { location: setNr('location'), building: setNr('building'), floor: setNr('floor'), no: setNr('no') },
+      setNu: { name: setNu('name'), empId: setNu('empId') },
+      addRoom: () => {
+        const { building, floor, no, location } = s.nr;
+        if (!building || !no) { this.showToast('กรุณาระบุอาคารและเลขห้อง', 'warn'); return; }
+        const id = 'r' + Date.now();
+        this.setState(st => ({ rooms: [...st.rooms, { id, location: location || '—', building, floor: floor || '-', no, occupants: [] }], nr: { location: st.nr.location, building: '', floor: '', no: '' } }));
+        this.showToast('เพิ่มห้อง อาคาร ' + building + ' ห้อง ' + no + ' แล้ว', 'ok');
+      },
+      addUser: () => {
+        const { name, empId } = s.nu;
+        if (!name) { this.showToast('กรุณาระบุชื่อสมาชิก', 'warn'); return; }
+        this.setState(st => ({ users: [...st.users, { id: 'u' + Date.now(), name, empId: empId || '—', role: 'user' }], nu: { name: '', empId: '' } }));
+        this.showToast('เพิ่มสมาชิก ' + name + ' แล้ว', 'ok');
+      },
+      closePick: () => this.setState({ pickRoom: null })
+    };
+
+    const t = s.toast;
+    return {
+      isAssign: s.tab === 'assign', isRooms: s.tab === 'rooms', isUsers: s.tab === 'users',
+      tabs, rooms, users, unassigned,
+      unassignedCount: unassigned.length, allAssigned: unassigned.length === 0,
+      noPending: unassigned.length === 0,
+      nr: s.nr, nu: s.nu,
+      hasToast: !!t, toastMsg: t ? t.msg : '', toastIcon: t ? (t.type === 'warn' ? '✉' : '✓') : '',
+      toastBg: t && t.type === 'warn' ? '#8C6A3B' : '#1E3A34',
+      // responsive
+      pad: mob ? '22px 16px 90px' : '30px 30px 90px',
+      h1: mob ? '24px' : '32px',
+      assignCols: mob ? '1fr' : '340px 1fr',
+      boardCols: mob ? '1fr' : 'repeat(2,1fr)',
+      formCols: mob ? '1fr 1fr' : '1.4fr .7fr .7fr .8fr auto',
+      userFormCols: mob ? '1fr' : '1.6fr 1fr auto',
+      h
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAISON Residence - สวัสดิการแรกเข้า TQM — รายละเอียดการจอง</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kodchasan:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:          #EDE7DA;
+  --bg-alt:      #F5F1E8;
+  --surface:     #FFFDF8;
+  --surface-soft:#FBF8F1;
+  --ink:         #23201B;
+  --ink-soft:    #4A453C;
+  --muted:       #857D6E;
+  --muted-2:     #9A9182;
+  --line-color:  #E7DFCE;
+  --line-2:      #E2DAC9;
+  --pine:        #1E3A34;
+  --pine-deep:   #16302A;
+  --brass:       #A8834F;
+  --brass-soft:  #C9A876;
+  --brass-bg:    #F2EAD9;
+}
+html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background: var(--bg); color: var(--ink); }
+
+/* ── TOPBAR ── */
+.topbar { position: sticky; top: 0; z-index: 200; background: var(--pine); display: flex; align-items: center; padding: 0 28px; height: 60px; }
+.topbar-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+.logo-mark { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid rgba(201,168,118,.5); display: flex; align-items: center; justify-content: center; background: rgba(169,131,79,.1); }
+.logo-mark span { font-size: 16px; font-weight: 700; color: #C9A876; }
+.logo-text { font-size: 12px; font-weight: 600; letter-spacing: .22em; color: rgba(255,255,255,.85); text-transform: uppercase; }
+.topbar-nav { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; }
+.nav-link { padding: 6px 16px; border-radius: 7px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,.65); text-decoration: none; transition: background .15s, color .15s; }
+.nav-link:hover  { background: rgba(255,255,255,.08); color: #fff; }
+.nav-link.active { background: rgba(255,255,255,.12); color: #fff; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; position: relative; }
+.user-dropdown { position: absolute; top: calc(100% + 6px); right: 0; background: #fff; border: 1px solid #E7DFCE; border-radius: 12px; min-width: 160px; box-shadow: 0 8px 24px rgba(0,0,0,.14); overflow: hidden; display: none; z-index: 500; }
+.user-dropdown.open { display: block; }
+.user-dd-item { display: block; width: 100%; padding: 11px 16px; font-size: 13px; font-weight: 600; color: #23201B; text-decoration: none; background: none; border: none; cursor: pointer; text-align: left; font-family: 'Kodchasan', sans-serif; transition: background .15s; white-space: nowrap; }
+.user-dd-item:hover { background: #F5F1E8; }
+.user-dd-logout { color: #C84040; border-top: 1px solid #E7DFCE; }
+.topbar-user { display: flex; align-items: center; gap: 10px; text-decoration: none; padding: 6px 10px; border-radius: 9px; transition: background .15s; }
+.topbar-user:hover { background: rgba(255,255,255,.08); }
+.topbar-user-name { display: block; font-size: 13px; font-weight: 600; color: #fff; }
+.topbar-user-dept { display: block; font-size: 11px; color: rgba(255,255,255,.5); }
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--brass); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0; }
+
+/* burger */
+.burger-btn { display: none; background: none; border: 0; cursor: pointer; padding: 10px 0 10px 10px; flex-direction: column; align-items: center; margin-left: auto; position: relative; z-index: 1000; }
+.burger-line { display: block; width: 26px; height: 3px; background: rgba(255,255,255,.85); transform: skew(5deg); transition: all .275s; border-radius: 2px; }
+.burger-line::before, .burger-line::after { content: ''; display: block; height: 100%; background: rgba(255,255,255,.85); transition: all .275s; border-radius: 2px; }
+.burger-line::after  { transform: translateY(-10px) translateX(-2px) skew(-20deg); }
+.burger-line::before { transform: translateY(-13px) skew(-10deg); }
+.burger-btn.is-open .burger-line { transform: skew(5deg) translateY(-7px) rotate(-45deg); }
+.burger-btn.is-open .burger-line::before { transform: translateY(0px) skew(-10deg) rotate(75deg); }
+.burger-btn.is-open .burger-line::after  { transform: translateY(-10px) translateX(8px) skew(-20deg); opacity: 0; }
+.burger-label { display: block; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; color: rgba(255,255,255,.6); margin-top: 5px; font-family: 'Kodchasan', sans-serif; }
+.mobile-nav { position: fixed; top: 0; right: 0; left: 0; bottom: 0; background: var(--pine-deep); opacity: 0; z-index: 150; visibility: hidden; transition: all .375s; display: flex; align-items: center; justify-content: center; }
+.mobile-nav.is-open { opacity: 1; visibility: visible; }
+.mobile-nav::before { content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: -15px; background: var(--pine); transform-origin: 0 0; transform: skew(-14deg) translateX(-120%); transition: all .275s .1s; }
+.mobile-nav.is-open::before { transform: skew(-14deg) translateX(0); }
+.mobile-nav-inner { position: relative; z-index: 1; display: inline-flex; flex-direction: column; align-items: flex-end; transform: translateX(-10%) skew(-16deg); list-style: none; padding: 0; }
+.mobile-nav-inner li { display: block; margin: .4rem 0; text-align: right; transform: skew(16deg); }
+.mobile-nav-inner a { display: block; padding: 14px 4px; color: rgba(255,255,255,.85); font-size: 1.6em; font-weight: 700; text-decoration: none; font-family: 'Kodchasan', sans-serif; opacity: 0; transform: translateY(-10px); transition: color .2s; }
+.mobile-nav-inner a:hover { color: #C9A876; }
+.mobile-nav.is-open a { opacity: 1; transform: translateY(0); }
+.mobile-nav-inner li:nth-child(1) a { transition: opacity 275ms 175ms, transform 275ms 175ms, color .2s; }
+.mobile-nav-inner li:nth-child(2) a { transition: opacity 275ms 225ms, transform 275ms 225ms, color .2s; }
+.mobile-nav-inner li:nth-child(3) a { transition: opacity 275ms 275ms, transform 275ms 275ms, color .2s; }
+.mobile-nav-inner li:nth-child(4) a { transition: opacity 275ms 325ms, transform 275ms 325ms, color .2s; }
+
+/* ── PAGE ── */
+.page { max-width: 740px; margin: 0 auto; padding: 32px 24px 100px; }
+
+/* ── BACK ── */
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; color: var(--muted);
+  text-decoration: none; padding: 6px 0; margin-bottom: 20px;
+  transition: color .15s;
+}
+.back-btn:hover { color: var(--pine); }
+.back-btn svg { width: 16px; height: 16px; }
+
+/* ── HERO CARD ── */
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--line-color);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px -30px rgba(30,58,52,.2);
+  margin-bottom: 16px;
+  animation: fadeUp .3s ease both;
+}
+@keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+
+.hero-header {
+  background: var(--pine);
+  padding: 24px 26px;
+  display: flex; align-items: flex-start; gap: 18px;
+}
+.hero-photo {
+  width: 72px; height: 88px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.12);
+  overflow: hidden; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; font-weight: 700; color: rgba(255,255,255,.5);
+  border: 2px solid rgba(255,255,255,.15);
+}
+.hero-photo img { width: 100%; height: 100%; object-fit: cover; }
+.hero-info { flex: 1; }
+.hero-bkid {
+  font-size: 11px; font-weight: 700; letter-spacing: .14em;
+  color: rgba(255,255,255,.45); text-transform: uppercase; margin-bottom: 5px;
+}
+.hero-name { font-size: 22px; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 6px; }
+.hero-meta { font-size: 12.5px; color: rgba(255,255,255,.5); }
+.hero-status { margin-top: 12px; }
+
+/* Status pill */
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 13px; border-radius: 20px;
+  font-size: 12px; font-weight: 700; letter-spacing: .03em;
+}
+.pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+.pill.pending   { background: rgba(255,248,220,.18); color: #F5C842; }
+.pill.pending .pill-dot   { background: #F5C842; }
+.pill.approved  { background: rgba(180,255,200,.15); color: #5EC67A; }
+.pill.approved .pill-dot  { background: #5EC67A; }
+.pill.active    { background: rgba(100,180,255,.15); color: #6AB4FF; }
+.pill.active .pill-dot    { background: #6AB4FF; }
+.pill.checked_out { background: rgba(200,200,220,.15); color: #A0A0B8; }
+.pill.checked_out .pill-dot { background: #A0A0B8; }
+.pill.rejected  { background: rgba(255,120,120,.12); color: #F08080; }
+.pill.rejected .pill-dot  { background: #F08080; }
+.pill.cancelled { background: rgba(255,180,180,.12); color: #F07070; }
+.pill.cancelled .pill-dot { background: #F07070; }
+
+/* ── BODY ── */
+.hero-body { padding: 24px 26px; }
+
+.section-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted-2);
+  margin-bottom: 12px; margin-top: 22px;
+}
+.section-label:first-child { margin-top: 0; }
+
+/* Info grid */
+.info-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--line-color);
+  border-radius: 12px; overflow: hidden;
+}
+.info-cell {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--line-color);
+}
+.info-cell:nth-last-child(-n+2) { border-bottom: none; }
+.info-cell.full { grid-column: 1 / -1; }
+.info-cell-label { font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 3px; }
+.info-cell-val   { font-size: 14px; font-weight: 600; color: var(--ink); }
+.info-cell-val.empty { color: var(--muted-2); font-weight: 400; font-style: italic; }
+
+/* Date strip */
+.date-strip {
+  background: var(--pine);
+  border-radius: 12px; padding: 16px 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.date-strip-icon { font-size: 22px; opacity: .8; flex-shrink: 0; }
+.date-strip-label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: 3px; }
+.date-strip-val   { font-size: 19px; font-weight: 700; color: #fff; }
+
+/* Purpose strip */
+.purpose-strip {
+  background: var(--surface-soft);
+  border: 1px solid var(--line-color);
+  border-radius: 12px; padding: 14px 18px;
+}
+.purpose-strip-label { font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+.purpose-strip-val   { font-size: 14px; font-weight: 700; color: var(--ink); }
+.purpose-roommate    { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line-color); }
+.purpose-roommate-label { font-size: 11px; color: var(--muted); margin-bottom: 3px; }
+.purpose-roommate-val   { font-size: 14px; font-weight: 600; color: var(--ink); }
+
+/* Room assignment */
+.room-card {
+  background: var(--brass-bg);
+  border: 1.5px solid var(--brass-soft);
+  border-radius: 12px; padding: 16px 20px;
+  display: flex; align-items: center; gap: 14px;
+}
+.room-card-icon { font-size: 28px; }
+.room-card-label { font-size: 11px; font-weight: 600; color: var(--brass); margin-bottom: 3px; }
+.room-card-val   { font-size: 18px; font-weight: 700; color: var(--ink); }
+
+/* Timeline */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.tl-item {
+  display: flex; gap: 14px; position: relative;
+  padding-bottom: 18px;
+}
+.tl-item:last-child { padding-bottom: 0; }
+.tl-item::before {
+  content: '';
+  position: absolute; left: 11px; top: 26px; bottom: 0;
+  width: 2px; background: var(--line-color);
+}
+.tl-item:last-child::before { display: none; }
+.tl-dot {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--surface-soft); border: 2px solid var(--line-color);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+  font-size: 11px;
+}
+.tl-dot.pine  { background: var(--pine);  border-color: var(--pine);  color: #fff; }
+.tl-dot.brass { background: var(--brass); border-color: var(--brass); color: #fff; }
+.tl-dot.red   { background: #C84040;      border-color: #C84040;      color: #fff; }
+.tl-dot.blue  { background: #2E82D4;      border-color: #2E82D4;      color: #fff; }
+.tl-dot.grey  { background: #8A8A9A;      border-color: #8A8A9A;      color: #fff; }
+.tl-content {}
+.tl-title { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.tl-time  { font-size: 11.5px; color: var(--muted); }
+
+/* ── ACTIONS ── */
+.actions-bar {
+  display: flex; gap: 12px; justify-content: flex-end;
+  margin-top: 20px;
+}
+.btn-cancel-booking {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: none; border: 1.5px solid #C84040;
+  border-radius: 11px; padding: 12px 22px;
+  font-family: 'Kodchasan', sans-serif; font-size: 14px; font-weight: 600;
+  color: #C84040; cursor: pointer; transition: all .2s;
+}
+.btn-cancel-booking:hover { background: #C84040; color: #fff; }
+.btn-home {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--pine); color: #fff; border: none;
+  border-radius: 11px; padding: 12px 22px; text-decoration: none;
+  font-family: 'Kodchasan', sans-serif; font-size: 14px; font-weight: 600;
+  box-shadow: 0 10px 24px -10px rgba(30,58,52,.4);
+  transition: background .2s;
+}
+.btn-home:hover { background: var(--pine-deep); }
+
+/* ── CANCEL MODAL ── */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(22,48,42,.4); backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center;
+}
+.modal-backdrop.open { display: flex; animation: mFade .2s ease both; }
+@keyframes mFade { from { opacity:0; } to { opacity:1; } }
+.modal {
+  background: var(--surface); border-radius: 20px;
+  width: 380px; max-width: 92vw;
+  box-shadow: 0 30px 80px -20px rgba(20,40,35,.45);
+  overflow: hidden;
+  animation: mSlide .22s cubic-bezier(.2,.8,.3,1) both;
+}
+@keyframes mSlide { from { transform: translateY(20px); opacity:0; } to { transform:none; opacity:1; } }
+.modal-header { background: #C84040; padding: 20px 24px; display: flex; align-items: center; gap: 12px; }
+.modal-header-icon { font-size: 22px; }
+.modal-header-title { font-size: 16px; font-weight: 700; color: #fff; }
+.modal-body { padding: 22px 24px; }
+.modal-body p { font-size: 14px; color: var(--ink-soft); line-height: 1.7; }
+.modal-body .bkid-badge {
+  display: inline-block; background: var(--bg-alt); border: 1px solid var(--line-color);
+  border-radius: 7px; padding: 4px 12px; font-weight: 700; color: var(--ink); margin: 0 3px;
+}
+.modal-footer { padding: 0 24px 22px; display: flex; gap: 10px; justify-content: flex-end; }
+.modal-btn-back {
+  background: none; border: 1.5px solid var(--line-2); border-radius: 10px;
+  padding: 11px 20px; font-family: 'Kodchasan', sans-serif; font-size: 14px;
+  font-weight: 600; color: var(--muted); cursor: pointer; transition: all .15s;
+}
+.modal-btn-back:hover { border-color: var(--muted); color: var(--ink); }
+.modal-btn-confirm {
+  background: #C84040; color: #fff; border: none; border-radius: 10px;
+  padding: 11px 24px; font-family: 'Kodchasan', sans-serif; font-size: 14px;
+  font-weight: 700; cursor: pointer; transition: background .15s;
+  box-shadow: 0 8px 20px -8px rgba(200,64,64,.5);
+}
+.modal-btn-confirm:hover { background: #a83030; }
+.modal-btn-confirm.loading { position: relative; color: transparent; }
+.modal-btn-confirm.loading::after { content: ''; position: absolute; inset: 0; margin: auto; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── SKELETON / LOADING ── */
+.skeleton-wrap { display: flex; flex-direction: column; gap: 12px; padding: 30px 0; }
+.skeleton { background: linear-gradient(90deg, var(--line-color) 25%, var(--bg-alt) 50%, var(--line-color) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 8px; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+.sk-hero   { height: 140px; border-radius: 16px; }
+.sk-line   { height: 18px; }
+.sk-half   { height: 18px; width: 55%; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .page { padding: 20px 14px 80px; }
+  .hero-header { flex-direction: column; align-items: center; text-align: center; padding: 20px 18px; }
+  .hero-body { padding: 18px; }
+  .info-grid { grid-template-columns: 1fr; }
+  .info-cell:nth-last-child(-n+2) { border-bottom: 1px solid var(--line-color); }
+  .info-cell:last-child { border-bottom: none; }
+  .topbar { padding: 0 16px; }
+  .topbar-nav { display: none; }
+  .burger-btn { display: flex; }
+  .topbar-user { display: none; }
+  .actions-bar { flex-direction: column-reverse; }
+  .btn-cancel-booking, .btn-home { justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- Mobile nav -->
+<nav class="mobile-nav" id="mobile-nav">
+  <ul class="mobile-nav-inner">
+    <li><a href="dashboard.html" class="active">การจอง</a></li>
+    <li><a href="booking.html">จองห้องพัก</a></li>
+    <li><a href="profile.html">โปรไฟล์</a></li>
+    <li><a href="admin.html" id="mob-admin" style="display:none">Admin</a></li>
+  </ul>
+</nav>
+
+<!-- Topbar -->
+<header class="topbar">
+  <a class="topbar-logo" href="dashboard.html">
+    <div class="logo-mark"><span>M</span></div>
+    <span class="logo-text">MAISON Residence</span>
+  </a>
+  <nav class="topbar-nav">
+    <a class="nav-link active" href="dashboard.html">การจอง</a>
+    <a class="nav-link" href="booking.html">จองห้องพัก</a>
+    <a class="nav-link" href="profile.html">โปรไฟล์</a>
+    <a class="nav-link" href="admin.html" id="nav-admin" style="display:none">Admin</a>
+  </nav>
+  <div class="topbar-right">
+    <div class="topbar-user" id="user-menu-btn" onclick="toggleUserMenu()" style="cursor:pointer">
+      <div>
+        <span class="topbar-user-name" id="user-name">—</span>
+        <span class="topbar-user-dept" id="user-dept">—</span>
+      </div>
+      <div class="avatar" id="user-avatar">?</div>
+    </div>
+    <div class="user-dropdown" id="user-dropdown">
+      <a href="profile.html" class="user-dd-item">👤 โปรไฟล์</a>
+      <button class="user-dd-item user-dd-logout" onclick="doLogout()">↩ ออกจากระบบ</button>
+    </div>
+    <button class="burger-btn" id="burger-btn" aria-label="เมนู">
+      <span class="burger-line"></span>
+      <span class="burger-label">เมนู</span>
+    </button>
+  </div>
+</header>
+
+<!-- Cancel Modal -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-header-icon">⚠️</span>
+      <span class="modal-header-title">ยืนยันการยกเลิก</span>
+    </div>
+    <div class="modal-body">
+      <p>คุณต้องการยกเลิกการจอง <span class="bkid-badge" id="modal-bkid">—</span> ใช่หรือไม่?<br>การยกเลิกจะไม่สามารถเปลี่ยนกลับได้</p>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn-back" onclick="closeModal()">ย้อนกลับ</button>
+      <button class="modal-btn-confirm" id="btn-confirm-cancel" onclick="doCancel()">ยกเลิกการจอง</button>
+    </div>
+  </div>
+</div>
+
+<!-- Page -->
+<main class="page">
+  <a class="back-btn" href="dashboard.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    ย้อนกลับ
+  </a>
+
+  <!-- Skeleton while loading -->
+  <div id="skeleton">
+    <div class="skeleton-wrap">
+      <div class="skeleton sk-hero"></div>
+      <div class="skeleton sk-line"></div>
+      <div class="skeleton sk-half"></div>
+      <div class="skeleton sk-line"></div>
+      <div class="skeleton sk-half"></div>
+    </div>
+  </div>
+
+  <!-- Content (hidden until loaded) -->
+  <div id="content" style="display:none">
+
+    <!-- Hero -->
+    <div class="hero-card">
+      <div class="hero-header">
+        <div class="hero-photo" id="d-photo">?</div>
+        <div class="hero-info">
+          <div class="hero-bkid" id="d-bkid">—</div>
+          <div class="hero-name" id="d-name">—</div>
+          <div class="hero-meta" id="d-meta">—</div>
+          <div class="hero-status">
+            <span class="pill" id="d-pill"><span class="pill-dot"></span><span id="d-pill-text">—</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-body">
+
+        <!-- ข้อมูลส่วนตัว -->
+        <div class="section-label">ข้อมูลผู้เข้าพัก</div>
+        <div class="info-grid">
+          <div class="info-cell">
+            <div class="info-cell-label">รหัสพนักงาน</div>
+            <div class="info-cell-val" id="d-empid">—</div>
+          </div>
+          <div class="info-cell">
+            <div class="info-cell-label">ชื่อเล่น</div>
+            <div class="info-cell-val" id="d-nickname">—</div>
+          </div>
+          <div class="info-cell full">
+            <div class="info-cell-label">แผนก / ส่วนงาน</div>
+            <div class="info-cell-val" id="d-dept">—</div>
+          </div>
+          <div class="info-cell">
+            <div class="info-cell-label">เพศ</div>
+            <div class="info-cell-val" id="d-gender">—</div>
+          </div>
+          <div class="info-cell">
+            <div class="info-cell-label">ศาสนา</div>
+            <div class="info-cell-val" id="d-religion">—</div>
+          </div>
+          <div class="info-cell">
+            <div class="info-cell-label">เลขบัตรประชาชน</div>
+            <div class="info-cell-val" id="d-idcard">—</div>
+          </div>
+          <div class="info-cell">
+            <div class="info-cell-label">เบอร์ติดต่อ</div>
+            <div class="info-cell-val" id="d-phone">—</div>
+          </div>
+          <div class="info-cell">
+            <div class="info-cell-label">วันเริ่มงาน</div>
+            <div class="info-cell-val" id="d-startdate">—</div>
+          </div>
+          <div class="info-cell full">
+            <div class="info-cell-label">จองโดย (ผู้ทำรายการ)</div>
+            <div class="info-cell-val" id="d-bookedby">—</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px" id="d-bookedby-name"></div>
+          </div>
+        </div>
+
+        <!-- วันที่ -->
+        <div class="section-label" style="margin-top:20px">ข้อมูลการพัก</div>
+        <div class="date-strip" id="d-date-strip">
+          <div class="date-strip-icon">📅</div>
+          <div>
+            <div class="date-strip-label">ประสงค์เข้าพักวันที่</div>
+            <div class="date-strip-val" id="d-checkin">—</div>
+          </div>
+        </div>
+
+        <!-- ความประสงค์ -->
+        <div style="margin-top:10px">
+          <div class="purpose-strip" id="d-purpose-strip">
+            <div class="purpose-strip-label">ความประสงค์ในการเข้าพัก</div>
+            <div class="purpose-strip-val" id="d-purpose">—</div>
+            <div class="purpose-roommate" id="d-roommate-row" style="display:none">
+              <div class="purpose-roommate-label">ต้องการเข้าพักกับ</div>
+              <div class="purpose-roommate-val" id="d-roommate">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ห้องที่ได้รับ (approved เท่านั้น) -->
+        <div id="d-room-section" style="display:none; margin-top:10px">
+          <div class="room-card">
+            <div class="room-card-icon">🏠</div>
+            <div>
+              <div class="room-card-label">กำลังพักอยู่ที่</div>
+              <div class="room-card-val" id="d-room">—</div>
+              <div id="d-room-detail" style="font-size:12px;color:var(--muted);margin-top:3px"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkout (ถ้า admin ระบุแล้ว) -->
+        <div id="d-checkout-section" style="display:none; margin-top:10px">
+          <div class="info-grid">
+            <div class="info-cell">
+              <div class="info-cell-label">Check-out</div>
+              <div class="info-cell-val" id="d-checkout">—</div>
+            </div>
+            <div class="info-cell">
+              <div class="info-cell-label">จำนวนคืน</div>
+              <div class="info-cell-val" id="d-nights">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="section-label" style="margin-top:22px">ประวัติ</div>
+        <div class="timeline" id="d-timeline"></div>
+
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions-bar" id="d-actions">
+      <a class="btn-home" href="dashboard.html">← กลับหน้าหลัก</a>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<script>
+const GAS_API_URL = "https://script.google.com/macros/s/AKfycbz0epUmQWVp0idbM3T4VwN0aL-NObC-ihOybEm0XQccnsfOZD8-WOcHtBu6tbxExmTG/exec";
+
+// ── SESSION (localStorage + 8h expiry) ───────────────
+function getSession() {
+  try {
+    const ts = +localStorage.getItem("maison_ts") || 0;
+    if ((Date.now() - ts) / 3600000 > 8) { _clearSess(); return null; }
+    const d = localStorage.getItem("maison_session");
+    return d ? JSON.parse(d) : null;
+  } catch(e) { return null; }
+}
+function _clearSess() { localStorage.removeItem("maison_session"); localStorage.removeItem("maison_ts"); }
+function doLogout() { _clearSess(); location.replace("login.html"); }
+function toggleUserMenu() { document.getElementById("user-dropdown").classList.toggle("open"); }
+document.addEventListener("click", e => {
+  const btn = document.getElementById("user-menu-btn");
+  const dd  = document.getElementById("user-dropdown");
+  if (btn && dd && !btn.contains(e.target)) dd.classList.remove("open");
+});
+
+const session = getSession();
+if (!session) location.replace("login.html");
+
+// ── UI: topbar ───────────────────────────────────────
+const initials = n => { const p = (n||"").trim().split(" "); return p.length >= 2 ? (p[0][0]+(p[1][0]||"")).toUpperCase() : (n||"?")[0].toUpperCase(); };
+document.getElementById("user-name").textContent = session.name;
+document.getElementById("user-dept").textContent = session.dept;
+document.getElementById("user-avatar").textContent = initials(session.name);
+if (session.role === "admin") {
+  document.getElementById("nav-admin").style.display = "";
+  document.getElementById("mob-admin").style.display = "";
+}
+
+// ── BURGER ───────────────────────────────────────────
+const burgerBtn = document.getElementById("burger-btn");
+const mobileNav = document.getElementById("mobile-nav");
+burgerBtn.addEventListener("click", () => {
+  burgerBtn.classList.toggle("is-open");
+  mobileNav.classList.toggle("is-open");
+});
+mobileNav.addEventListener("click", e => {
+  if (e.target === mobileNav) { burgerBtn.classList.remove("is-open"); mobileNav.classList.remove("is-open"); }
+});
+
+// ── API ──────────────────────────────────────────────
+async function api(action, params = {}) {
+  const res = await fetch(GAS_API_URL, {
+    method: "POST",
+    body: JSON.stringify({ action, empId: session.empId, role: session.role, ...params }),
+  });
+  return res.json();
+}
+
+// ── HELPERS ──────────────────────────────────────────
+const STATUS_LABEL = {
+  pending    : "รออนุมัติ",
+  approved   : "จัดห้องแล้ว",
+  active     : "กำลังพักอยู่",
+  checked_out: "Check Out แล้ว",
+  cancelled  : "ยกเลิก",
+  rejected   : "ปฏิเสธ",
+};
+const fmtDate = str => {
+  if (!str) return "—";
+  const d = new Date(str);
+  if (isNaN(d)) return str;
+  return d.toLocaleDateString("th-TH", { day: "numeric", month: "long", year: "numeric" });
+};
+const fmtDateTime = str => {
+  if (!str) return "—";
+  const d = new Date(str);
+  if (isNaN(d)) return str;
+  return d.toLocaleString("th-TH", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+};
+const maskId   = id => { if (!id || id.length < 6) return id; return id.slice(0,4) + "×".repeat(id.length - 6) + id.slice(-2); };
+const fmtPhone = p  => {
+  if (!p) return "—";
+  const digits = String(p).replace(/\D/g, "");
+  // เบอร์ไทย 10 หลัก ขึ้นต้น 0 — ถ้า Sheets กินเลข 0 หน้าออก ให้ pad กลับ
+  return digits.length > 0 && digits.length < 10 ? digits.padStart(10, "0") : digits || "—";
+};
+
+// ── LOAD BOOKING ─────────────────────────────────────
+const bookingId = new URLSearchParams(location.search).get("id");
+if (!bookingId) { location.replace("dashboard.html"); }
+
+let currentBooking = null;
+let roomMap = {};  // roomId → room object
+
+async function loadBooking() {
+  try {
+    // โหลด booking + rooms พร้อมกัน
+    const [bookRes, roomRes] = await Promise.all([
+      api("getBookingById", { bookingId }),
+      api("getRooms"),
+    ]);
+    if (!bookRes.ok) throw new Error(bookRes.error || "ไม่พบรายการจอง");
+    if (roomRes.ok && roomRes.data) {
+      roomRes.data.forEach(r => { roomMap[r.roomId] = r; });
+    }
+    currentBooking = bookRes.data;
+    renderBooking(currentBooking);
+  } catch (e) {
+    document.getElementById("skeleton").innerHTML =
+      `<div style="text-align:center;padding:60px 20px;color:var(--muted)">
+        <div style="font-size:36px;margin-bottom:12px">⚠️</div>
+        <div style="font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px">ไม่พบรายการจอง</div>
+        <div style="font-size:13px;margin-bottom:20px">${e.message}</div>
+        <a href="dashboard.html" class="btn-home">← กลับหน้าหลัก</a>
+      </div>`;
+  }
+}
+
+function renderBooking(b) {
+  const status  = b.status || "pending";
+  const fn      = b.firstName || "";
+  const ln      = b.lastName  || "";
+  const fullName = fn + " " + ln;
+
+  // photo
+  const photoEl = document.getElementById("d-photo");
+  if (b.photoUrl) {
+    photoEl.innerHTML = `<img src="${b.photoUrl}" alt="">`;
+  } else {
+    photoEl.textContent = initials(fullName);
+  }
+
+  // hero info
+  document.getElementById("d-bkid").textContent   = b.bookingId || bookingId;
+  document.getElementById("d-name").textContent   = fullName;
+  document.getElementById("d-meta").textContent   = (b.nickname ? `"${b.nickname}"` : "") + (b.dept ? "  ·  " + b.dept : "");
+  document.getElementById("modal-bkid").textContent = b.bookingId || bookingId;
+
+  // status pill
+  const pill = document.getElementById("d-pill");
+  const pillText = document.getElementById("d-pill-text");
+  pill.className = "pill " + status;
+  pillText.textContent = STATUS_LABEL[status] || status;
+
+  // personal info
+  document.getElementById("d-empid").textContent    = b.empId      || "—";
+  document.getElementById("d-nickname").textContent = b.nickname   || "—";
+  const deptEl = document.getElementById("d-dept");
+  if (b.dept) { deptEl.textContent = b.dept; } else { deptEl.textContent = "—"; deptEl.classList.add("empty"); }
+  document.getElementById("d-gender").textContent   = b.gender     || "—";
+  document.getElementById("d-religion").textContent = b.religion   || "—";
+  document.getElementById("d-idcard").textContent   = maskId(String(b.idCard || "")) || "—";
+  document.getElementById("d-phone").textContent    = fmtPhone(b.phone);
+  document.getElementById("d-startdate").textContent = fmtDate(b.startDate) || "—";
+  const isSelf = String(b.bookedBy || "") === String(b.empId || "");
+  document.getElementById("d-bookedby").textContent      = b.bookedBy || "—";
+  document.getElementById("d-bookedby-name").textContent = isSelf
+    ? "( จองให้ตนเอง )"
+    : (b.bookedByName || "");
+
+  // dates
+  document.getElementById("d-checkin").textContent = fmtDate(b.checkIn);
+
+  // purpose + roommate
+  document.getElementById("d-purpose").textContent = b.purpose || "—";
+  if (b.roommate) {
+    document.getElementById("d-roommate").textContent = b.roommate;
+    document.getElementById("d-roommate-row").style.display = "";
+  }
+
+  // room (approved)
+  if (b.assignedRoom || b.roomType) {
+    const room = roomMap[b.assignedRoom];
+    // บรรทัดหลัก: ชื่ออาคาร / สถานที่
+    document.getElementById("d-room").textContent =
+      room ? (room.location || b.assignedRoom) : (b.assignedRoom || b.roomType || "—");
+    // บรรทัดรอง: รายละเอียดห้อง
+    if (room) {
+      const detail = [
+        room.floor  ? "ชั้น " + room.floor  : "",
+        room.roomNo ? "ห้อง " + room.roomNo : "",
+        room.roomType ? (room.roomType === "ห้องแอร์" ? "❄️ แอร์" : "🌀 พัดลม") : "",
+      ].filter(Boolean).join("  ·  ");
+      document.getElementById("d-room-detail").textContent = detail;
+    }
+    document.getElementById("d-room-section").style.display = "";
+  }
+
+  // checkout (if admin filled)
+  if (b.checkOut) {
+    document.getElementById("d-checkout").textContent = fmtDate(b.checkOut);
+    document.getElementById("d-nights").textContent   = (b.nights || "—") + (b.nights ? " คืน" : "");
+    document.getElementById("d-checkout-section").style.display = "";
+  }
+
+  // timeline
+  buildTimeline(b);
+
+  // cancel button: pending หรือ approved (ยังไม่ได้ check in) และเป็นของตัวเอง
+  const isMine = String(b.empId) === String(session.empId) || String(b.bookedBy) === String(session.empId);
+  if (status === "pending" && (isMine || session.role === "admin")) {
+    const actions = document.getElementById("d-actions");
+    const cancelBtn = document.createElement("button");
+    cancelBtn.className = "btn-cancel-booking";
+    cancelBtn.innerHTML = "✕ ยกเลิกการจอง";
+    cancelBtn.onclick = openModal;
+    actions.prepend(cancelBtn);
+  }
+
+  // show content
+  document.getElementById("skeleton").style.display = "none";
+  document.getElementById("content").style.display  = "";
+}
+
+function buildTimeline(b) {
+  const tl   = document.getElementById("d-timeline");
+  const items = [];
+
+  items.push({ dot: "pine", icon: "📋", title: "ส่งคำขอจอง", time: fmtDateTime(b.createdAt) });
+
+  if (["approved","active","checked_out"].includes(b.status)) {
+    const tlRoom = roomMap[b.assignedRoom];
+    const tlRoomTxt = tlRoom
+      ? (tlRoom.location || b.assignedRoom) + (tlRoom.floor ? " ชั้น "+tlRoom.floor : "") + (tlRoom.roomNo ? " ห้อง "+tlRoom.roomNo : "")
+      : (b.assignedRoom ? "ห้อง " + b.assignedRoom : "");
+    items.push({ dot: "brass", icon: "✓", title: "อนุมัติและจัดห้องแล้ว", time: tlRoomTxt });
+  }
+  if (["active","checked_out"].includes(b.status)) {
+    items.push({ dot: "blue", icon: "🏠", title: "Check In — เข้าพักแล้ว", time: b.actualCheckIn ? fmtDateTime(b.actualCheckIn) : "" });
+  }
+  if (b.status === "checked_out") {
+    items.push({ dot: "grey", icon: "📦", title: "Check Out — ออกจากห้องแล้ว", time: b.actualCheckOut ? fmtDateTime(b.actualCheckOut) : "" });
+  }
+  if (b.status === "rejected") {
+    items.push({ dot: "red", icon: "✕", title: "ปฏิเสธคำขอจอง", time: "" });
+  }
+  if (b.status === "cancelled") {
+    items.push({ dot: "red", icon: "✕", title: "ยกเลิกการจอง", time: "" });
+  }
+
+  tl.innerHTML = items.map(it => `
+    <div class="tl-item">
+      <div class="tl-dot ${it.dot}">${it.icon}</div>
+      <div class="tl-content">
+        <div class="tl-title">${it.title}</div>
+        ${it.time ? `<div class="tl-time">${it.time}</div>` : ""}
+      </div>
+    </div>
+  `).join("");
+}
+
+// ── CANCEL MODAL ─────────────────────────────────────
+function openModal()  { document.getElementById("modal-backdrop").classList.add("open"); }
+function closeModal() { document.getElementById("modal-backdrop").classList.remove("open"); }
+
+document.getElementById("modal-backdrop").addEventListener("click", e => {
+  if (e.target === document.getElementById("modal-backdrop")) closeModal();
+});
+
+async function doCancel() {
+  const btn = document.getElementById("btn-confirm-cancel");
+  btn.classList.add("loading"); btn.disabled = true;
+  try {
+    const res = await api("cancelBooking", { bookingId });
+    if (!res.ok) throw new Error(res.error);
+    closeModal();
+    // re-render with updated status
+    currentBooking.status = "cancelled";
+    document.getElementById("content").style.display = "none";
+    document.getElementById("skeleton").style.display = "";
+    setTimeout(() => renderBooking(currentBooking), 400);
+  } catch (e) {
+    alert("เกิดข้อผิดพลาด: " + e.message);
+  } finally {
+    btn.classList.remove("loading"); btn.disabled = false;
+  }
+}
+
+// ── INIT ─────────────────────────────────────────────
+loadBooking();
+</script>
+</body>
+</html>
