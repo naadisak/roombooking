@@ -875,9 +875,16 @@ async function loadNotifs() {
   } catch(e) {}
 }
 function _dismissToast(t) {
-  if (!t.parentNode) return;
-  t.classList.add("hide");
-  setTimeout(() => t.parentNode && t.remove(), 280);
+  if (!t.parentNode || t._out) return;
+  t._out = true;
+  t.style.transition = "opacity .25s ease, transform .25s ease";
+  t.style.opacity = "0";
+  t.style.transform = "translateX(60px)";
+  setTimeout(() => {
+    if (t.parentNode) t.remove();
+    const c = document.getElementById("toast-container");
+    if (c && c.children.length === 0) c.remove();
+  }, 280);
 }
 function showToast(message, bookingId) {
   let c = document.getElementById("toast-container");
