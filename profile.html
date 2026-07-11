@@ -866,7 +866,6 @@ loadNotifs();
 // ── NOTIFICATIONS ─────────────────────────────────────
 let _notifData    = [];
 let _seenNotifIds = new Set();
-let _notifReady   = false;
 function relTime(iso) {
   if (!iso) return "";
   const diff = Date.now() - new Date(iso).getTime();
@@ -882,12 +881,9 @@ async function loadNotifs() {
     const res = await api("getNotifications");
     if (!res.ok) return;
     const fresh = res.data || [];
-    if (_notifReady) {
-      fresh.filter(n => !_seenNotifIds.has(n.notifId) && !n.isRead)
-           .forEach(n => showToast(n.message, n.bookingId));
-    }
+    fresh.filter(n => !_seenNotifIds.has(n.notifId) && !n.isRead)
+         .forEach(n => showToast(n.message, n.bookingId));
     fresh.forEach(n => _seenNotifIds.add(n.notifId));
-    _notifReady = true;
     _notifData = fresh;
     renderNotifs();
   } catch(e) {}
@@ -921,7 +917,6 @@ async function markAllRead() {
 }
 setInterval(loadNotifs, 30000);
 window.addEventListener("focus", () => {
-  _notifData.filter(n => !n.isRead).forEach(n => showToast(n.message, n.bookingId));
   loadNotifs();
 });
 // ──────────────────────────────────────────────────────

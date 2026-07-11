@@ -242,13 +242,18 @@ html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background:
 }
 .ps-btn.active { background: var(--pine); border-color: var(--pine); color: #fff; }
 .ps-label { font-size: 11.5px; color: var(--muted-2); }
+@keyframes loadMorePulse {
+  0%,100% { border-color: var(--line-color); color: var(--muted); }
+  50%     { border-color: var(--brass);      color: var(--brass); }
+}
 .load-more-btn {
   display: block; width: 100%; padding: 11px; border-radius: 12px;
   border: 1.5px dashed var(--line-color); background: none;
   font-family: 'Kodchasan', sans-serif; font-size: 13px; font-weight: 600; color: var(--muted);
   cursor: pointer; transition: border-color .15s, color .15s;
+  animation: loadMorePulse 2s ease-in-out infinite;
 }
-.load-more-btn:hover { border-color: var(--pine); color: var(--pine); }
+.load-more-btn:hover { border-color: var(--pine); color: var(--pine); animation: none; }
 .btn-sm-red { background: none; border: 1.5px solid #C84040; color: #C84040; }
 .btn-sm-red:hover { background: #C84040; color: #fff; }
 
@@ -716,7 +721,19 @@ html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background:
     <div class="modal-body">
       <div class="m-info-grid" id="assign-info"></div>
       <div class="m-field">
-        <div class="m-label">เลือกห้องพัก</div>
+        <div class="m-label">สถานที่พัก</div>
+        <select class="m-select" id="assign-loc-select" onchange="onAssignLocChange()">
+          <option value="">-- เลือกสถานที่ --</option>
+        </select>
+      </div>
+      <div class="m-field" id="assign-type-wrap" style="display:none">
+        <div class="m-label">ประเภทห้อง</div>
+        <select class="m-select" id="assign-type-select" onchange="onAssignTypeChange()">
+          <option value="">-- เลือกประเภท --</option>
+        </select>
+      </div>
+      <div class="m-field" id="assign-room-wrap" style="display:none">
+        <div class="m-label">ห้องที่มีที่ว่าง</div>
         <select class="m-select" id="assign-room-select" onchange="onRoomSelect()">
           <option value="">-- เลือกห้อง --</option>
         </select>
@@ -1071,8 +1088,8 @@ html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background:
     <!-- Active bookings view -->
     <div id="view-active">
       <div class="filter-row">
-        <button class="filter-chip active" onclick="setFilter('all', this)">ทั้งหมด</button>
-        <button class="filter-chip" onclick="setFilter('pending', this)">รออนุมัติ</button>
+        <button class="filter-chip" onclick="setFilter('all', this)">ทั้งหมด</button>
+        <button class="filter-chip active" onclick="setFilter('pending', this)">รออนุมัติ</button>
         <button class="filter-chip" onclick="setFilter('approved', this)">จัดห้องแล้ว</button>
         <button class="filter-chip" onclick="setFilter('active', this)">กำลังพักอยู่</button>
         <button class="filter-chip" onclick="setFilter('checked_out', this)">Check Out แล้ว</button>
@@ -1284,14 +1301,7 @@ async function api(action, params = {}) {
   return res.json();
 }
 
-// ── TOAST ────────────────────────────────────────────
-function showToast(msg, isError = false) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "toast" + (isError ? " error" : "");
-  t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 3000);
-}
+// ── TOAST ─── (ดู showToast ฉบับเต็มที่ส่วน NOTIFICATIONS ด้านล่าง) ─────
 
 // ── TABS ─────────────────────────────────────────────
 let activeTab = "bookings";
@@ -1332,7 +1342,7 @@ const STATUS_LABEL = {
 let allBookings  = [];
 let allRooms     = [];
 let allUsers     = [];
-let currentFilter = "all";
+let currentFilter = "pending";
 let searchQuery   = "";
 let bkPageSize    = 11;
 let bkShown       = 11;
@@ -1608,30 +1618,69 @@ function openAssignModal(bookingId) {
     <div class="m-info-cell"><div class="m-info-label">เลขจอง</div><div class="m-info-val">${b.bookingId}</div></div>
   `;
 
-  // populate rooms
-  const sel = document.getElementById("assign-room-select");
-  sel.innerHTML = '<option value="">-- เลือกห้อง --</option>';
-  allRooms.forEach(r => {
-    const slot1 = r.occupant1 ? `(ที่นอน 1: ${r.occupant1})` : "";
-    const slot2 = r.occupant2 ? `(ที่นอน 2: ${r.occupant2})` : "";
-    const full  = r.occupant1 && r.occupant2;
-    if (!full) {
-      const opt = document.createElement("option");
-      opt.value = r.roomId;
-      opt.textContent = `${r.roomId} — ${r.location || ""}  ${slot1} ${slot2}`.trim();
-      sel.appendChild(opt);
-    }
-  });
+  // Cascade step 1: populate locations that have vacancy
+  const locs = [...new Set(
+    allRooms.filter(r => !(r.occupant1 && r.occupant2)).map(r => r.location || "ไม่ระบุ")
+  )].sort();
+  const locSel = document.getElementById("assign-loc-select");
+  locSel.innerHTML = '<option value="">-- เลือกสถานที่ --</option>';
+  locs.forEach(l => { const o = document.createElement("option"); o.value = l; o.textContent = l; locSel.appendChild(o); });
 
+  // Reset downstream
+  document.getElementById("assign-type-wrap").style.display = "none";
+  document.getElementById("assign-room-wrap").style.display = "none";
   document.getElementById("assign-slot-wrap").style.display = "none";
   document.getElementById("btn-do-assign").disabled = true;
   openModal("modal-assign");
 }
 
+function onAssignLocChange() {
+  const loc = document.getElementById("assign-loc-select").value;
+  const typeWrap = document.getElementById("assign-type-wrap");
+  const roomWrap = document.getElementById("assign-room-wrap");
+  const slotWrap = document.getElementById("assign-slot-wrap");
+  typeWrap.style.display = roomWrap.style.display = slotWrap.style.display = "none";
+  document.getElementById("btn-do-assign").disabled = true;
+  if (!loc) return;
+  const types = [...new Set(
+    allRooms.filter(r => (r.location || "ไม่ระบุ") === loc && !(r.occupant1 && r.occupant2))
+            .map(r => r.type || "ไม่ระบุ")
+  )].sort();
+  const typeSel = document.getElementById("assign-type-select");
+  typeSel.innerHTML = '<option value="">-- เลือกประเภท --</option>';
+  types.forEach(t => { const o = document.createElement("option"); o.value = t; o.textContent = t; typeSel.appendChild(o); });
+  typeWrap.style.display = "";
+}
+
+function onAssignTypeChange() {
+  const loc  = document.getElementById("assign-loc-select").value;
+  const type = document.getElementById("assign-type-select").value;
+  const roomWrap = document.getElementById("assign-room-wrap");
+  const slotWrap = document.getElementById("assign-slot-wrap");
+  roomWrap.style.display = slotWrap.style.display = "none";
+  document.getElementById("btn-do-assign").disabled = true;
+  if (!type) return;
+  const available = allRooms.filter(r =>
+    (r.location || "ไม่ระบุ") === loc &&
+    (r.type     || "ไม่ระบุ") === type &&
+    !(r.occupant1 && r.occupant2)
+  );
+  const roomSel = document.getElementById("assign-room-select");
+  roomSel.innerHTML = '<option value="">-- เลือกห้อง --</option>';
+  available.forEach(r => {
+    const s1 = r.occupant1 ? "ที่นอน 1: จองแล้ว" : "ที่นอน 1: ว่าง";
+    const s2 = r.occupant2 ? "ที่นอน 2: จองแล้ว" : "ที่นอน 2: ว่าง";
+    const o = document.createElement("option");
+    o.value = r.roomId;
+    o.textContent = `${r.roomId}  (${s1}, ${s2})`;
+    roomSel.appendChild(o);
+  });
+  roomWrap.style.display = "";
+}
+
 function onRoomSelect() {
   const roomId = document.getElementById("assign-room-select").value;
   if (!roomId) { document.getElementById("assign-slot-wrap").style.display = "none"; document.getElementById("btn-do-assign").disabled = true; return; }
-
   const room = allRooms.find(r => r.roomId === roomId);
   const slotSel = document.getElementById("assign-slot-select");
   slotSel.innerHTML = "";
@@ -2776,9 +2825,8 @@ window.addEventListener("resize", () => {
 
 // ── NOTIFICATIONS (Admin — real-time polling) ─────────
 let _notifData       = [];
-let _prevUnreadIds   = new Set();   // ติดตาม notifId ที่เคยเห็นแล้ว
+let _toastedIds      = new Set();   // notifId ที่เคย toast ไปแล้วใน session นี้
 let _dataRefreshBusy = false;
-let _notifReady      = false;
 
 function relTime(iso) {
   if (!iso) return "";
@@ -2796,17 +2844,11 @@ async function loadNotifs() {
     const res = await api("getNotifications");
     if (!res.ok) return;
     const newData = res.data || [];
-
-    if (_notifReady) {
-      // notification ใหม่ที่ยังไม่เคยเห็น + ยังไม่ได้อ่าน → toast + refresh data
-      const freshUnread = newData.filter(n => !_prevUnreadIds.has(n.notifId) && !n.isRead);
-      freshUnread.forEach(n => showToast(n.message, n.bookingId));
-      if (freshUnread.length > 0) refreshData();
-    }
-
-    newData.forEach(n => _prevUnreadIds.add(n.notifId));
-    _notifReady = true;
-    _notifData  = newData;
+    // Toast เฉพาะ notification ที่ (1) ยังไม่เคย toast ใน session นี้ และ (2) ยังไม่อ่าน
+    const fresh = newData.filter(n => !_toastedIds.has(n.notifId) && !n.isRead);
+    fresh.forEach(n => { _toastedIds.add(n.notifId); showToast(n.message, n.bookingId); });
+    if (fresh.length > 0) refreshData();
+    _notifData = newData;
     renderNotifs();
   } catch(e) {}
 }
@@ -2868,8 +2910,7 @@ async function markAllRead() {
 // Admin: poll ทุก 3 วินาที + focus refetch
 setInterval(loadNotifs, 3000);
 window.addEventListener("focus", () => {
-  // กลับมาที่หน้าจอ → โชว์ toast ทุก notification ที่ยังไม่อ่าน
-  _notifData.filter(n => !n.isRead).forEach(n => showToast(n.message, n.bookingId));
+  // กลับมาที่หน้าจอ → loadNotifs จะ toast เฉพาะ notification ที่ยังไม่เคย toast ใน session นี้
   loadNotifs();
   refreshData();
 });

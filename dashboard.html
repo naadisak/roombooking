@@ -955,7 +955,6 @@ loadNotifs();
 // ── NOTIFICATIONS ─────────────────────────────────────
 let _notifData      = [];
 let _seenNotifIds   = new Set();
-let _notifReady     = false;   // guard: ไม่ toast รอบแรก
 
 function relTime(iso) {
   if (!iso) return "";
@@ -974,14 +973,10 @@ async function loadNotifs() {
     if (!res.ok) return;
     const fresh = res.data || [];
 
-    if (_notifReady) {
-      // โชว์ toast เฉพาะ notification ใหม่ที่ยังไม่เคยเห็น
-      fresh.filter(n => !_seenNotifIds.has(n.notifId) && !n.isRead)
-           .forEach(n => showToast(n.message, n.bookingId));
-    }
+    // Toast notification ที่ยังไม่อ่านและยังไม่เคย toast ใน session นี้
+    fresh.filter(n => !_seenNotifIds.has(n.notifId) && !n.isRead)
+         .forEach(n => showToast(n.message, n.bookingId));
     fresh.forEach(n => _seenNotifIds.add(n.notifId));
-    _notifReady = true;
-
     _notifData = fresh;
     renderNotifs();
   } catch(e) {}
@@ -1059,9 +1054,7 @@ async function markAllRead() {
 
 setInterval(loadNotifs, 30000);
 window.addEventListener("focus", () => {
-  // กลับมาที่หน้าจอ → โชว์ toast ทุก notification ที่ยังไม่อ่าน
-  _notifData.filter(n => !n.isRead).forEach(n => showToast(n.message, n.bookingId));
-  loadNotifs();
+  loadNotifs(); // จะ toast เฉพาะ notification ใหม่ที่ยังไม่เคย toast
 });
 // ──────────────────────────────────────────────────────
 </script>
