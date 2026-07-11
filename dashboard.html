@@ -117,6 +117,54 @@ html, body {
 }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
+/* ── Notification Bell ── */
+.notif-btn {
+  position: relative; background: none; border: none; cursor: pointer;
+  width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+  border-radius: 9px; transition: background .15s; flex-shrink: 0;
+}
+.notif-btn:hover { background: rgba(255,255,255,.08); }
+.notif-btn svg { width: 20px; height: 20px; stroke: rgba(255,255,255,.75); fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.notif-badge {
+  position: absolute; top: 4px; right: 4px;
+  background: #E05454; color: #fff; font-size: 9px; font-weight: 700;
+  min-width: 16px; height: 16px; border-radius: 8px; padding: 0 4px;
+  align-items: center; justify-content: center; display: none;
+}
+.notif-panel {
+  position: absolute; top: calc(100% + 10px); right: 0;
+  width: 320px; max-height: 380px;
+  background: #fff; border: 1px solid #E7DFCE; border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0,0,0,.16);
+  display: none; flex-direction: column; z-index: 600; overflow: hidden;
+}
+.notif-panel.open { display: flex; }
+.notif-panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px 10px; border-bottom: 1px solid #F0EBE0; flex-shrink: 0;
+}
+.notif-panel-head span { font-size: 13px; font-weight: 700; color: #23201B; }
+.notif-mark-all {
+  background: none; border: none; cursor: pointer;
+  font-size: 11px; color: #A8834F; font-weight: 600;
+  font-family: 'Kodchasan', sans-serif; padding: 0;
+}
+.notif-list { overflow-y: auto; flex: 1; }
+.notif-empty { padding: 28px 16px; text-align: center; font-size: 12px; color: #857D6E; }
+.notif-item {
+  display: flex; gap: 10px; padding: 11px 14px;
+  border-bottom: 1px solid #F5F1E8; cursor: pointer;
+  transition: background .12s; align-items: flex-start;
+}
+.notif-item:hover { background: #FDFAF4; }
+.notif-item.unread { background: #FBF8F1; }
+.notif-item.unread:hover { background: #F5F0E6; }
+.notif-dot { width: 7px; height: 7px; border-radius: 50%; background: #E05454; flex-shrink: 0; margin-top: 5px; }
+.notif-dot.read { background: transparent; }
+.notif-content { flex: 1; min-width: 0; }
+.notif-msg { font-size: 12px; font-weight: 600; color: #23201B; line-height: 1.4; word-break: break-word; }
+.notif-time { font-size: 10px; color: #857D6E; margin-top: 2px; }
+
 /* ── Mobile burger button ── */
 .burger-btn {
   display: none;
@@ -512,6 +560,21 @@ html, body {
 
   <!-- Right side -->
   <div class="topbar-right">
+    <!-- Bell notification -->
+    <div style="position:relative">
+      <button class="notif-btn" id="notif-btn" onclick="toggleNotifPanel()" aria-label="การแจ้งเตือน">
+        <svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="notif-badge" id="notif-badge"></span>
+      </button>
+      <div class="notif-panel" id="notif-panel">
+        <div class="notif-panel-head">
+          <span>การแจ้งเตือน</span>
+          <button class="notif-mark-all" onclick="markAllRead()">อ่านทั้งหมด</button>
+        </div>
+        <div class="notif-list" id="notif-list"><div class="notif-empty">ไม่มีการแจ้งเตือน</div></div>
+      </div>
+    </div>
+
     <div class="topbar-user" id="user-menu-btn" onclick="toggleUserMenu()" style="cursor:pointer">
       <div class="topbar-user-info">
         <span class="topbar-user-name" id="user-name">—</span>
@@ -611,11 +674,22 @@ function getSession() {
 }
 function _clearSess() { localStorage.removeItem("maison_session"); localStorage.removeItem("maison_ts"); }
 function doLogout() { _clearSess(); location.replace("login.html"); }
-function toggleUserMenu() { document.getElementById("user-dropdown").classList.toggle("open"); }
+function toggleUserMenu() {
+  document.getElementById("user-dropdown").classList.toggle("open");
+  document.getElementById("notif-panel").classList.remove("open");
+}
+function toggleNotifPanel() {
+  document.getElementById("notif-panel").classList.toggle("open");
+  document.getElementById("user-dropdown").classList.remove("open");
+}
 document.addEventListener("click", e => {
-  const btn = document.getElementById("user-menu-btn");
-  const dd  = document.getElementById("user-dropdown");
-  if (btn && dd && !btn.contains(e.target)) dd.classList.remove("open");
+  const userBtn   = document.getElementById("user-menu-btn");
+  const dd        = document.getElementById("user-dropdown");
+  const notifBtn  = document.getElementById("notif-btn");
+  const notifPanel= document.getElementById("notif-panel");
+  if (userBtn && dd && !userBtn.contains(e.target))    dd.classList.remove("open");
+  if (notifBtn && notifPanel && !notifBtn.contains(e.target) && !notifPanel.contains(e.target))
+    notifPanel.classList.remove("open");
 });
 
 const session = getSession();
@@ -854,6 +928,72 @@ mobileNav.addEventListener("click", e => {
 
 // ── INIT ─────────────────────────────────────────────
 loadBookings();
+loadNotifs();
+
+// ── NOTIFICATIONS ─────────────────────────────────────
+let _notifData = [];
+
+function relTime(iso) {
+  if (!iso) return "";
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1)  return "เมื่อกี้";
+  if (m < 60) return m + " นาทีที่แล้ว";
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + " ชั่วโมงที่แล้ว";
+  return Math.floor(h / 24) + " วันที่แล้ว";
+}
+
+async function loadNotifs() {
+  try {
+    const res = await api("getNotifications");
+    if (!res.ok) return;
+    _notifData = res.data || [];
+    renderNotifs();
+  } catch(e) {}
+}
+
+function renderNotifs() {
+  const badge = document.getElementById("notif-badge");
+  const list  = document.getElementById("notif-list");
+  if (!badge || !list) return;
+  const unread = _notifData.filter(n => !n.isRead).length;
+  badge.textContent = unread > 9 ? "9+" : String(unread);
+  badge.style.display = unread > 0 ? "flex" : "none";
+  if (_notifData.length === 0) {
+    list.innerHTML = '<div class="notif-empty">ไม่มีการแจ้งเตือน</div>';
+    return;
+  }
+  list.innerHTML = _notifData.map(n => `
+    <div class="notif-item ${n.isRead ? "" : "unread"}" onclick="onNotifClick('${n.notifId}','${n.bookingId}')">
+      <div class="notif-dot ${n.isRead ? "read" : ""}"></div>
+      <div class="notif-content">
+        <div class="notif-msg">${n.message}</div>
+        <div class="notif-time">${relTime(n.createdAt)}</div>
+      </div>
+    </div>`).join("");
+}
+
+async function onNotifClick(notifId, bookingId) {
+  const n = _notifData.find(x => x.notifId === notifId);
+  if (n && !n.isRead) {
+    n.isRead = true; renderNotifs();
+    api("markNotifRead", { notifId }).catch(()=>{});
+  }
+  document.getElementById("notif-panel").classList.remove("open");
+  if (bookingId && bookingId !== "undefined" && bookingId !== "")
+    location.href = "detail.html?id=" + bookingId;
+}
+
+async function markAllRead() {
+  _notifData.forEach(n => n.isRead = true);
+  renderNotifs();
+  api("markAllNotifsRead").catch(()=>{});
+}
+
+setInterval(loadNotifs, 60000);
+window.addEventListener("focus", loadNotifs);
+// ──────────────────────────────────────────────────────
 </script>
 </body>
 </html>
