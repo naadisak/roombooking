@@ -2802,11 +2802,12 @@ async function loadNotifs() {
 function showToast(message, bookingId) {
   let c = document.getElementById("toast-container");
   if (!c) { c=document.createElement("div"); c.id="toast-container"; c.className="toast-container"; document.body.appendChild(c); }
+  if (c.children.length >= 5) c.innerHTML = "";
   const t = document.createElement("div"); t.className="toast";
   t.innerHTML=`<div class="toast-icon">🔔</div><div class="toast-body"><div class="toast-label">การแจ้งเตือน</div><div class="toast-msg">${message}</div><div class="toast-time">เมื่อกี้</div></div><button class="toast-close" onclick="event.stopPropagation();this.closest('.toast').remove()">×</button>`;
   if (bookingId&&bookingId!=="undefined"&&bookingId!=="") t.addEventListener("click",e=>{if(e.target.classList.contains("toast-close"))return;location.href="detail.html?id="+bookingId;});
   c.appendChild(t);
-  setTimeout(()=>{t.classList.add("hide");setTimeout(()=>t.remove(),250);},5000);
+  // ไม่ auto-close — กด × เองหรือเคลียร์อัตโนมัติเมื่อเกิน 5
 }
 
 /** ตรวจว่า admin กำลังใช้งาน form/modal อยู่ไหม */

@@ -995,6 +995,10 @@ function showToast(message, bookingId) {
     container.className = "toast-container";
     document.body.appendChild(container);
   }
+  // เกิน 5 รายการ → เคลียร์ทั้งหมดก่อน
+  if (container.children.length >= 5) {
+    container.innerHTML = "";
+  }
   const t = document.createElement("div");
   t.className = "toast";
   t.innerHTML = `
@@ -1012,7 +1016,7 @@ function showToast(message, bookingId) {
     });
   }
   container.appendChild(t);
-  setTimeout(() => { t.classList.add("hide"); setTimeout(() => t.remove(), 250); }, 5000);
+  // ไม่ auto-close — ผู้ใช้กด × เองเท่านั้น
 }
 
 function renderNotifs() {
