@@ -2750,8 +2750,11 @@ window.addEventListener("resize", () => {
   _lcResizeTimer = setTimeout(lcRender, 120);
 });
 
-// ── NOTIFICATIONS ─────────────────────────────────────
-let _notifData = [];
+// ── NOTIFICATIONS (Admin — real-time polling) ─────────
+let _notifData      = [];
+let _prevUnreadIds  = new Set();   // ติดตาม notifId ที่เคยเห็นแล้ว
+let _dataRefreshBusy = false;
+
 function relTime(iso) {
   if (!iso) return "";
   const diff = Date.now() - new Date(iso).getTime();
@@ -2762,14 +2765,49 @@ function relTime(iso) {
   if (h < 24) return h + " ชั่วโมงที่แล้ว";
   return Math.floor(h / 24) + " วันที่แล้ว";
 }
+
 async function loadNotifs() {
   try {
     const res = await api("getNotifications");
     if (!res.ok) return;
-    _notifData = res.data || [];
+    const newData = res.data || [];
+
+    // ตรวจว่ามี notification ใหม่ที่ยังไม่เคยเห็นไหม
+    const hasNewEvent = newData.some(n => !_prevUnreadIds.has(n.notifId));
+    if (hasNewEvent && _notifData.length > 0) {
+      // มี event ใหม่ → refresh ข้อมูลทันที
+      refreshData();
+    }
+
+    // อัพเดท set ของ notifId ที่รู้จักแล้ว
+    newData.forEach(n => _prevUnreadIds.add(n.notifId));
+
+    _notifData = newData;
     renderNotifs();
   } catch(e) {}
 }
+
+/** ตรวจว่า admin กำลังใช้งาน form/modal อยู่ไหม */
+function _adminIsBusy() {
+  // modal ใดๆ กำลังเปิดอยู่
+  if (document.querySelector(".modal-backdrop.open")) return true;
+  // มี input / textarea / select ที่ focus อยู่
+  const el = document.activeElement;
+  if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT")) return true;
+  return false;
+}
+
+/** Silent background refresh — ข้ามถ้า admin กำลังกรอก form หรือ modal เปิดอยู่ */
+async function refreshData() {
+  if (_dataRefreshBusy || _adminIsBusy()) return;
+  _dataRefreshBusy = true;
+  try {
+    await loadBookings();   // อัพเดท booking list + stats
+    await loadRooms();      // อัพเดท room grid
+  } catch(e) {}
+  _dataRefreshBusy = false;
+}
+
 function renderNotifs() {
   const badge = document.getElementById("notif-badge");
   const list  = document.getElementById("notif-list");
@@ -2791,8 +2829,13 @@ async function markAllRead() {
   _notifData.forEach(n => n.isRead = true); renderNotifs();
   api("markAllNotifsRead").catch(()=>{});
 }
-setInterval(loadNotifs, 30000);
-window.addEventListener("focus", loadNotifs);
+
+// Admin: poll ทุก 3 วินาที + focus refetch
+setInterval(loadNotifs, 3000);
+window.addEventListener("focus", () => { loadNotifs(); refreshData(); });
+
+// Data refresh ทุก 15 วินาที (background silent)
+setInterval(refreshData, 15000);
 // ──────────────────────────────────────────────────────
 </script>
 </body>
