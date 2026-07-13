@@ -368,6 +368,14 @@ html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background:
 /* ── ROOM PHOTOS ── */
 .room-photos { display: flex; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line-color); }
 .room-photo-thumb { width: 60px; height: 52px; border-radius: 8px; object-fit: cover; cursor: zoom-in; border: 1.5px solid var(--line-color); }
+.room-cover { width: 100%; height: 130px; object-fit: cover; border-radius: 10px; margin-bottom: 14px; display: block; }
+.room-cover-placeholder { width: 100%; height: 80px; border-radius: 10px; margin-bottom: 14px; background: var(--bg-alt); display: flex; align-items: center; justify-content: center; font-size: 28px; opacity: .35; }
+/* popup photo gallery */
+.rd-photos { display: flex; gap: 8px; margin-bottom: 14px; }
+.rd-photo { flex: 1; height: 110px; object-fit: cover; border-radius: 10px; cursor: zoom-in; border: 1.5px solid var(--line-color); }
+/* replace button on edit modal */
+.er-photo-replace { display: inline-flex; align-items: center; gap: 4px; background: none; border: 1.5px solid var(--pine); border-radius: 8px; padding: 4px 10px; font-family: 'Kodchasan', sans-serif; font-size: 11.5px; font-weight: 600; color: var(--pine); cursor: pointer; transition: all .15s; }
+.er-photo-replace:hover { background: var(--pine); color: #fff; }
 
 /* ── ROOM EDIT BTN ── */
 .room-edit-btn {
@@ -903,8 +911,8 @@ html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background:
           <div class="er-photo-preview" id="er-photo-preview-1">
             <span class="er-photo-empty">📷</span>
           </div>
-          <label class="er-photo-btn">
-            เลือกรูป
+          <label class="er-photo-btn" id="er-photo-label-1">
+            📷 เลือกรูป
             <input type="file" accept="image/*" id="er-photo-file-1" style="display:none" onchange="erUploadPhoto(1, this)">
           </label>
           <button class="er-photo-clear" onclick="erClearPhoto(1)" id="er-photo-clear-1" style="display:none">✕ ลบรูป</button>
@@ -913,8 +921,8 @@ html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background:
           <div class="er-photo-preview" id="er-photo-preview-2">
             <span class="er-photo-empty">📷</span>
           </div>
-          <label class="er-photo-btn">
-            เลือกรูป
+          <label class="er-photo-btn" id="er-photo-label-2">
+            📷 เลือกรูป
             <input type="file" accept="image/*" id="er-photo-file-2" style="display:none" onchange="erUploadPhoto(2, this)">
           </label>
           <button class="er-photo-clear" onclick="erClearPhoto(2)" id="er-photo-clear-2" style="display:none">✕ ลบรูป</button>
@@ -923,8 +931,8 @@ html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background:
           <div class="er-photo-preview" id="er-photo-preview-3">
             <span class="er-photo-empty">📷</span>
           </div>
-          <label class="er-photo-btn">
-            เลือกรูป
+          <label class="er-photo-btn" id="er-photo-label-3">
+            📷 เลือกรูป
             <input type="file" accept="image/*" id="er-photo-file-3" style="display:none" onchange="erUploadPhoto(3, this)">
           </label>
           <button class="er-photo-clear" onclick="erClearPhoto(3)" id="er-photo-clear-3" style="display:none">✕ ลบรูป</button>
@@ -2022,15 +2030,15 @@ function renderRooms() {
     const typeLabel = r.roomType ? `<span class="room-type-badge">${r.roomType === "ห้องแอร์" ? "❄️ แอร์" : "🌀 พัดลม"}</span>` : "";
     const subInfo   = [r.floor ? "ชั้น " + r.floor : "", r.roomNo ? "ห้อง " + r.roomNo : ""].filter(Boolean).join(" ");
 
-    // Photos
-    const photos = [r.photo1, r.photo2, r.photo3].filter(Boolean);
-    const photoSection = photos.length
-      ? `<div class="room-photos">${photos.map(p => `<img class="room-photo-thumb" src="${p}" alt="room photo" onclick="window.open('${p}','_blank');event.stopPropagation()">`).join("")}</div>`
-      : "";
+    // Cover photo (first photo only, shown on card)
+    const coverEl = r.photo1
+      ? `<img class="room-cover" src="${r.photo1}" alt="cover">`
+      : `<div class="room-cover-placeholder">🏠</div>`;
 
     return `
-      <div class="${cardClass}" style="${cardStyle}">
-        <div class="room-card-head" ${headClick}>
+      <div class="${cardClass}" style="${cardStyle};cursor:pointer" onclick="if(!event.target.closest('button'))openRoomDetailPopup('${r.roomId}')">
+        ${coverEl}
+        <div class="room-card-head">
           <div>
             <div class="room-id">🏠 ${r.roomId}${typeLabel}</div>
             <div class="room-id-sub">${r.location || ""}${subInfo ? " · " + subInfo : ""}</div>
@@ -2047,7 +2055,6 @@ function renderRooms() {
           ${roomSlotHTML(r, r.occupant1, 1)}
           ${roomSlotHTML(r, r.occupant2, 2)}
         </div>
-        ${photoSection}
       </div>`;
   }).join("");
 
@@ -2193,12 +2200,21 @@ function onErTypeChange() {
 function erSetPhotoPreview(slot, url) {
   const prev  = document.getElementById(`er-photo-preview-${slot}`);
   const clear = document.getElementById(`er-photo-clear-${slot}`);
+  const lbl   = document.getElementById(`er-photo-label-${slot}`);
+  const inp   = document.getElementById(`er-photo-file-${slot}`);
   if (url) {
-    prev.innerHTML  = `<img src="${url}" alt="photo ${slot}">`;
+    prev.innerHTML = `<img src="${url}" alt="photo ${slot}">`;
     clear.style.display = "";
+    if (lbl && inp) {
+      // rebuild label to show "เปลี่ยนรูป"
+      lbl.childNodes[0].textContent = "🔄 เปลี่ยนรูป";
+    }
   } else {
-    prev.innerHTML  = `<span class="er-photo-empty">📷</span>`;
+    prev.innerHTML = `<span class="er-photo-empty">📷</span>`;
     clear.style.display = "none";
+    if (lbl && inp) {
+      lbl.childNodes[0].textContent = "📷 เลือกรูป";
+    }
   }
 }
 
@@ -2428,7 +2444,14 @@ function openRoomDetailPopup(roomId) {
       </div>`;
   };
 
+  // Photo gallery
+  const rdPhotos = [room.photo1, room.photo2, room.photo3].filter(Boolean);
+  const rdPhotoHTML = rdPhotos.length
+    ? `<div class="rd-photos">${rdPhotos.map(p => `<img class="rd-photo" src="${p}" alt="room" onclick="window.open('${p}','_blank')">`).join("")}</div>`
+    : "";
+
   document.getElementById("rd-body").innerHTML = `
+    ${rdPhotoHTML}
     <div class="rd-room-info">
       <div class="rd-room-id">${roomId}</div>
       <div class="rd-room-meta">
