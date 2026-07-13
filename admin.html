@@ -2834,18 +2834,27 @@ function userPrevPage() { if (userPage > 0) { userPage--; renderUsers(); } }
 function userNextPage() { userPage++; renderUsers(); }
 
 function renderUsers() {
-  let list = [...allUsers];
-  if (userSearchQ) list = list.filter(u =>
-    u.name.toLowerCase().includes(userSearchQ) ||
-    String(u.empId).includes(userSearchQ) ||
-    (u.dept||"").toLowerCase().includes(userSearchQ)
-  );
-  // นับจาก bookedBy (ผู้ดำเนินการทำรายการ) ไม่ใช่ empId (ผู้ถูกจองให้)
+  // นับจาก bookedBy (ผู้ดำเนินการทำรายการ)
   const _bkCountMap = {};
   allBookings.forEach(bk => {
     const id = String(bk.bookedBy ?? "").trim();
     if (id) _bkCountMap[id] = (_bkCountMap[id] || 0) + 1;
   });
+
+  let list = [...allUsers];
+
+  // ถ้าไม่ได้ search: กรองเฉพาะ admin + คนที่เคยทำรายการจองอย่างน้อย 1 ครั้ง
+  if (!userSearchQ) {
+    list = list.filter(u =>
+      u.role === "admin" || (_bkCountMap[String(u.empId).trim()] || 0) > 0
+    );
+  } else {
+    list = list.filter(u =>
+      u.name.toLowerCase().includes(userSearchQ) ||
+      String(u.empId).includes(userSearchQ) ||
+      (u.dept||"").toLowerCase().includes(userSearchQ)
+    );
+  }
 
   // Admin ขึ้นก่อน (เรียง empId), non-admin เรียงตาม booking count มาก→น้อย
   list.sort((a, b) => {
