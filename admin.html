@@ -798,6 +798,41 @@ html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background:
         <div class="m-label">ชั้น</div>
         <input class="m-input" id="room-floor" placeholder="1">
       </div>
+      <!-- Photos -->
+      <div class="m-label" style="margin-bottom:8px">รูปประกอบห้อง (สูงสุด 3 รูป)</div>
+      <div class="er-photo-grid">
+        <div class="er-photo-slot" id="ar-photo-slot-1">
+          <div class="er-photo-preview" id="ar-photo-preview-1">
+            <span class="er-photo-empty">📷</span>
+          </div>
+          <label class="er-photo-btn">
+            เลือกรูป
+            <input type="file" accept="image/*" id="ar-photo-file-1" style="display:none" onchange="arUploadPhoto(1, this)">
+          </label>
+          <button class="er-photo-clear" onclick="arClearPhoto(1)" id="ar-photo-clear-1" style="display:none">✕ ลบรูป</button>
+        </div>
+        <div class="er-photo-slot" id="ar-photo-slot-2">
+          <div class="er-photo-preview" id="ar-photo-preview-2">
+            <span class="er-photo-empty">📷</span>
+          </div>
+          <label class="er-photo-btn">
+            เลือกรูป
+            <input type="file" accept="image/*" id="ar-photo-file-2" style="display:none" onchange="arUploadPhoto(2, this)">
+          </label>
+          <button class="er-photo-clear" onclick="arClearPhoto(2)" id="ar-photo-clear-2" style="display:none">✕ ลบรูป</button>
+        </div>
+        <div class="er-photo-slot" id="ar-photo-slot-3">
+          <div class="er-photo-preview" id="ar-photo-preview-3">
+            <span class="er-photo-empty">📷</span>
+          </div>
+          <label class="er-photo-btn">
+            เลือกรูป
+            <input type="file" accept="image/*" id="ar-photo-file-3" style="display:none" onchange="arUploadPhoto(3, this)">
+          </label>
+          <button class="er-photo-clear" onclick="arClearPhoto(3)" id="ar-photo-clear-3" style="display:none">✕ ลบรูป</button>
+        </div>
+      </div>
+      <div id="ar-upload-status" style="font-size:12px;color:var(--pine);min-height:18px;text-align:center"></div>
     </div>
     <div class="modal-footer">
       <button class="modal-btn-back" onclick="closeModal('modal-add-room')">ยกเลิก</button>
@@ -1944,6 +1979,54 @@ function roomSlotHTML(room, occupant, slotNum) {
 
 // ── EDIT ROOM ────────────────────────────────────────
 const ER_IMGBB_KEY = "634f349492429106ef296d1d0bd1414b";
+
+// ── ADD ROOM PHOTOS ──────────────────────────────────
+let arPhotos = { 1: "", 2: "", 3: "" };
+
+function arSetPhotoPreview(slot, url) {
+  const prev  = document.getElementById(`ar-photo-preview-${slot}`);
+  const clear = document.getElementById(`ar-photo-clear-${slot}`);
+  if (url) {
+    prev.innerHTML = `<img src="${url}" alt="photo ${slot}">`;
+    clear.style.display = "";
+  } else {
+    prev.innerHTML = `<span class="er-photo-empty">📷</span>`;
+    clear.style.display = "none";
+  }
+}
+
+async function arUploadPhoto(slot, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById("ar-upload-status");
+  statusEl.textContent = `กำลังอัปโหลดรูป ${slot}…`;
+  try {
+    const b64 = await new Promise((res, rej) => {
+      const reader = new FileReader();
+      reader.onload = e => res(e.target.result.split(",")[1]);
+      reader.onerror = rej;
+      reader.readAsDataURL(file);
+    });
+    const form = new FormData();
+    form.append("key",   ER_IMGBB_KEY);
+    form.append("image", b64);
+    form.append("name",  `room_new_${slot}_${Date.now()}`);
+    const json = await (await fetch("https://api.imgbb.com/1/upload", { method: "POST", body: form })).json();
+    if (!json.success) throw new Error(json.error?.message || "Upload ไม่สำเร็จ");
+    arPhotos[slot] = json.data.display_url;
+    arSetPhotoPreview(slot, arPhotos[slot]);
+    statusEl.textContent = `✓ รูป ${slot} อัปโหลดสำเร็จ`;
+  } catch(e) {
+    statusEl.textContent = `❌ ${e.message}`;
+  }
+  input.value = "";
+}
+
+function arClearPhoto(slot) {
+  arPhotos[slot] = "";
+  arSetPhotoPreview(slot, "");
+  document.getElementById("ar-upload-status").textContent = "";
+}
 let erPhotos = { 1: "", 2: "", 3: "" }; // current photo URLs
 
 function openEditRoomModal(roomId) {
@@ -2345,7 +2428,10 @@ async function doAddRoom() {
 
   btn.classList.add("loading"); btn.disabled = true;
   try {
-    const res = await api("addRoom", { data: { location, prefix, floor, roomNo, roomType } });
+    const res = await api("addRoom", { data: {
+      location, prefix, floor, roomNo, roomType,
+      photo1: arPhotos[1], photo2: arPhotos[2], photo3: arPhotos[3],
+    }});
     if (!res.ok) throw new Error(res.error);
     showToast("✓ เพิ่มห้อง " + res.roomId + " เรียบร้อย");
     closeModal("modal-add-room");
@@ -2353,6 +2439,9 @@ async function doAddRoom() {
     rtFan.checked = false; rtAc.checked = false;
     onRoomTypeChange();
     document.getElementById("room-id-preview").style.display = "none";
+    arPhotos = { 1: "", 2: "", 3: "" };
+    [1, 2, 3].forEach(i => arSetPhotoPreview(i, ""));
+    document.getElementById("ar-upload-status").textContent = "";
     await loadRooms();
   } catch (e) {
     showToast(e.message, true);
