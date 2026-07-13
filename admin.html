@@ -1245,7 +1245,7 @@ html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background:
       <button class="btn-sm btn-sm-pine" onclick="openModal('modal-add-room')" style="padding:8px 18px">＋ เพิ่มห้องใหม่</button>
     </div>
     <!-- room type filter + column toggle -->
-    <div class="room-filter-bar last" id="room-type-filter-bar">
+    <div class="room-filter-bar" id="room-type-filter-bar">
       <button class="loc-chip active" onclick="setTypeFilter('all', this)">ทุกประเภท</button>
       <button class="loc-chip" onclick="setTypeFilter('พัดลม', this)">🌀 พัดลม</button>
       <button class="loc-chip" onclick="setTypeFilter('ห้องแอร์', this)">❄️ ห้องแอร์</button>
@@ -1255,6 +1255,13 @@ html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background:
         <button class="col-toggle-btn" id="col-btn-2" onclick="setRoomCols(2, this)" title="2 คอลัมน์">▌▌</button>
         <button class="col-toggle-btn active" id="col-btn-3" onclick="setRoomCols(3, this)" title="3 คอลัมน์">▌▌▌</button>
       </div>
+    </div>
+    <!-- availability filter -->
+    <div class="room-filter-bar last" id="room-avail-filter-bar">
+      <button class="loc-chip active" onclick="setAvailFilter('all', this)">ทุกสถานะ</button>
+      <button class="loc-chip" onclick="setAvailFilter('empty', this)">⬜ ยังไม่มีคนอยู่</button>
+      <button class="loc-chip" onclick="setAvailFilter('partial', this)">🟡 ว่าง 1 ที่</button>
+      <button class="loc-chip" onclick="setAvailFilter('full', this)">⬛ ห้องเต็ม</button>
     </div>
     <div class="room-grid" id="room-grid">
       <div class="skel-row skeleton" style="height:160px;border-radius:16px"></div>
@@ -1898,8 +1905,9 @@ async function doAssign() {
 
 // ── ROOMS ────────────────────────────────────────────
 const ROOM_PAGE_SIZE = 20;
-let locFilter  = "all";
-let typeFilter = "all";
+let locFilter   = "all";
+let typeFilter  = "all";
+let availFilter = "all";  // all | empty | partial | full
 let roomShown  = ROOM_PAGE_SIZE;
 let roomCols   = 3;
 
@@ -1989,6 +1997,13 @@ function setTypeFilter(type, el) {
   renderRooms();
 }
 
+function setAvailFilter(avail, el) {
+  availFilter = avail; roomShown = ROOM_PAGE_SIZE;
+  document.querySelectorAll("#room-avail-filter-bar .loc-chip").forEach(c => c.classList.remove("active"));
+  el.classList.add("active");
+  renderRooms();
+}
+
 function roomLoadMore() {
   roomShown += ROOM_PAGE_SIZE;
   renderRooms();
@@ -1996,8 +2011,15 @@ function roomLoadMore() {
 
 function renderRooms() {
   let list = allRooms;
-  if (locFilter  !== "all") list = list.filter(r => r.location === locFilter);
-  if (typeFilter !== "all") list = list.filter(r => (r.roomType || "") === typeFilter);
+  if (locFilter   !== "all") list = list.filter(r => r.location === locFilter);
+  if (typeFilter  !== "all") list = list.filter(r => (r.roomType || "") === typeFilter);
+  if (availFilter !== "all") list = list.filter(r => {
+    const filled = (r.occupant1 ? 1 : 0) + (r.occupant2 ? 1 : 0);
+    if (availFilter === "empty")   return filled === 0;
+    if (availFilter === "partial") return filled === 1;
+    if (availFilter === "full")    return filled === 2;
+    return true;
+  });
 
   // update stats
   const availCount = list.filter(r => !(r.occupant1 && r.occupant2)).length;
