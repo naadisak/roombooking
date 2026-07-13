@@ -1028,6 +1028,20 @@ html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background:
   </div>
 </div>
 
+<!-- ── MODAL: BOOKING DETAIL ── -->
+<div class="modal-backdrop" id="modal-bk-detail">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <span class="modal-header-title">รายละเอียดการจอง</span>
+      <button class="modal-close" onclick="closeModal('modal-bk-detail')">✕</button>
+    </div>
+    <div class="modal-body" id="bk-detail-body"></div>
+    <div class="modal-footer" id="bk-detail-footer">
+      <button class="modal-btn-back" onclick="closeModal('modal-bk-detail')">ปิด</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── MODAL: CONFIRM ── -->
 <div class="modal-backdrop" id="modal-confirm">
   <div class="modal" style="width:400px">
@@ -1606,7 +1620,7 @@ function renderBookings() {
       : "";
 
     return `
-      <div class="bk-card">
+      <div class="bk-card" style="cursor:pointer" onclick="if(!event.target.closest('button'))openBkDetail('${b.bookingId}')">
         <div class="bk-card-top">
           <div class="bk-photo">${photo}</div>
           <div class="bk-main">
@@ -1637,6 +1651,63 @@ function renderBookings() {
   } else {
     moreWrap.style.display = "none";
   }
+}
+
+// ── BOOKING DETAIL POPUP ─────────────────────────────
+function openBkDetail(bookingId) {
+  const b = allBookings.find(x => x.bookingId === bookingId);
+  if (!b) return;
+
+  const isSelf = String(b.bookedBy || "") === String(b.empId || "");
+  const bookedByLine = (!isSelf && b.bookedByName)
+    ? b.bookedByName
+    : `${b.firstName} ${b.lastName} (จองเอง)`;
+
+  let roomText = "ยังไม่ได้จัดห้อง";
+  if (b.assignedRoom) {
+    const rm     = allRooms.find(r => r.roomId === b.assignedRoom);
+    const detail = rm ? [rm.floor ? "ชั้น " + rm.floor : "", rm.roomNo ? "ห้อง " + rm.roomNo : ""].filter(Boolean).join(" ") : "";
+    const loc    = rm ? (rm.location || b.assignedRoom) : b.assignedRoom;
+    roomText = `${loc}${detail ? " · " + detail : ""}`;
+    if (rm && rm.roomType) roomText += `  (${rm.roomType})`;
+  }
+
+  const av = b.photoUrl
+    ? `<img src="${b.photoUrl}" style="width:52px;height:52px;border-radius:50%;object-fit:cover;flex-shrink:0">`
+    : `<div style="width:52px;height:52px;border-radius:50%;background:var(--brass-bg);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--brass);flex-shrink:0">${initials(b.firstName)}</div>`;
+
+  document.getElementById("bk-detail-body").innerHTML = `
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
+      ${av}
+      <div style="flex:1;min-width:0">
+        <div style="font-size:16px;font-weight:700;color:var(--ink)">${b.firstName} ${b.lastName}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">${b.empId || "—"}${b.dept ? " · " + b.dept : ""}${b.position ? " · " + b.position : ""}</div>
+      </div>
+      <span class="pill ${b.status}" style="flex-shrink:0"><span class="pill-dot"></span>${STATUS_LABEL[b.status] || b.status}</span>
+    </div>
+    <div class="m-info-grid">
+      <div class="m-info-cell"><div class="m-info-label">เลขจอง</div><div class="m-info-val" style="font-family:monospace">${b.bookingId}</div></div>
+      <div class="m-info-cell"><div class="m-info-label">วันที่จอง</div><div class="m-info-val">${fmtDate(b.createdAt)}</div></div>
+      <div class="m-info-cell"><div class="m-info-label">ผู้ทำรายการ</div><div class="m-info-val">${bookedByLine}</div></div>
+      <div class="m-info-cell"><div class="m-info-label">ประสงค์เข้าพัก</div><div class="m-info-val">${fmtDate(b.checkIn)}</div></div>
+      <div class="m-info-cell" style="grid-column:1/-1"><div class="m-info-label">ห้องที่จัด</div><div class="m-info-val">${roomText}</div></div>
+    </div>`;
+
+  // action buttons
+  const safeName = (b.firstName + " " + b.lastName).replace(/'/g, "\\'");
+  let footer = `<button class="modal-btn-back" onclick="closeModal('modal-bk-detail')">ปิด</button>`;
+  if (b.status === "pending") {
+    footer += `<button class="modal-btn-confirm" onclick="closeModal('modal-bk-detail');openAssignModal('${b.bookingId}')">จัดห้อง →</button>
+               <button class="modal-btn-danger"  onclick="closeModal('modal-bk-detail');doRejectBooking('${b.bookingId}','${safeName}')">ปฏิเสธ</button>`;
+  } else if (b.status === "approved") {
+    footer += `<button class="modal-btn-confirm" onclick="closeModal('modal-bk-detail');doCheckIn('${b.bookingId}','${safeName}')">✓ Check In</button>
+               <button class="modal-btn-back"    onclick="closeModal('modal-bk-detail');openAssignModal('${b.bookingId}')">เปลี่ยนห้อง</button>`;
+  } else if (b.status === "active") {
+    footer += `<button class="modal-btn-danger" onclick="closeModal('modal-bk-detail');doCheckOut('${b.bookingId}','${safeName}')">📦 Check Out</button>`;
+  }
+  document.getElementById("bk-detail-footer").innerHTML = footer;
+
+  openModal("modal-bk-detail");
 }
 
 // ── ASSIGN MODAL ─────────────────────────────────────
@@ -2703,11 +2774,22 @@ function renderUsers() {
     String(u.empId).includes(userSearchQ) ||
     (u.dept||"").toLowerCase().includes(userSearchQ)
   );
-  // Admin ขึ้นก่อน, เรียงตาม empId รอง
+  // precompute booking count per empId for sort
+  const _bkCountMap = {};
+  allBookings.forEach(bk => {
+    const id = String(bk.empId ?? "").trim();
+    if (id) _bkCountMap[id] = (_bkCountMap[id] || 0) + 1;
+  });
+
+  // Admin ขึ้นก่อน (เรียง empId), non-admin เรียงตาม booking count มาก→น้อย
   list.sort((a, b) => {
-    if (a.role === "admin" && b.role !== "admin") return -1;
-    if (a.role !== "admin" && b.role === "admin") return 1;
-    return String(a.empId).localeCompare(String(b.empId));
+    const aA = a.role === "admin", bA = b.role === "admin";
+    if (aA && !bA) return -1;
+    if (!aA && bA) return 1;
+    if (aA && bA) return String(a.empId).localeCompare(String(b.empId));
+    const aC = _bkCountMap[String(a.empId).trim()] || 0;
+    const bC = _bkCountMap[String(b.empId).trim()] || 0;
+    return bC - aC;  // มากไปน้อย
   });
 
   const el = document.getElementById("user-list");
