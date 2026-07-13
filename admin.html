@@ -2840,10 +2840,10 @@ function renderUsers() {
     String(u.empId).includes(userSearchQ) ||
     (u.dept||"").toLowerCase().includes(userSearchQ)
   );
-  // precompute booking count per empId for sort
+  // นับจาก bookedBy (ผู้ดำเนินการทำรายการ) ไม่ใช่ empId (ผู้ถูกจองให้)
   const _bkCountMap = {};
   allBookings.forEach(bk => {
-    const id = String(bk.empId ?? "").trim();
+    const id = String(bk.bookedBy ?? "").trim();
     if (id) _bkCountMap[id] = (_bkCountMap[id] || 0) + 1;
   });
 
