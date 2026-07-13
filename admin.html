@@ -667,10 +667,6 @@ html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background:
 .skel-row { background: var(--surface); border: 1px solid var(--line-color); border-radius: 14px; padding: 14px 18px; height: 80px; }
 #booking-list .empty-state { grid-column: 1 / -1; }
 
-/* ── TOAST ── */
-.toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--pine); color: #fff; padding: 12px 24px; border-radius: 12px; font-size: 13.5px; font-weight: 600; box-shadow: 0 10px 30px -10px rgba(30,58,52,.5); z-index: 999; opacity: 0; transition: all .3s; pointer-events: none; white-space: nowrap; }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.toast.error { background: #B5493B; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 1100px) {
@@ -1118,9 +1114,6 @@ html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background:
     </div>
   </div>
 </div>
-
-<!-- Toast -->
-<div class="toast" id="toast"></div>
 
 <!-- Page -->
 <main class="page">
