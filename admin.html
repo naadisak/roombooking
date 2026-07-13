@@ -2030,9 +2030,13 @@ function renderRooms() {
     const typeLabel = r.roomType ? `<span class="room-type-badge">${r.roomType === "ห้องแอร์" ? "❄️ แอร์" : "🌀 พัดลม"}</span>` : "";
     const subInfo   = [r.floor ? "ชั้น " + r.floor : "", r.roomNo ? "ห้อง " + r.roomNo : ""].filter(Boolean).join(" ");
 
-    // Cover photo (first photo only, shown on card)
-    const coverEl = r.photo1
-      ? `<img class="room-cover" src="${r.photo1}" alt="cover">`
+    // Cover photo — สุ่มจาก photos ที่มี
+    const availPhotos = [r.photo1, r.photo2, r.photo3].filter(Boolean);
+    const coverSrc    = availPhotos.length
+      ? availPhotos[Math.floor(Math.random() * availPhotos.length)]
+      : null;
+    const coverEl = coverSrc
+      ? `<img class="room-cover" src="${coverSrc}" alt="cover">`
       : `<div class="room-cover-placeholder">🏠</div>`;
 
     return `
