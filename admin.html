@@ -3127,8 +3127,20 @@ window.addEventListener("resize", () => {
 
 // ── NOTIFICATIONS (Admin — real-time polling) ─────────
 let _notifData       = [];
-let _toastedIds      = new Set();   // notifId ที่เคย toast ไปแล้วใน session นี้
 let _dataRefreshBusy = false;
+
+// _toastedIds persist ลง localStorage — toast แต่ละ notifId แค่ครั้งเดียวตลอดไป
+const _TOASTED_KEY = "maison_toasted_ids";
+function _loadToastedIds() {
+  try { return new Set(JSON.parse(localStorage.getItem(_TOASTED_KEY) || "[]")); } catch { return new Set(); }
+}
+function _saveToastedId(id) {
+  const s = _loadToastedIds(); s.add(id);
+  // เก็บแค่ 500 id ล่าสุด ป้องกัน localStorage บวม
+  const arr = [...s].slice(-500);
+  try { localStorage.setItem(_TOASTED_KEY, JSON.stringify(arr)); } catch {}
+}
+let _toastedIds = _loadToastedIds();
 
 function relTime(iso) {
   if (!iso) return "";
@@ -3148,7 +3160,7 @@ async function loadNotifs() {
     const newData = res.data || [];
     // Toast เฉพาะ notification ที่ (1) ยังไม่เคย toast ใน session นี้ และ (2) ยังไม่อ่าน
     const fresh = newData.filter(n => !_toastedIds.has(n.notifId) && !n.isRead);
-    fresh.forEach(n => { _toastedIds.add(n.notifId); showToast(n.message, n.bookingId); });
+    fresh.forEach(n => { _toastedIds.add(n.notifId); _saveToastedId(n.notifId); showToast(n.message, n.bookingId); });
     if (fresh.length > 0) refreshData();
     _notifData = newData;
     renderNotifs();
