@@ -204,6 +204,27 @@ html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background:
 .bk-room-info { font-size: 12px; color: var(--muted); }
 .bk-room-info strong { color: var(--ink-soft); font-weight: 600; }
 .bk-card-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.bk-bookedby-row { margin-top: 5px; }
+.bk-bookedby-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: none; border: 1.5px solid var(--line-color); border-radius: 20px;
+  padding: 3px 10px; font-family: 'Kodchasan', sans-serif; font-size: 11.5px;
+  font-weight: 600; color: var(--muted); cursor: pointer;
+  transition: border-color .15s, background .15s, color .15s;
+}
+.bk-bookedby-btn:hover { border-color: var(--pine); color: var(--pine); background: rgba(30,58,52,.04); }
+.bk-bookedby-btn.active { border-color: var(--pine); background: var(--pine); color: #fff; }
+.bk-bookedby-btn.active:hover { background: var(--pine-deep); }
+.bookedby-active-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 12px; background: rgba(30,58,52,.07); border-radius: 10px;
+  font-size: 12.5px; font-weight: 600; color: var(--pine); margin-bottom: 10px;
+}
+.bookedby-active-bar button {
+  background: none; border: none; cursor: pointer; font-size: 14px;
+  color: var(--pine); opacity: .6; padding: 0 2px; line-height: 1;
+}
+.bookedby-active-bar button:hover { opacity: 1; }
 
 /* status pill */
 .pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: 20px; font-size: 11.5px; font-weight: 700; }
@@ -1151,6 +1172,11 @@ html, body { min-height: 100%; font-family: 'Kodchasan', sans-serif; background:
         </div>
         <input class="search-box" placeholder="🔍 ค้นหาชื่อ / รหัส" oninput="onSearch(this.value)">
       </div>
+      <div id="bookedby-active-bar" style="display:none" class="bookedby-active-bar">
+        <span>👤 กรองโดยผู้ทำรายการ:</span>
+        <strong id="bookedby-active-name"></strong>
+        <button onclick="clearBookedByFilter()" title="ยกเลิก filter">✕</button>
+      </div>
       <div class="archive-bar">
         <span id="archive-eligible-text" style="font-size:13px;color:var(--muted)">กำลังตรวจสอบ…</span>
         <button class="btn-sm btn-sm-outline" id="btn-archive" onclick="doArchive()" style="display:none">📦 Archive รายการเก่า</button>
@@ -1391,8 +1417,9 @@ const STATUS_LABEL = {
 let allBookings  = [];
 let allRooms     = [];
 let allUsers     = [];
-let currentFilter = "pending";
-let searchQuery   = "";
+let currentFilter      = "pending";
+let searchQuery        = "";
+let currentBookedByFilter = null;  // { empId, name } หรือ null
 let bkPageSize    = 11;
 let bkShown       = 11;
 let currentBookingId = null;
@@ -1565,9 +1592,38 @@ function bkLoadMore() {
 
 function onSearch(q) { searchQuery = q.toLowerCase(); bkShown = bkPageSize; renderBookings(); }
 
+function toggleBookedByFilter(empId, name) {
+  if (currentBookedByFilter && currentBookedByFilter.empId === empId) {
+    currentBookedByFilter = null;
+  } else {
+    currentBookedByFilter = { empId, name };
+  }
+  bkShown = bkPageSize;
+  renderBookings();
+}
+
+function clearBookedByFilter() {
+  currentBookedByFilter = null;
+  bkShown = bkPageSize;
+  renderBookings();
+}
+
+function _updateBookedByBar() {
+  const bar  = document.getElementById("bookedby-active-bar");
+  const nameEl = document.getElementById("bookedby-active-name");
+  if (currentBookedByFilter) {
+    bar.style.display = "";
+    nameEl.textContent = currentBookedByFilter.name;
+  } else {
+    bar.style.display = "none";
+  }
+}
+
 function renderBookings() {
+  _updateBookedByBar();
   let list = allBookings;
   if (currentFilter !== "all") list = list.filter(b => b.status === currentFilter);
+  if (currentBookedByFilter) list = list.filter(b => String(b.bookedBy || "") === String(currentBookedByFilter.empId));
   if (searchQuery) list = list.filter(b =>
     (b.firstName + " " + b.lastName).toLowerCase().includes(searchQuery) ||
     String(b.empId).includes(searchQuery) ||
@@ -1597,7 +1653,16 @@ function renderBookings() {
     const photo   = b.photoUrl ? `<img src="${b.photoUrl}" alt="">` : initials(b.firstName);
     const safeName = (b.firstName + " " + b.lastName).replace(/'/g, "\\'");
     const isSelf   = String(b.bookedBy || "") === String(b.empId || "");
-    const byText   = b.bookedByName && !isSelf ? `· โดย ${b.bookedByName}` : "";
+    const safeByName = (b.bookedByName || "").replace(/'/g, "\\'");
+    const isActiveBy = currentBookedByFilter && currentBookedByFilter.empId === String(b.bookedBy || "");
+    const byBtn = (!isSelf && b.bookedByName)
+      ? `<div class="bk-bookedby-row">
+           <button class="bk-bookedby-btn${isActiveBy ? " active" : ""}"
+             onclick="event.stopPropagation();toggleBookedByFilter('${b.bookedBy}','${safeByName}')">
+             👤 ผู้ทำรายการ: ${b.bookedByName}
+           </button>
+         </div>`
+      : "";
 
     // room info
     let roomText = `<span style="color:var(--muted-2)">ยังไม่ได้จัดห้อง</span>`;
@@ -1628,7 +1693,8 @@ function renderBookings() {
               <span class="bk-name">${b.firstName} ${b.lastName}</span>
               <span class="bk-id-badge">${b.empId || "—"}</span>
             </div>
-            <div class="bk-meta">${b.bookingId}${b.dept ? " · " + b.dept : ""} ${byText}</div>
+            <div class="bk-meta">${b.bookingId}${b.dept ? " · " + b.dept : ""}</div>
+            ${byBtn}
           </div>
           <div class="bk-card-date">
             <div class="bk-date">${fmtDate(b.checkIn)}</div>
